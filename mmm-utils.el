@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.9 2001/01/15 00:52:36 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.10 2001/01/15 00:57:19 mas Exp $
 
 ;;{{{ GPL
 
@@ -85,7 +85,7 @@ substituted for the corresponding REGEXP wherever it matches."
   "Format STRING by matches from the current match data.
 Strings like ~N are replaced by the Nth subexpression from the last
 global match.  Does nothing if STRING is not a string."
-  (when (and count (stringp string))
+  (when (stringp string)
     (let ((old-data (match-data))
           subexp)
       (save-match-data
