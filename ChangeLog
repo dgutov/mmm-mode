@@ -165,11 +165,6 @@
 	* mmm-region.el (use-local-map):
 	Conditioned advice definition on not XEmacs.
 
-2000-06-08  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
-
-	* mmm-region.el (use-local-map):
-	Conditioned advice definition on not XEmacs.
-
 2000-05-28  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
 
 	* .cvsignore:
