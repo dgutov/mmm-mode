@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.20 2000/07/11 21:59:23 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.21 2000/07/29 17:25:14 mas Exp $
 
 ;;{{{ GPL
 
@@ -249,10 +249,10 @@ arguments are stored as properties of the overlay, un-keyword-ified."
   ;; Conditionally sticky overlays are by default sticky. Then the
   ;; insert-in-front and -behind functions fix them.
   (let ((ovl (make-overlay beg end nil (not beg-sticky) end-sticky)))
-    ;; This loop covers front, back, beg-sticky, end-sticky, and
-    ;; anything else the caller wants to put on the overlay. It also
-    ;; does face, but we re-do that later because we want to
-    ;; defaultify it.
+    ;; Put our properties on the overlay
+    (dolist (prop '(front back beg-sticky end-sticky))
+      (overlay-put ovl prop (symbol-value prop)))
+    ;; Put anything else the caller wants on the overlay
     (loop for (var val) on rest by #'cddr
           do (overlay-put ovl (intern (substring (symbol-name var) 1)) val))
     (mapcar #'(lambda (pair) (overlay-put ovl (car pair) (cadr pair)))
