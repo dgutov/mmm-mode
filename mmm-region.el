@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.22 2000/08/02 23:24:59 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.23 2000/08/23 00:01:18 mas Exp $
 
 ;;{{{ GPL
 
@@ -308,7 +308,9 @@ variables are initialized from `mmm-region-saved-locals-defaults',
 which is set here as well.  See `mmm-save-local-variables'."
   (let ((buffer-entry (assq mode mmm-buffer-saved-locals))
         (region-entry (assq mode mmm-region-saved-locals-defaults))
-        global-vars buffer-vars region-vars)
+        global-vars buffer-vars region-vars
+        ;; kludge for XEmacs 20
+        (html-helper-build-new-buffer nil))
     (unless (and (get mode 'mmm-local-variables)
                  buffer-entry
                  region-entry)
@@ -317,7 +319,10 @@ which is set here as well.  See `mmm-save-local-variables'."
           ;; On errors, the temporary buffers don't get deleted, so here
           ;; we get rid of any old ones that may be hanging around.
           (when (buffer-live-p (get-buffer mmm-temp-buffer-name))
-            (kill-buffer mmm-temp-buffer-name))
+            (save-excursion
+              (set-buffer (get-buffer mmm-temp-buffer-name))
+              (set-buffer-modified-p nil)
+              (kill-buffer (current-buffer))))
           ;; Now make a new temporary buffer.
           (set-buffer (mmm-make-temp-buffer (current-buffer)
                                             mmm-temp-buffer-name))
@@ -346,8 +351,12 @@ which is set here as well.  See `mmm-save-local-variables'."
           ;; These can't be in the local variables list, because we
           ;; replace their actual values, but we want to use their
           ;; original values elsewhere.
-          (put mode 'mmm-fontify-region-function
-               font-lock-fontify-region-function)
+          (unless (and mmm-xemacs (= emacs-major-version 20))
+            ;; XEmacs 20 doesn't have this variable.  This effectively
+            ;; prevents the MMM font-lock support from working, but we
+            ;; just ignore it and go on, to prevent an error message.
+            (put mode 'mmm-fontify-region-function
+                 font-lock-fontify-region-function))
           (put mode 'mmm-beginning-of-syntax-function
                font-lock-beginning-of-syntax-function))
         ;; Get variables
