@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.49 2002/03/09 01:41:34 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.50 2002/11/12 02:44:06 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -138,19 +138,71 @@
     ;; These have to be localized in Emacs: see `mmm-mode-on'.
     ,@(mapcar
        #'(lambda (var) (list var nil mmm-c-derived-modes))
-       '(c-offsets-alist
-         c-basic-offset
-         c-file-style
-         c-file-offsets
-         c-comment-only-line-offset
-         c-cleanup-list
-         c-hanging-braces-alist
-         c-hanging-colons-alist
-         c-hanging-comment-starter-p
-         c-hanging-comment-ender-p
-         c-backslash-column
-         c-label-minimum-indentation
-         c-indentation-style))
+       '(c-any-class-key
+	 c-asm-stmt-kwds
+	 c-backslash-column
+	 c-basic-offset
+	 c-bitfield-kwds
+	 c-block-comment-prefix
+	 c-block-decls-with-vars
+	 c-block-stmt-1-key
+	 c-block-stmt-1-kwds
+	 c-block-stmt-2-key
+	 c-block-stmt-2-kwds
+	 c-class-key
+	 c-class-kwds
+	 c-cleanup-list
+	 c-comment-only-line-offset
+	 c-comment-prefix-regexp
+	 c-comment-start-regexp
+	 c-current-comment-prefix
+	 c-cpp-defined-fns
+	 c-decl-block-key
+	 c-decl-spec-kwds
+	 c-expr-kwds
+	 c-file-offsets
+	 c-file-style
+	 c-hanging-braces-alist
+	 c-hanging-colons-alist
+	 c-hanging-comment-ender-p
+	 c-hanging-comment-starter-p
+	 c-hanging-semi\&comma-criteria
+	 c-in-comment-lc-prefix
+	 c-indent-comment-alist
+	 c-indent-comments-syntactically-p
+	 c-indentation-style
+	 c-inexpr-block-kwds
+	 c-inexpr-class-kwds
+	 c-keywords
+	 c-keywords-regexp
+	 c-label-key
+	 c-label-kwds
+	 c-label-kwds-regexp
+	 c-label-minimum-indentation
+	 c-lambda-kwds
+	 c-offsets-alist
+	 c-opt-access-key
+	 c-opt-asm-stmt-key
+	 c-opt-bitfield-key
+	 c-opt-block-decls-with-vars-key
+	 c-opt-block-stmt-key
+	 c-opt-decl-spec-key
+	 c-opt-friend-key
+	 c-opt-inexpr-block-key
+	 c-opt-inexpr-class-key
+	 c-opt-lambda-key
+	 c-opt-method-key
+	 c-other-decl-block-key
+	 c-other-decl-block-kwds
+	 c-other-decl-kwds
+	 c-primitive-type-kwds
+	 c-protection-kwds
+	 c-recognize-knr-p
+	 c-simple-stmt-kwds
+	 c-special-brace-lists
+	 c-specifier-kwds
+	 c-symbol-key
+	 ))
     ;; Skeleton insertion
     skeleton-transformation
     ;; Abbrev mode
@@ -159,6 +211,8 @@
     ;; And finally the syntax table and local map.
     ((syntax-table . set-syntax-table))
     ((current-local-map . use-local-map) buffer)
+    paragraph-separate
+    paragraph-start
     )
   "Which local variables to save for major mode regions.
 Each element has the form \(VARIABLE [TYPE [MODES]]), causing VARIABLE

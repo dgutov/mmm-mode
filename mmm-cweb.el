@@ -3,7 +3,7 @@
 ;; Copyright (C) 2001 by Alan Shutko
 
 ;; Author: Alan Shutko <ats@acm.org>
-;; Version: $Id: mmm-cweb.el,v 1.2 2001/05/14 22:38:25 viritrilbia Exp $
+;; Version: $Id: mmm-cweb.el,v 1.3 2002/11/12 02:44:06 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -66,12 +66,12 @@ Checks whether the match is in limbo."
     :submode c-mode
     :front ,mmm-cweb-c-part-regexp
     :back ,mmm-cweb-section-regexp)
-    (cweb-label
-     :submode tex-mode
-     :front "@<"
-     :back "@>"
-     :face mmm-comment-submode-face
-     :insert ((?l cweb-label nil @ "@<" @ "@>")))
+   (cweb-label
+    :submode tex-mode
+    :front "@<"
+    :back "@>"
+    :face mmm-comment-submode-face
+    :insert ((?l cweb-label nil @ "@<" @ "@>")))
    (cweb-brief-c
     :submode c-mode
     :front "[^\\|]\\(|\\)[^|]"

@@ -1,3 +1,12 @@
+2002-11-11  Alan Shutko  <ats@acm.org>
+
+	* .cvsignore: Add semantic.cache.
+
+	* mmm-vars.el (mmm-save-local-variables): Update C variables to
+	save, based on Emacs CVS.
+
+	* mmm-cweb.el (cweb): Tweaked indentation.  Add cweb to the 
+
 2001-05-16  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
 
 	* mmm-mode.el (mmm-mode-on): Make style variables buffer-local.

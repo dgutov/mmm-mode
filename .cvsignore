@@ -1,13 +1,14 @@
+*.tar.gz
 Makefile
 Makefile.in
 aclocal.m4
 confdefs.h
 config.cache
-config.status
 config.log
+config.status
 configure
 mmm.info*
 script
+semantic.cache
 stamp-vti
 version.texi
-*.tar.gz
