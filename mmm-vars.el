@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.36 2001/01/13 02:49:36 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.37 2001/01/13 03:16:58 mas Exp $
 
 ;;{{{ GPL
 
@@ -111,10 +111,28 @@
     font-lock-syntactic-keywords
     indent-line-function
     parse-sexp-ignore-comments  ; Fixes indentation in PHP-mode?
-    (c-basic-offset buffer (cc-mode))
+    ;; Can be different in different buffers
+    (c-basic-offset
+     buffer (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+    ;; These are necessary for C syntax parsing
+    (c-class-key
+     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+    (c-extra-toplevel-key
+     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+    (c-inexpr-class-key
+     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+    (c-conditional-key
+     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+    ;; XEmacs makes this a local variable
+    ,@(when mmm-xemacs
+        '((c-offsets-alist
+           nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))))
+    ;; Skeleton insertion
     skeleton-transformation
+    ;; Abbrev mode
     abbrev-mode
     local-abbrev-table
+    ;; And finally the syntax table and local map.
     ((syntax-table . set-syntax-table))
     ((current-local-map . use-local-map) buffer)
     )
