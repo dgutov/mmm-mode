@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-compat.el,v 1.3 2000/07/11 02:44:06 mas Exp $
+;; Version: $Id: mmm-compat.el,v 1.4 2000/07/11 21:57:28 mas Exp $
 
 ;;{{{ GPL
 
@@ -27,9 +27,9 @@
 ;;; Commentary:
 
 ;; This file provides a number of hacks that are necessary for MMM
-;; Mode to function in different Emacsen. MMM Mode is designed for FSF
+;; Mode to function in different Emacsen.  MMM Mode is designed for
 ;; Emacs 20, but these hacks usually enable it to work almost
-;; perfectly in FSF Emacs 19 or XEmacs.
+;; perfectly in Emacs 19 and XEmacs 20 or 21.
 
 ;;; Code:
 
@@ -153,6 +153,17 @@ This makes `@' in skeletons act approximately like it does in FSF."
                     '(@ ''(push (point) skeleton-positions)))))
 
 ;;}}}
+
+(defmacro mmm-make-temp-buffer (buffer name)
+  "Return a buffer called NAME including the text of BUFFER.
+This text should not be modified."
+  (if (fboundp 'make-indirect-buffer)
+      `(make-indirect-buffer ,buffer ,name)
+    `(save-excursion
+       (set-buffer (get-buffer-create ,name))
+       (insert-buffer ,buffer)
+       (current-buffer))))
+
 ;;{{{ Font Lock (Emacs w/o X)
 
 (defvar mmm-font-lock-available-p (or window-system mmm-xemacs)
