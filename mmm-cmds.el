@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.5 2000/05/18 18:28:47 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.6 2000/06/27 00:34:02 mas Exp $
 
 ;;{{{ GPL
 
@@ -42,8 +42,9 @@
   (interactive "SSubmode Class: ")
   (mmm-apply-class class)
   (mmm-add-to-history class)
-  (when (and (featurep 'font-lock) font-lock-mode)
-    (font-lock-fontify-buffer)))
+  (and (featurep 'font-lock)
+       font-lock-mode
+       (font-lock-fontify-buffer)))
 
 ;;}}}
 ;;{{{ Applying by the Region
@@ -55,8 +56,9 @@
   (setq front (mmm-make-marker front t nil)
         back (mmm-make-marker back nil nil))
   (mmm-add-to-history `(:submode ,submode :front ,front :back ,back))
-  (when (and (featurep 'font-lock) font-lock-mode)
-    (font-lock-fontify-buffer)))
+  (and (featurep 'font-lock)
+       font-lock-mode
+       (font-lock-fontify-buffer)))
 
 ;;}}}
 ;;{{{ Applying simple Regexps
@@ -76,8 +78,9 @@ nNumber of matched substrings to save: ")
                 front-offset back-offset save-matches)))
     (apply #'mmm-ify args)
     (mmm-add-to-history args))
-  (when (and (featurep 'font-lock) font-lock-mode)
-    (font-lock-fontify-buffer)))
+  (and (featurep 'font-lock)
+       font-lock-mode
+       (font-lock-fontify-buffer)))
 
 ;;}}}
 ;;{{{ Re-parsing Areas
@@ -253,8 +256,9 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
                            :face (plist-get class :face)
                            :beg-sticky (plist-get class :beg-sticky)
                            :end-sticky (plist-get class :end-sticky))
-          (when (and (featurep 'font-lock) font-lock-mode)
-            (font-lock-fontify-region front back)))))))
+          (and (featurep 'font-lock)
+               font-lock-mode
+               (font-lock-fontify-region front back)))))))
 
 (defun mmm-get-insertion-spec (key &optional classlist)
   "Get the insertion info for KEY from all classes in CLASSLIST.
