@@ -3,7 +3,7 @@
 ;; Copyright (C) 2003 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-sample.el,v 1.25 2003/03/09 17:04:04 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.26 2003/03/25 21:49:24 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -176,7 +176,13 @@ and MODE is a major mode function symbol.")
 
 (mmm-add-group
  'eperl
- '((eperl-code
+ '((eperl-expr
+    :submode perl
+    :face mmm-output-submode-face
+    :front "<:="
+    :back ":>"
+    :insert ((?= eperl-expr nil @ "<:=" @ " " _ " " @ ":>" @)))
+   (eperl-code
     :submode perl
     :face mmm-code-submode-face
     :front "<:"
@@ -185,12 +191,12 @@ and MODE is a major mode function symbol.")
     :insert ((?p eperl-code nil @ "<:" @ " " _ " " @ ":>" @)
              (?: eperl-code ?p . nil)
              (?_ eperl-code_ nil @ "<:" @ " " _ " " @ "_:>" @)))
-   (eperl-expr
-    :submode perl
-    :face mmm-output-submode-face
-    :front "<:="
-    :back ":>"
-    :insert ((?= eperl-expr nil @ "<:=" @ " " _ " " @ ":>" @)))))
+   (eperl-comment
+    :submode text
+    :face mmm-comment-submode-face
+    :front ":>//"
+    :back "\n")
+   ))
 
 ;;}}}
 ;;{{{ File Variables
@@ -297,6 +303,28 @@ and MODE is a major mode function symbol.")
 ;; (mmm-add-mode-ext-class 'apache-generic-mode nil 'httpd-conf-perl)
 
 ;;}}}
+;;{{{ PHP in HTML
+
+(mmm-add-group 'html-php
+ '((html-php-output
+    :submode php-mode
+    :face mmm-output-submode-face
+    :front "<\\?php *echo "
+    :back "\\?"
+    :include-front t
+    :front-offset 5
+    :insert ((?e php-echo nil @ "<?php" @ " echo " _ " " @ "?>" @))
+    )
+   (html-php-code
+    :submode php-mode
+    :face mmm-code-submode-face
+    :front "<\\?\\(php\\)?"
+    :back "\\?>"
+    :insert ((?p php-section nil @ "<?php" @ " " _ " " @ "?>" @)
+             (?b php-block nil @ "<?php" @ "\n" _ "\n" @ "?>" @))
+    )))
+
+;;}}}
 
 ;; NOT YET UPDATED
 ;;{{{ HTML in PL/SQL;-COM-
@@ -342,9 +370,5 @@ and MODE is a major mode function symbol.")
 ;;}}}
 
 (provide 'mmm-sample)
-
-
-;;; Local Variables:
-;;; End:
 
 ;;; mmm-sample.el ends here
