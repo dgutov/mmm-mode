@@ -1,3 +1,7 @@
+2001-02-23  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* configure.in, mmm-mode.el, mmm-vars.el, version.texi:	Released 0.4.7
+
 2001-02-18  Alan Shutko  <ats@acm.org>
 
 	* mmm-vars.el (mmm-classes-alist): Document new keywords.
