@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.19 2001/04/27 01:10:09 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.20 2001/05/16 01:01:47 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -253,6 +253,19 @@ and MODE is a major mode function symbol.")
     :back "%>"
     :insert ((?@ jsp-directive nil @ "<%@" @ " " _ " " @ "%>" @))
     )))
+
+;;}}}
+;;{{{ SGML DTD
+
+;; Thanks to Yann Dirson <ydirson@fr.alcove.com> for writing and
+;; contributing this submode class.
+
+(mmm-add-classes
+ '((sgml-dtd
+    :submode dtd-mode
+    :face mmm-declaration-submode-face
+    :front "<! *doctype[^>[]*\\["
+    :back "]>")))
 
 ;;}}}
 

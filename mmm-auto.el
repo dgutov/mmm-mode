@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.18 2001/05/15 23:31:57 viritrilbia Exp $
+;; Version: $Id: mmm-auto.el,v 1.19 2001/05/16 01:01:47 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -76,6 +76,7 @@
     (rpm-sh "mmm-rpm" t)
     (rpm "mmm-rpm" nil)
     (cweb "mmm-cweb" nil)
+    (sgml-dtd "mmm-sample" nil)
     )
   "Alist of submode classes autoloaded from files.
 Elements look like \(CLASS FILE PRIVATE) where CLASS is a submode
