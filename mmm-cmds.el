@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.9 2000/07/21 01:08:33 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.10 2000/07/29 22:42:03 mas Exp $
 
 ;;{{{ GPL
 
@@ -41,11 +41,22 @@
   "Add submode regions according to an existing submode class."
   (interactive
    (list (intern
-          (completing-read "Submode Class: "
-                           (mapcar #'(lambda (spec)
-                                       (list (symbol-name (car spec))))
-                                   mmm-classes-alist)
-                           nil t))))
+          (completing-read
+           "Submode Class: "
+           (remove-duplicates
+            (remove nil
+                    (nconc
+                     (mapcar #'(lambda (spec)
+                                 (if (plist-get (cdr spec) :private)
+                                     nil
+                                   (list (symbol-name (car spec)))))
+                             mmm-classes-alist)
+                     (mapcar #'(lambda (spec)
+                                 (if (caddr spec)
+                                     nil
+                                   (list (symbol-name (car spec)))))
+                             mmm-autoloaded-classes))))
+           nil t))))
   (unless (eq class (intern ""))
     (mmm-apply-class class)
     (mmm-add-to-history class)
