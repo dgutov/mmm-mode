@@ -13,7 +13,7 @@ INSTALLATION
 
   MMM Mode has a standard GNU configure-driven installation.  To
   install mmm-mode in the standard locations, unpack the archive, `cd'
-  to the mmm-X.X.X directory created, and run these commands:
+  to the mmm-mode-X.X.X directory created, and run these commands:
 
     ./configure
     make
@@ -57,20 +57,23 @@ DOCUMENTATION
 UPDATES
 
   The latest version of MMM Mode should always be available from
-  http://kurukshetra.cjb.net/elisp.  Check that you have the latest
-  version before reporting a bug.
+  http://mmm-mode.sourceforge.net/.
 
-REPORTING BUGS
+BUG REPORTS
 
-  Please report bugs to mmm-mode@kurukshetra.cjb.net.  Comments,
-  questions, and suggestions are also welcome.
+  Bugs can be reported at http://sourceforge.net/bugs/?group_id=8658,
+  or through email to viritrilbia@users.sourceforge.net.
 
 CONTACT INFO
 
   MMM Mode is written and maintained by Michael Abraham Shulman
-  <mas@kurukshetra.cjb.net>.  Please email me if you would like to be
-  added to my very-low-volume MMM Mode mailing list.  The list gets
-  announcements of new releases, and might one day turn into an actual
-  mailing list for discussion of features.
+  <viritrilbia@users.sourceforge.net>.
+
+MAILING LIST
+
+  To subscribe to the MMM Mode mailing list, visit
+  <http://lists.sourceforge.net/mailman/listinfo/mmm-mode-discuss>.
+  The mailing list receives announcements of new releases and provides
+  a forum for discussion of bugs and features.
 
   Thanks for using MMM Mode!
