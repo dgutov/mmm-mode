@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.17 2000/06/30 20:55:44 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.18 2000/07/11 02:35:28 mas Exp $
 
 ;;{{{ GPL
 
@@ -314,6 +314,11 @@ which is set here as well.  See `mmm-save-local-variables'."
                  region-entry)
       (save-excursion
         (let ((filename (buffer-file-name)))
+          ;; On errors, the temporary buffers don't get deleted, so here
+          ;; we get rid of any old ones that may be hanging around.
+          (when (buffer-live-p (get-buffer mmm-temp-buffer-name))
+            (kill-buffer mmm-temp-buffer-name))
+          ;; Now make a new temporary buffer.
           (set-buffer (make-indirect-buffer (current-buffer)
                                             mmm-temp-buffer-name))
           ;; We have to set this for each file, because the user may
