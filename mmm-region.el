@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.12 2000/06/27 19:22:56 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.13 2000/06/28 01:15:50 mas Exp $
 
 ;;{{{ GPL
 
@@ -165,16 +165,21 @@ but none starting at POS, and if `all', return both."
            ((end all) t)))
         (t t)))
 
-(defun mmm-overlays-in (start stop &optional strict)
+(defun mmm-overlays-in (start stop &optional strict delim)
   "Return the MMM overlays in START to STOP, in decreasing priority.
 If STRICT is non-nil, include only those overlays which are entirely
-contained in the region, including their delimiters \(if any)."
+contained in the region.  In this case, if DELIM is non-nil, the
+region delimiters, if any, must also be included."
   (mmm-sort-overlays
    (remove-if-not #'(lambda (ovl)
                       (and (overlay-get ovl 'mmm)
                            (or (not strict)
-                               (>= stop (mmm-back-end ovl))
-                               (<= start (mmm-front-start ovl)))))
+                               (>= stop (if delim
+                                            (mmm-back-end ovl)
+                                          (overlay-end ovl)))
+                               (<= start (if delim
+                                             (mmm-front-start ovl)
+                                           (overlay-start ovl))))))
                   (overlays-in (max start (point-min))
                                (min stop (point-max))))))
 
@@ -210,13 +215,14 @@ Set by `mmm-update-current-submode'.")
 (defun mmm-update-current-submode (&optional pos)
   "Update current and previous position variables to POS.
 Return non-nil if the current region changed."
-  (if (eq mmm-current-overlay (mmm-overlay-at (or pos (point))))
-      nil
-    (setq mmm-previous-overlay mmm-current-overlay
-          mmm-previous-submode mmm-current-submode)
-    (setq mmm-current-overlay (mmm-overlay-at (or pos (point)))
-          mmm-current-submode (mmm-submode-at (or pos (point))))
-    t))
+  (let ((ovl (mmm-overlay-at (or pos (point)))))
+    (if (eq ovl mmm-current-overlay)
+        nil
+      (setq mmm-previous-overlay mmm-current-overlay
+            mmm-previous-submode mmm-current-submode)
+      (setq mmm-current-overlay ovl
+            mmm-current-submode (if ovl (overlay-get ovl 'mmm-mode)))
+      t)))
 
 (defun mmm-set-current-submode (mode &optional pos)
   "Set the current submode to MODE and the current region to whatever
@@ -390,13 +396,6 @@ Not used under XEmacs.")
   "Update all MMM properties correctly for the current position.
 This function and those it calls do the actual work of setting the
 different keymaps, syntax tables, local variables, etc. for submodes."
-  ;; This next line is necessary because some derived modes can fool
-  ;; MMM Mode into thinking they're really the parent mode. For
-  ;; example, texinfo-mode looks like text-mode to the major mode
-  ;; hook, and hence doesn't get its properties updated.  FIXME: If we
-  ;; use the post-command-hook way, this should be unnecessary.
-  (mmm-update-mode-info major-mode)
-
   (when (mmm-update-current-submode)
     (mmm-save-changed-local-variables mmm-previous-overlay
                                       mmm-previous-submode)
@@ -417,13 +416,10 @@ different keymaps, syntax tables, local variables, etc. for submodes."
     (force-mode-line-update)))
 
 (defun mmm-add-hooks ()
-;  (make-local-hook 'change-major-mode-hook)
-;  (add-hook 'change-major-mode-hook 'mmm-mode-off nil 'local)
   (make-local-hook 'post-command-hook)
   (add-hook 'post-command-hook 'mmm-update-submode-region nil 'local))
 
 (defun mmm-remove-hooks ()
-  (remove-hook 'change-major-mode-hook 'mmm-mode-off 'local)
   (remove-hook 'post-command-hook 'mmm-update-submode-region 'local))
 
 ;;}}}
@@ -517,13 +513,15 @@ region and mode for the previous position."
 
 (defun mmm-submode-changes-in (start stop)
   "Return a list of all submode-change positions from START to STOP.
-The list is sorted in order of increasing buffer position."
+The list is sorted in order of increasing buffer position, and the
+boundary positions are included."
   (sort (remove-duplicates
          (list* start stop
                 (mapcan #'(lambda (ovl)
                             `(,(overlay-start ovl)
                               ,(overlay-end ovl)))
-                        (mmm-overlays-in start stop))))
+                        (mmm-overlays-in start stop t t))))
+
         #'<))
 
 (defun mmm-regions-in (start stop)
@@ -587,6 +585,7 @@ of the REGIONS covers START to STOP."
                   (mmm-set-local-variables mode)
                   (funcall func (car reg) (cadr reg) nil))
               regions))))
+
 ;;}}}
 ;;{{{ Beginning of Syntax
 
