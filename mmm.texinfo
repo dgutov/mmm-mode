@@ -147,6 +147,7 @@ Supplied Submode Classes
 * ePerl::                       A general Perl-embedding syntax.
 * JSP::                         Java code embedded in HTML.
 * RPM::                         Shell scripts in RPM Spec Files.
+* Noweb::                       Noweb literate programs.
 
 Writing Submode Classes
 
@@ -386,10 +387,7 @@ mmm-ified.
 You can now read the rest of this manual to learn more about how MMM
 Mode works and how to configure it to your preferences.  If none of the
 supplied submode classes fit your needs, then you can try to write your
-own.  There will eventually be a chapter on how to do that, but for now,
-see the documentation for the variable `mmm-classes-alist'.
-
-@c @xref{Writing Classes}, for more information.
+own.  @xref{Writing Classes}, for more information.
 
 @node Basics, Customizing, Overview, Top
 @comment  node-name,  next,  previous,  up
@@ -1203,6 +1201,7 @@ Mode.
 * ePerl::                       A general Perl-embedding syntax.
 * JSP::                         Java code embedded in HTML.
 * RPM::                         Shell scripts in RPM Spec Files.
+* Noweb::                       Noweb literate programs.
 @end menu
 
 @node Mason, File Variables, Supplied Classes, Supplied Classes
@@ -1426,7 +1425,7 @@ specified by the user; @xref{Preferred Modes}.  The default is
 @code{jde-mode} if present, otherwise @code{java-mode}.
 
 
-@node RPM,  , JSP, Supplied Classes
+@node RPM, Noweb, JSP, Supplied Classes
 @comment  node-name,  next,  previous,  up
 @section RPM Spec Files
 
@@ -1446,6 +1445,94 @@ Suggested setup code:
 
 Thanks to Marcus Harnisch <Marcus.Harnisch@@gmx.net> for contributing
 this submode class.
+
+@node Noweb, , RPM, Supplied Classes
+@comment  node-name,  next,  previous,  up
+@section Noweb literate programming
+
+@file{mmm-noweb.el} contains the definition of an MMM Mode submode
+class for editing Noweb documents.  Most Noweb documents use \LaTeX
+for the documentation chunks.  Code chunks in Noweb are
+document-specific, and the mode may be set with a local variable
+setting in the document.  The variable @var{mmm-noweb-code-mode}
+controls the global code chunk mode. Since Noweb files may have many
+languages in their code chunks, this mode also allows setting the mode
+by specifying a mode in the first line or two of a code chunk, using
+the normal Emacs first-line mode setting syntax.  Note that this
+first-line mode setting only matches a single word for the mode name,
+and does not support the variable name setting of the generalized
+first file line syntax.
+
+@verbatim
+% -*- mode: latex; mmm-noweb-code-mode: c++; -*-
+% First chunk delimiter!
+@
+\noweboptions{smallcode}
+
+\title{Sample Noweb File}
+\author{Joe Kelsey\\
+\nwanchorto{mailto:bozo@bozo.bozo}{\tt bozo@bozo.bozo}}
+\maketitle
+
+@
+\section{Introduction}
+Normal noweb documentation for the required [[*]] chunk.
+<<*>>=
+// C++ mode here!
+// We might list the program here, or simply included chunks.
+<<myfile.cc>>
+@ %def myfile.cc
+
+@
+\section{[[myfile.cc]]}
+This is [[myfile.cc]].  MMM noweb-mode understands code quotes in
+documentation.
+<<myfile.cc>>=
+// This section is indented separately from previous.
+@ 
+
+@
+\section{A Perl Chunk}
+We need a Perl chunk.
+<<myfile.pl>>=
+#!/usr/bin/perl
+# -*- perl -*-
+# Each differently named chunk is flowed separately.
+@ 
+
+\section{Finish [[myfile.cc]]}
+When we resume a previously defined chunk, they are indented together.
+<<myfile.cc>>=
+// Pick up where we left off...
+@ 
+
+@end verbatim
+
+The quoted code chunks inside documentation chunks are given the mode
+found in the variable @var{mmm-noweb-quote-mode}, if set, or the value
+in @var{mmm-noweb-code-mode} otherwise.  Also, each quoted chunk is
+set to have a unique name to prevent them from being indented as a
+unit.
+
+Suggested setup code:
+@lisp
+(mmm-add-mode-ext-class 'latex-mode "\\.nw\\'" 'noweb)
+(add-to-list 'auto-mode-alist '("\\.nw\\'" . latex-mode))
+@end lisp
+
+In mmm-noweb buffers, each differently-named code chunk has a
+different @code{:name}, allowing all chunks with the same name to get
+indented together.
+
+This mode also supplies special paragraph filling operations for use
+in documentation areas of the buffer.  From a primary-mode
+(@code{latex-mode, , emacs}) region, pressing @kbd{C-c % C-q} will mark all
+submode regions with word syntax (@code{mmm-word-other-regions}), fill
+the current paragraph (@code{(fill-paragraph justify)}), and remove the
+syntax markings (@code{mmm-undo-syntax-other-regions}).
+
+Thanks to Joe Kelsey <joe@@zircon.seattle.wa.us> for contributing this
+class.
 
 
 @node Writing Classes, Indices, Supplied Classes, Top
@@ -1642,16 +1729,32 @@ such as @samp{<%perl>...</%perl>}, inline output expressions bounded by
 ``umbrella'' class, to turn all these classes on or off together.
 
 @defun mmm-add-group @var{group} @var{classes}
-The submode classes @var{classes}, which should be a list just as might
-be passed to @code{mmm-add-classes}, are added just as by that function.
-Furthermore, another class named @var{group} is added, which encompasses
-all the classes in @var{classes}.
+The submode classes @var{classes}, which should be a list of lists,
+similar to what might be passed to @code{mmm-add-classes}, are added
+just as by that function.  Furthermore, another class named
+@var{group} is added, which encompasses all the classes in
+@var{classes}.
 @end defun
 
 Technically, an group class is specified with a @code{:classes} keyword
 argument, and the subsidiary classes are given a non-nil @code{:private}
 keyword argument to make them invisible.  But in general, all you should
 ever need to know is how to invoke the function above.
+
+@defun mmm-add-to-group @var{group} @var{classes}
+Adds a list of classes to an already existing group.  This can be
+used, for instance, to add a new quoting definition to @var{html-js}
+using this example to add the quote characters ``%=%'':
+
+@lisp
+(mmm-add-to-group 'html-js '((js-html
+			     :submode javascript
+			     :face mmm-code-submode-face
+			     :front "%=%"
+			     :back "%=%"
+			     :end-not-begin t)))
+@end lisp
+@end defun
 
 
 @node Calculated Submodes, Calculated Faces, Submode Groups, Writing Classes
@@ -1733,7 +1836,9 @@ highlighted with @var{face}.  For example, here is an excerpt from the
 
 Thus, regions beginning with @samp{[+} are highlighted as output
 expressions, which they are, while @samp{[-} and @samp{[*} regions are
-highlighted as simple executed code, and so on.
+highlighted as simple executed code, and so on.  Note that
+@var{mmm-submode-decoration-level} must be set to 2 (high decoration)
+for different faces to be displayed.
 
 
 @node Insertion Commands, Other Hooks, Calculated Faces, Writing Classes
