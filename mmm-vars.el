@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.32 2000/09/18 02:56:03 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.33 2001/01/09 01:20:24 mas Exp $
 
 ;;{{{ GPL
 
@@ -110,6 +110,7 @@
     font-lock-mark-block-function       ; Override this?
     font-lock-syntactic-keywords
     indent-line-function
+    parse-sexp-ignore-comments  ; Fixes indentation in PHP-mode?
     (c-basic-offset buffer (cc-mode))
     skeleton-transformation
     abbrev-mode
