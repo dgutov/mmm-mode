@@ -4,7 +4,15 @@ See the file COPYING for copying conditions.
 
 Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
-* MMM Mode 0.4.3 is a bug-fix release with no user-visible changes
+* Changes in MMM Mode 0.4.3
+
+** Syntax of Universal Class Changed
+
+Instead of %[MODE]% ... %[/MODE]%, the universal class now uses
+{%MODE%} ... {%/MODE%} which isn't quite as ugly and doesn't to my
+knowledge conflict with any other syntax.
+
+** Some Bugs under Emacs 19 and XEmacs Fixed
 
 
 * Changes in MMM Mode 0.4.2
