@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.29 2001/01/11 01:40:49 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.30 2001/02/03 01:39:28 mas Exp $
 
 ;;{{{ GPL
 
@@ -402,7 +402,7 @@ different keymaps, syntax tables, local variables, etc. for submodes."
   (when (mmm-update-current-submode)
     (mmm-save-changed-local-variables mmm-previous-overlay
                                       mmm-previous-submode)
-    (let ((mode (or mmm-current-submode major-mode)))
+    (let ((mode (or mmm-current-submode mmm-primary-mode)))
       (mmm-update-mode-info mode)
       (mmm-set-local-variables mode)
       (mmm-enable-font-lock mode))
@@ -410,9 +410,9 @@ different keymaps, syntax tables, local variables, etc. for submodes."
         (setq mode-name
               (mmm-format-string
                mmm-submode-mode-line-format
-               `(("~M" . ,(get major-mode 'mmm-mode-name))
+               `(("~M" . ,(get mmm-primary-mode 'mmm-mode-name))
                  ("~m" . ,(get mmm-current-submode 'mmm-mode-name)))))
-      (setq mode-name (get major-mode 'mmm-mode-name)))
+      (setq mode-name (get mmm-primary-mode 'mmm-mode-name)))
     (force-mode-line-update)))
 
 (defun mmm-add-hooks ()
@@ -485,7 +485,7 @@ Looks up both global, buffer, and region saves."
   "Save by-buffer and by-region variables for OVL and MODE.
 Called when we move to a new submode region, with OVL and MODE the
 region and mode for the previous position."
-  (let ((buffer-vars (cdr (assq (or mode major-mode)
+  (let ((buffer-vars (cdr (assq (or mode mmm-primary-mode)
                                 mmm-buffer-saved-locals)))
         (region-vars (if ovl
                          (overlay-get ovl 'mmm-local-variables)
@@ -525,7 +525,7 @@ region and mode for the previous position."
     (if (some #'(lambda (mode)
                   (get mode 'mmm-font-lock-mode))
               (remove-duplicates
-               (cons major-mode
+               (cons mmm-primary-mode
                      (mapcar #'(lambda (ovl)
                                  (overlay-get ovl 'mmm-mode))
                              (mmm-overlays-in (point-min) (point-max))))))
@@ -563,7 +563,7 @@ union covers the region from START to STOP."
          (maplist #'(lambda (pos-list)
                       (if (cdr pos-list)
                           (list (or (mmm-submode-at (car pos-list) 'beg)
-                                    major-mode)
+                                    mmm-primary-mode)
                                 (car pos-list) (cadr pos-list))))
                   (mmm-submode-changes-in start stop))))
     (setcdr (last regions 2) nil)
@@ -608,7 +608,7 @@ of the REGIONS covers START to STOP."
 (defun mmm-fontify-region-list (mode regions)
   "Fontify REGIONS, each like \(BEG END), in mode MODE."
   (save-excursion
-    (let ((major-mode mode)
+    (let (;(major-mode mode)
           (func (get mode 'mmm-fontify-region-function)))
       (mapcar #'(lambda (reg)
                   (goto-char (car reg))
@@ -630,7 +630,7 @@ of the REGIONS covers START to STOP."
 (defun mmm-beginning-of-syntax ()
   (goto-char
    (let ((ovl (mmm-overlay-at (point)))
-         (func (get (or mmm-current-submode major-mode)
+         (func (get (or mmm-current-submode mmm-primary-mode)
                     'mmm-beginning-of-syntax-function)))
      (max (if ovl (overlay-start ovl) (point-min))
           (if func (progn (funcall func) (point)) (point-min))

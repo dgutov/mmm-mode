@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.40 2001/01/15 00:35:34 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.41 2001/02/03 01:39:28 mas Exp $
 
 ;;{{{ GPL
 
@@ -91,7 +91,8 @@
 
 (defvar mmm-save-local-variables 
   `(;; Don't use `function' (#') here!!  We're already inside `quote'!
-    comment-start 
+    major-mode
+    comment-start
     comment-end
     (comment-line-start-skip buffer (fortran-mode))
     comment-start-skip
@@ -122,6 +123,9 @@
     (c-inexpr-class-key
      nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
     (c-conditional-key
+     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+    ;; User indentation style control
+    (((lambda () c-indentation-style) . c-set-style)
      nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
     ;; XEmacs makes this a local variable
     ,@(when mmm-xemacs
@@ -416,7 +420,7 @@ If SUFFIX is nil or unsupplied, run `mmm-<BODY>-hook' instead."
     (if hook (run-hooks hook))))
 
 (defun mmm-run-major-hook ()
-  (mmm-run-constructed-hook major-mode))
+  (mmm-run-constructed-hook mmm-primary-mode))
 
 (defun mmm-run-submode-hook (submode)
   (mmm-run-constructed-hook submode "submode"))
@@ -505,6 +509,13 @@ require it.")
   "Non-nil means MMM Mode is turned on in this buffer.
 Do not set this variable directly; use the function `mmm-mode'.")
 (make-variable-buffer-local 'mmm-mode)
+
+;;}}}
+;;{{{ Primary Mode
+
+(defvar mmm-primary-mode nil
+  "The primary major mode in the current buffer.")
+(make-variable-buffer-local 'mmm-primary-mode)
 
 ;;}}}
 ;;{{{ Classes Alist
@@ -693,10 +704,16 @@ Uses `mmm-mode-ext-classes-alist' to find submode classes."
 
 (defun mmm-mode-ext-applies (element)
   (destructuring-bind (mode ext class) element
-    (and (if mode (eq mode major-mode) t)
-         (if ext (and (buffer-file-name)
-                      (save-match-data
-                        (string-match ext (buffer-file-name))))
+    (and (if mode
+             (eq mode
+                 ;; If MMM is on in this buffer, use the primary mode,
+                 ;; otherwise use the normal indicator.
+                 (or mmm-primary-mode major-mode))
+           t)
+         (if ext
+             (and (buffer-file-name)
+                  (save-match-data
+                    (string-match ext (buffer-file-name))))
            t))))
 
 (defun mmm-get-all-classes (global)

@@ -8,7 +8,7 @@
 ;; Keywords: convenience, faces, languages, tools
 ;; Version: 0.4.6
 
-;; Revision: $Id: mmm-mode.el,v 1.10 2000/09/20 18:51:13 mas Exp $
+;; Revision: $Id: mmm-mode.el,v 1.11 2001/02/03 01:39:28 mas Exp $
 
 ;;{{{ GPL
 
@@ -318,6 +318,7 @@ Programming | Tools | Mmm, except the major mode and submode hooks
   ;; variable `mmm-mode' will already be set.
   (mmm-valid-buffer
    (unless mmm-mode
+     (setq mmm-primary-mode major-mode)
      (mmm-update-mode-info major-mode)
      (setq mmm-region-saved-locals-for-dominant
            (list* (list 'font-lock-cache-state nil)
@@ -359,9 +360,9 @@ Programming | Tools | Mmm, except the major mode and submode hooks
     (mmm-clear-local-variables)
     (mmm-update-submode-region)
     (setq font-lock-fontify-region-function
-          (get major-mode 'mmm-fontify-region-function)
+          (get mmm-primary-mode 'mmm-fontify-region-function)
           font-lock-beginning-of-syntax-function
-          (get major-mode 'mmm-beginning-of-syntax-function))
+          (get mmm-primary-mode 'mmm-beginning-of-syntax-function))
     (mmm-update-font-lock-buffer)
     (mmm-refontify-maybe)
     (setq mmm-mode nil)))
