@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.7 2000/06/30 20:55:22 mas Exp $
+;; Version: $Id: mmm-mode.el,v 1.8 2000/07/11 21:57:50 mas Exp $
 ;; Keywords: convenience faces languages tools
 
 ;;{{{ GPL
@@ -354,6 +354,10 @@ Programming | Tools | Mmm, except the major mode and submode hooks
     (mmm-clear-mode-ext-classes)
     (mmm-clear-local-variables)
     (mmm-update-submode-region)
+    (setq font-lock-fontify-region-function
+          (get major-mode 'mmm-fontify-region-function)
+          font-lock-beginning-of-syntax-function
+          (get major-mode 'mmm-beginning-of-syntax-function))
     (mmm-update-font-lock-buffer)
     (mmm-refontify-maybe)
     (setq mmm-mode nil)))
