@@ -4,11 +4,11 @@
 
 ;; Emacs Lisp Archive Entry
 ;; Package: mmm-mode
-;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
+;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
 ;; Keywords: convenience, faces, languages, tools
 ;; Version: 0.4.6
 
-;; Revision: $Id: mmm-mode.el,v 1.9 2000/09/12 02:53:35 mas Exp $
+;; Revision: $Id: mmm-mode.el,v 1.10 2000/09/20 18:51:13 mas Exp $
 
 ;;{{{ GPL
 
