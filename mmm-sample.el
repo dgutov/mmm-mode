@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.20 2001/05/16 01:01:47 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.21 2001/07/05 02:04:35 uid30977 Exp $
 
 ;;{{{ GPL
 
@@ -266,6 +266,18 @@ and MODE is a major mode function symbol.")
     :face mmm-declaration-submode-face
     :front "<! *doctype[^>[]*\\["
     :back "]>")))
+
+;;}}}
+;;{{{ <Perl> in httpd.conf
+
+(mmm-add-classes
+ '((httpd-conf-perl
+    :submode perl
+    :front "<Perl>"
+    :back "</Perl>")))
+
+;; Suggested Use:
+;; (mmm-add-mode-ext-class 'apache-generic-mode nil 'httpd-conf-perl)
 
 ;;}}}
 
