@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.10 2000/07/29 23:00:06 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.11 2000/08/24 22:59:38 mas Exp $
 
 ;;{{{ GPL
 
@@ -129,6 +129,12 @@ and interactive history."
 If CLASSES is supplied, it must be a list of valid CLASSes. Otherwise,
 the rest of the arguments are for an actual class being applied. See
 `mmm-classes-alist' for information on what they all mean."
+  ;; Make sure we get the default values in the `all' list.
+  (setq all (append
+             all
+             (list :start start :stop stop :beg-sticky beg-sticky
+                   :end-sticky end-sticky :front-offset front-offset
+                   :back-offset back-offset)))
   (cond
    ;; If we have a class list, apply them all.
    (classes
