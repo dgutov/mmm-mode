@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.15 2001/01/15 00:52:36 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.16 2001/01/15 00:57:43 mas Exp $
 
 ;;{{{ GPL
 
@@ -102,6 +102,10 @@ and MODE is a major mode function symbol.")
                          (nconc (ldiff words (member "mode" words))
                                 (list "mode"))
                          "-")))
+            ;; Try each word by itself (preference list)
+            (some #'(lambda (word)
+                      (mmm-ensure-modename (intern word)))
+                  words)
             ;; Try each word with -mode tacked on
             (some #'(lambda (word)
                       (mmm-ensure-modename
