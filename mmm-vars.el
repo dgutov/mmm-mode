@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.51 2003/03/02 20:16:32 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.52 2003/03/03 20:27:02 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -364,7 +364,7 @@ according to `mmm-submode-mode-line-format."
 	(submode (if mmm-current-overlay
 		     (or (overlay-get mmm-current-overlay 'display-name)
 			 (get mmm-current-submode 'mmm-mode-name))
-		   mmm-outside-submode-display-name)))
+		   mmm-primary-mode-display-name)))
     (if submode
 	(setq mode-name
 	      (mmm-format-string mmm-submode-mode-line-format
