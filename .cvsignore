@@ -4,8 +4,9 @@ aclocal.m4
 confdefs.h
 config.cache
 config.status
+config.log
 configure
-mmm.info
+mmm.info*
 script
 stamp-vti
 version.texi
