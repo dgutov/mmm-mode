@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.11 2001/01/11 00:56:30 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.12 2001/01/11 01:41:12 mas Exp $
 
 ;;{{{ GPL
 
@@ -47,19 +47,13 @@
 ;;}}}
 ;;{{{ Javascript in HTML
 
-(defvar mmm-javascript-mode
-  (if (fboundp 'javascript-mode) 'javascript-mode 'c++-mode)
-  "What mode to use for Javascript regions.
-The default is `javascript-mode' if there is a function by that name,
-otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
-
 ;; We use two classes here, one for code in a <script> tag and another
 ;; for code embedded as a property of an HTML tag, then another class
 ;; to group them together.
 (mmm-add-group
  'html-js
- `((js-tag
-    :submode ,mmm-javascript-mode
+ '((js-tag
+    :submode javascript
     :face mmm-code-submode-face
     :front "<script\[^>\]*>"
     :back"</script>"
@@ -67,7 +61,7 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
                  @ "\n" _ "\n" @ "</script>" @))
     )
    (js-inline
-    :submode ,mmm-javascript-mode
+    :submode javascript
     :face mmm-code-submode-face
     :front "on\w+=\""
     :back "\"")))
@@ -138,16 +132,10 @@ and MODE is a major mode function symbol.")
 ;;}}}
 ;;{{{ Embperl
 
-(defvar mmm-embperl-perl-mode
-  (if (fboundp 'cperl-mode) 'cperl-mode 'perl-mode)
-  "What mode to use for Perl sections in Embperl files.
-Usually either `perl-mode' or `cperl-mode'. The default is
-`cperl-mode' if that is available, otherwise `perl-mode'.")
-
 (mmm-add-group
  'embperl
  '((embperl-perl
-    :submode cperl-mode
+    :submode perl
     :front "\\[\\([-\\+!\\*\\$]\\)"
     :back "~1\\]"
     :save-matches 1
@@ -216,6 +204,29 @@ Usually either `perl-mode' or `cperl-mode'. The default is
     :front-verify mmm-file-variables-verify
     :back mmm-file-variables-find-back
     :submode emacs-lisp-mode
+    )))
+
+;;}}}
+;;{{{ JSP Pages
+
+(mmm-add-group 'jsp
+ `((jsp-code
+    :submode java
+    :match-face (("<%!" . mmm-declaration-submode-face)
+                 ("<%=" . mmm-output-submode-face)
+                 ("<%"  . mmm-code-submode-face))
+    :front "<%[!=]?"
+    :back "%>"
+    :insert ((?% jsp-code nil @ "<%" @ " " _ " " @ "%>" @)
+             (?! jsp-declaration nil @ "<%!" @ " " _ " " @ "%>" @)
+             (?= jsp-expression nil @ "<%=" @ " " _ " " @ "%>" @))
+    )
+   (jsp-directive
+    :submode text-mode
+    :face mmm-special-submode-face
+    :front "<%@"
+    :back "%>"
+    :insert ((?@ jsp-directive nil @ "<%@" @ " " _ " " @ "%>" @))
     )))
 
 ;;}}}

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.10 2001/01/11 00:56:30 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.11 2001/01/11 01:41:12 mas Exp $
 
 ;;{{{ GPL
 
@@ -37,12 +37,6 @@
 (require 'mmm-auto)
 
 ;;{{{ Perl Tags
-
-(defvar mmm-mason-perl-mode
-  (if (fboundp 'cperl-mode) 'cperl-mode 'perl-mode)
-  "What mode to use for Perl sections in Mason files.
-Usually either `perl-mode' or `cperl-mode'. The default is
-`cperl-mode' if that is available, otherwise `perl-mode'.")
 
 (defvar mmm-mason-perl-tags
   '("perl" "init" "cleanup" "once" "filter" "shared"
@@ -92,7 +86,7 @@ Saves the name of the tag matched.")
     :insert ((?d mason-<%doc> nil @ "<%doc>" @ "\n"
                  _ "\n" @ "</%doc>" @)))
    (mason-perl
-    :submode ,mmm-mason-perl-mode
+    :submode perl
     :match-face (("<%perl>" . mmm-code-submode-face)
                  ("<%init>" . mmm-init-submode-face)
                  ("<%cleanup>" . mmm-cleanup-submode-face)
@@ -112,7 +106,7 @@ Saves the name of the tag matched.")
              (?l mason-<%filter> ?, . "filter")
              (?s mason-<%shared> ?, . "shared")))
    (mason-pseudo-perl
-    :submode ,mmm-mason-perl-mode
+    :submode perl
     :face mmm-declaration-submode-face
     :front ,mmm-mason-pseudo-perl-tags-regexp
     :back "</%~1>"
@@ -124,7 +118,7 @@ Saves the name of the tag matched.")
              (?f mason-<%flags> ?. . "flags")
              (?r mason-<%attr> ?. . "attr")))
    (mason-inline
-    :submode ,mmm-mason-perl-mode
+    :submode perl
     :face mmm-output-submode-face
     :front "<%"
     :front-verify mmm-mason-verify-inline
@@ -132,7 +126,7 @@ Saves the name of the tag matched.")
     :insert ((?% mason-<%-%> nil @ "<%" @ " " _ " " @ "%>" @)
              (?5 mason-<%-%> ?% . nil)))
    (mason-call
-    :submode ,mmm-mason-perl-mode
+    :submode perl
     :face mmm-special-submode-face
     :front "<&"
     :back "&>"
@@ -147,7 +141,7 @@ Saves the name of the tag matched.")
                 @ "%" @ "# " _ @ '(mmm-mason-end-line) "\n" @)
              (?3 mason-%-comment ?# . nil)))
    (mason-one-line
-    :submode ,mmm-mason-perl-mode
+    :submode perl
     :face mmm-code-submode-face
     :front "^%"
     :back "\n"
