@@ -6,6 +6,12 @@ Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
 * Changes in MMM Mode 0.4.5
 
+** Font-Lock works again in XEmacs
+
+The MMM code to handle font-locking broke in XEmacs several versions
+back due to differences in the font-lock implementation between Emacs
+and XEmacs.  It appears to be working once again.
+
 ** Here-Document submode class improved
 
 Here-document names such as <<TEXT_EOF and <<END_PERL_CODE are now
