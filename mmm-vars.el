@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.21 2000/07/22 19:48:06 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.22 2000/07/29 17:28:07 mas Exp $
 
 ;;{{{ GPL
 
@@ -443,13 +443,22 @@ named classes. \(Unnamed classes are created by interactive commands
 in `mmm-interactive-history').
 
 If FRONT is a regexp, then that regexp is searched for, and the end of
-its match, plus FRONT-OFFSET, becomes the beginning of the submode
-region. If FRONT is a function, that function is called instead, and
-must act somewhat like a search, in that it should start at point,
-take one argument as a search bound, and set the match data. A similar
-pattern is followed for BACK, save that the end of the submode region
-becomes the beginning of its match, plus BACK-OFFSET. FRONT- and
-BACK-OFFSET default to 0.
+its match \(or the beginning, if INCLUDE-FRONT is non-nil), plus
+FRONT-OFFSET, becomes the beginning of the submode region.  If FRONT
+is a function, that function is called instead, and must act somewhat
+like a search, in that it should start at point, take one argument as
+a search bound, and set the match data.  A similar pattern is followed
+for BACK \(the search starts at the beginning of the submode region),
+save that the beginning of its match \(or the end, if INCLUDE-BACK is
+non-nil) becomes the end of the submode region, plus BACK-OFFSET.
+
+FRONT- and BACK-OFFSET default to 0.  In addition to numbers, they can
+also be functions to call which should move point to the correct
+position for the beginning or end of the submode region.  Common
+choices include `beginning-of-line' and `end-of-line', and new
+functions can of course be written.  They can also be lists which will
+be applied in sequence, such as \(end-of-line 1) meaning move to end
+of line and then forward one character.
 
 FRONT-VERIFY and BACK-VERIFY, if supplied, must be functions that
 inspect the match data to see if a match found by FRONT or BACK
