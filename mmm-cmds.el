@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.8 2000/07/11 02:28:17 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.9 2000/07/21 01:08:33 mas Exp $
 
 ;;{{{ GPL
 
@@ -39,10 +39,17 @@
 
 (defun mmm-ify-by-class (class)
   "Add submode regions according to an existing submode class."
-  (interactive "SSubmode Class: ")
-  (mmm-apply-class class)
-  (mmm-add-to-history class)
-  (mmm-update-font-lock-buffer))
+  (interactive
+   (list (intern
+          (completing-read "Submode Class: "
+                           (mapcar #'(lambda (spec)
+                                       (list (symbol-name (car spec))))
+                                   mmm-classes-alist)
+                           nil t))))
+  (unless (eq class (intern ""))
+    (mmm-apply-class class)
+    (mmm-add-to-history class)
+    (mmm-update-font-lock-buffer)))
 
 ;;}}}
 ;;{{{ Applying by the Region
