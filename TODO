@@ -3,6 +3,9 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
+Allow saving of local variables per-buffer rather than just per-mode.
+Per-region, even?
+
 Improve font-locking somehow.  Maybe narrow the region before
 fontifying, maybe save parsing state variables from `font-lock' and/or
 `parse-partial-sexp' for each region, maybe even advise the parsing
