@@ -989,7 +989,7 @@ mode to use for the submodes:
 @defopt mmm-major-mode-preferences
 The elements of this list are cons cells of the form
 @code{(@var{language} . @var{mode})}.  @var{language} should be a symbol
-such as @code{perl}, @code{javascript}, or @code{java}, while @var{mode}
+such as @code{perl}, @code{html-js}, or @code{java}, while @var{mode}
 should be the name of a major mode such as @code{perl-mode},
 @code{cperl-mode}, @code{javascript-mode}, or @code{c++-mode}.
 
