@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.34 2001/01/11 00:56:08 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.35 2001/01/11 01:40:50 mas Exp $
 
 ;;{{{ GPL
 
@@ -281,6 +281,20 @@ See `mmm-global-mode'."
 That variable can now be directly modified, so this function is
 unnecessary. It probably won't go away, though."
   (add-to-list 'mmm-mode-ext-classes-alist (list mode ext class)))
+
+;;}}}
+;;{{{ Preferred Major Modes
+
+(defcustom mmm-major-mode-preferences
+  `((perl .
+     ,(if (fboundp 'cperl-mode) 'cperl-mode 'perl-mode))
+    (javascript .
+     ,(if (fboundp 'javascript-mode) 'javascript-mode 'c++-mode))
+    (java . java-mode))
+  "User preferences about what major modes to use.
+Each element has the form \(LANGUAGE . MODE) where LANGUAGE is the
+name of a programming language such as `perl' as a symbol, and MODE is
+the major mode to use, such as `cperl-mode' or `perl-mode'.")
 
 ;;}}}
 ;;{{{ Key Bindings
