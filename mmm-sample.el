@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.8 2000/07/24 19:00:22 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.9 2000/07/29 17:27:23 mas Exp $
 
 ;;{{{ GPL
 
@@ -95,7 +95,8 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
 
 (mmm-add-classes
  '((here-doc
-    :front "<<\\([a-zA-Z0-9_-]+\\).*\n"
+    :front "<<\\([a-zA-Z0-9_-]+\\)"
+    :front-offset (end-of-line 1)
     :back "^~1$"
     :save-matches 1
     :match-submode mmm-here-doc-get-mode
