@@ -858,6 +858,9 @@ you, you can turn it off.
 @comment  node-name,  next,  previous,  up
 @chapter Mason: Perl in HTML
 
+The Mason submode class is defined in the file "mmm-mason.el", so to use
+it, you will need to @code{(require 'mmm-mason)}.
+
 FIXME: This is copied from the comments in @file{mmm-mason.el}.  Some
 more info would be nice.
 
