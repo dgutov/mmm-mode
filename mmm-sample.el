@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.7 2000/07/23 05:33:24 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.8 2000/07/24 19:00:22 mas Exp $
 
 ;;{{{ GPL
 
@@ -143,29 +143,38 @@ Usually either `perl-mode' or `cperl-mode'. The default is
 ;; Lisp Mode.  It is a good candidate to put in `mmm-global-classes'.
 
 (defun mmm-file-variables-verify ()
+  ;; It would be nice to cache this somehow, which could be done in a
+  ;; buffer-local variable with markers for positions, but the trick
+  ;; is knowing when to expire the cache.
   (let ((bounds
          (save-excursion
            (save-match-data
              (goto-char (point-max))
              (backward-page)
-             (search-forward "Local Variables:")
-             (cons (point)
-                   (progn (search-forward "End:")
-                          (beginning-of-line)
-                          (point)))))))
-    (and (> (match-beginning 0) (car bounds))
-         (< (match-end 0) (cdr bounds)))))
+             (and (re-search-forward "^\\(.*\\)Local Variables:" nil t)
+                  (list (match-string 1)
+                        (progn (end-of-line) (point))
+                        (and (search-forward
+                              (format "%sEnd:" (match-string 1))
+                              nil t)
+                             (progn (beginning-of-line)
+                                    (point)))))))))
+    (and bounds (caddr bounds)
+         (save-match-data
+           (string-match (format "^%s" (regexp-quote (car bounds)))
+                         (match-string 0)))
+         (> (match-beginning 0) (cadr bounds))
+         (< (match-end 0) (caddr bounds)))))
 
 (defun mmm-file-variables-find-back (bound)
   (forward-sexp)
   (if (> (point) bound)
       nil
-    (looking-at "")
-    t))
+    (looking-at "")))
 
 (mmm-add-classes
  '((file-variables
-    :front "^[a-zA-Z-*]+: "
+    :front ".+:"
     :front-verify mmm-file-variables-verify
     :back mmm-file-variables-find-back
     :submode emacs-lisp-mode
@@ -217,5 +226,9 @@ Usually either `perl-mode' or `cperl-mode'. The default is
 ;;}}}
 
 (provide 'mmm-sample)
+
+
+;;; Local Variables:
+;;; End:
 
 ;;; mmm-sample.el ends here
