@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.2 2000/04/30 07:49:41 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.3 2000/06/26 22:23:16 mas Exp $
 
 ;;{{{ GPL
 
@@ -42,7 +42,7 @@
   "Execute BODY if in a valid buffer for MMM Mode to be enabled.
 This means if not currently in one of the temporary buffers that MMM
 Mode creates, and not in one of `mmm-never-modes'."
-  `(unless (or (equal (buffer-name) "*mmm-temp*")
+  `(unless (or (equal (buffer-name) mmm-temp-buffer-name)
                (memq major-mode mmm-never-modes))
      ,@body))
 
