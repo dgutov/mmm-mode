@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.10 2000/06/27 19:22:56 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.11 2000/06/27 19:27:26 mas Exp $
 
 ;;{{{ GPL
 
@@ -484,7 +484,7 @@ and the end of the back delimiter.")
 ;;}}}
 ;;{{{ Version Number
 
-(defconst mmm-version "0.3.10"
+(defconst mmm-version "0.4.0"
   "Current version of MMM Mode.")
 
 (defun mmm-version ()
