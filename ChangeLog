@@ -1,3 +1,8 @@
+2003-10-18  Alan Shutko  <ats@acm.org>
+
+	* mmm-vars.el (mmm-save-local-variables): Add semantic stuff and
+	c-syntactic-eol.
+
 2003-03-25  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
 
 	* mmm-mode.spec: Added file for building SRPMs, from bishop

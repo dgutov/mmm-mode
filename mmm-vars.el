@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-vars.el,v 1.53 2003/03/09 17:04:04 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.54 2003/10/19 01:17:12 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -138,6 +138,8 @@
     (c-extra-toplevel-key nil ,mmm-c-derived-modes)
     (c-inexpr-class-key nil ,mmm-c-derived-modes)
     (c-conditional-key nil ,mmm-c-derived-modes)
+    semantic-bovinate-toplevel-override
+    semantic-toplevel-bovine-table
     ;; Indentation style control variables.
     ;; These have to be localized in Emacs: see `mmm-mode-on'.
     ,@(mapcar
@@ -206,6 +208,7 @@
 	 c-special-brace-lists
 	 c-specifier-kwds
 	 c-symbol-key
+	 c-syntactic-eol
 	 ))
     ;; Skeleton insertion
     skeleton-transformation
