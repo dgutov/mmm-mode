@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-region.el,v 1.36 2003/03/09 17:04:03 viritrilbia Exp $
+;; Version: $Id: mmm-region.el,v 1.37 2003/03/19 14:26:45 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -65,7 +65,9 @@ See `mmm-included-p' for the values of TYPE."
     #'(lambda (ovl)
 	(and (overlay-get ovl 'mmm)
 	     (mmm-included-p ovl pos type)))
-    (overlays-in (1- pos) (1+ pos)))))
+    ;; XEmacs complains about positions outside the buffer
+    (overlays-in (max (1- pos) (point-min))
+		 (min (1+ pos) (point-max))))))
 
 (defun mmm-included-p (ovl pos &optional type)
   "Return true if the overlay OVL contains POS.
