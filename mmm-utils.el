@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.4 2000/06/29 18:23:01 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.5 2000/06/30 00:47:23 mas Exp $
 
 ;;{{{ GPL
 
@@ -48,7 +48,7 @@ Mode creates, and not in one of `mmm-never-modes'."
                (eq (aref (buffer-name) 0) ?\ ))
      ,@body))
 
-;;;(def-edebug-spec mmm-valid-buffer t)
+(def-edebug-spec mmm-valid-buffer t)
 
 ;;}}}
 ;;{{{ Save Everything
@@ -62,7 +62,7 @@ restrictions, and match data."
        (save-match-data
          ,@body))))
 
-;;;(def-edebug-spec mmm-save-all t)
+(def-edebug-spec mmm-save-all t)
 
 ;;}}}
 ;;{{{ String Formatting
