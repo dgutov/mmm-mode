@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.15 2000/06/30 05:02:12 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.16 2000/06/30 20:55:56 mas Exp $
 
 ;;{{{ GPL
 
@@ -384,6 +384,14 @@ an existing buffer."
 ;;}}}
 
 ;; NON-USER VARIABLES
+;;{{{ Mode Variable
+
+(defvar mmm-mode nil
+  "Non-nil means MMM Mode is turned on in this buffer.
+Do not set this variable directly; use the function `mmm-mode'.")
+(make-variable-buffer-local 'mmm-mode)
+
+;;}}}
 ;;{{{ Classes Alist
 
 ;; :parent could be an all-class argument.  Same with :keymap.
@@ -493,7 +501,7 @@ and the end of the back delimiter.")
 ;;}}}
 ;;{{{ Version Number
 
-(defconst mmm-version "0.4.2"
+(defconst mmm-version "0.4.2a"
   "Current version of MMM Mode.")
 
 (defun mmm-version ()
