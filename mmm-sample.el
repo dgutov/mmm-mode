@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.3 2000/04/30 08:03:11 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.4 2000/06/30 02:34:12 mas Exp $
 
 ;;{{{ GPL
 
@@ -31,8 +31,7 @@
 
 ;;; Code:
 
-(when t
-  (require 'mmm-auto))
+(require 'mmm-auto)
 
 ;;{{{ CSS embedded in HTML
 
@@ -81,6 +80,27 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
     :submode ,mmm-javascript-mode
     :front "on\w+=\""
     :back "\"")))
+
+;;}}}
+;;{{{ Embperl
+
+(defvar mmm-embperl-perl-mode
+  (if (fboundp 'cperl-mode) 'cperl-mode 'perl-mode)
+  "What mode to use for Perl sections in Embperl files.
+Usually either `perl-mode' or `cperl-mode'. The default is
+`cperl-mode' if that is available, otherwise `perl-mode'.")
+
+(mmm-add-group
+ 'embperl
+ '((embperl-perl
+    :submode cperl-mode
+    :front "\\[\\([-\\+!\\*\\$]\\)"
+    :back "~1\\]"
+    :save-matches 1)
+   (embperl-comment
+    :submode text-mode
+    :front "\\[#"
+    :back "#\\]")))
 
 ;;}}}
 
