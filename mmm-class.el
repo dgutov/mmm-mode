@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.13 2001/01/11 00:56:08 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.14 2001/01/14 01:26:09 mas Exp $
 
 ;;{{{ GPL
 
@@ -206,7 +206,9 @@ point at which the search should continue if the region is invalid."
                         (match-face
                          (cdr (assoc front-form match-face))))))
         (when (mmm-match-and-verify
-               (mmm-format-matches back save-matches)
+               (if save-matches
+                   (mmm-format-matches back)
+                 back)
                beg stop back-verify)
           (let ((end (mmm-match->point (not include-back) back-offset))
                 (back-form (mmm-get-form back-form)))

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.7 2000/08/01 01:54:18 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.8 2001/01/14 01:26:09 mas Exp $
 
 ;;{{{ GPL
 
@@ -81,19 +81,23 @@ substituted for the corresponding REGEXP wherever it matches."
           (setq string (replace-match (cdr pair) t t string))))))
   string)
 
-(defun mmm-make-matches-list (count)
-  "Make a list of the most recent subexpression matches by number.
-Returns \(\(\"~0\" . \"whole-match\") \(\"~1\" . \"first-subexp\") ...)
-up until COUNT."
-  (loop for n from 0 to count
-        collect (cons (format "~%s" n) (or (match-string n) ""))))
-
-(defun mmm-format-matches (string count)
-  "Format STRING by the last COUNT matches.
-Does nothing if COUNT is nil or STRING is not a string."
-  (if (and count (stringp string))
-      (mmm-format-string string (mmm-make-matches-list count))
-    string))
+(defun mmm-format-matches (string)
+  "Format STRING by matches from the current match data.
+Strings like ~N are replaced by the Nth subexpression from the last
+global match.  Does nothing if STRING is not a string."
+  (when (and count (stringp string))
+    (let ((old-data (match-data))
+          subexp)
+      (save-match-data
+        (while (string-match "~\\([0-9]\\)" string)
+          (setq subexp (string-to-int (match-string 1 string))
+                string
+                (replace-match
+                 (save-match-data
+                   (set-match-data old-data)
+                   (match-string subexp))
+                 t t string))))))
+  string)
 
 ;;}}}
 ;;{{{ Save Keywords
