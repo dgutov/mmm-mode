@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-compat.el,v 1.2 2000/07/11 02:27:41 mas Exp $
+;; Version: $Id: mmm-compat.el,v 1.3 2000/07/11 02:44:06 mas Exp $
 
 ;;{{{ GPL
 
@@ -151,6 +151,13 @@ This makes `@' in skeletons act approximately like it does in FSF."
        (not (assoc '@ skeleton-further-elements))
        (add-to-list 'skeleton-further-elements
                     '(@ ''(push (point) skeleton-positions)))))
+
+;;}}}
+;;{{{ Font Lock (Emacs w/o X)
+
+(defvar mmm-font-lock-available-p (or window-system mmm-xemacs)
+  "Whether font-locking is available.
+Emacs 19 and 20 only provide font-lock with a window system in use.")
 
 ;;}}}
 
