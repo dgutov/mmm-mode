@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.23 2000/08/23 00:01:18 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.24 2000/08/23 03:53:45 mas Exp $
 
 ;;{{{ GPL
 
@@ -326,9 +326,8 @@ which is set here as well.  See `mmm-save-local-variables'."
           ;; Now make a new temporary buffer.
           (set-buffer (mmm-make-temp-buffer (current-buffer)
                                             mmm-temp-buffer-name))
-          ;; We have to set this for each file, because the user may
-          ;; have code that inspects buffer-file-name.
-          (setq buffer-file-name filename))
+          (if mmm-set-buffer-file-name-p
+              (setq buffer-file-name filename)))
         (funcall mode)
         (when (featurep 'font-lock)
           ;; XEmacs doesn't have global-font-lock-mode (or rather, it

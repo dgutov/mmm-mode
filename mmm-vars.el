@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.28 2000/08/23 03:39:08 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.29 2000/08/23 03:53:45 mas Exp $
 
 ;;{{{ GPL
 
@@ -389,6 +389,17 @@ an existing buffer."
   "List of modes in which MMM Mode is never activated."
   :group 'mmm
   :type '(repeat (symbol :tag "Mode")))
+
+;;}}}
+;;{{{ Buffer File Name
+
+(defvar mmm-set-buffer-file-name-p nil
+  "If non-nil, temporary buffers have `buffer-file-name' set.
+If so, is set to the corresponding value of the parent buffer.  In
+general, this has been found to cause more problems than it solves.
+If you have code in a mode hook that depends on `buffer-file-name'
+being set, I suggest you change it, but if that is infeasible, you may
+set this variable to a non-nil value instead.")
 
 ;;}}}
 
