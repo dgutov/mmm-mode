@@ -9,8 +9,8 @@
 2. Update the NEWS and TODO files and any other commentary files and
    check them into CVS with invisible comment (#).
 
-3. Update the version number in `configure.in' and `mmm-vars.el' and
-   check them into CVS with comment "Released x.x.x".
+3. Update version numbers and dates in `configure.in', `mmm-vars.el',
+   and `version.texi'.  Check them in with comment "Released x.x.x".
 
 4. Update the Changelog file with `vc-update-change-log' (`C-x v a')
    and check it into CVS with invisible comment (#).
