@@ -2,6 +2,10 @@
 
 	* configure.in, mmm-vars.el, version.texi: Released 0.4.5.
 
+	* mmm-compat.el (mmm-set-font-lock-defaults): Made into a macro.
+
+	* mmm-auto.el: Autoloaded `mmm-ensure-fboundp'.
+
 	* mmm-region.el (mmm-update-mode-info):
 	Used compatibility wrapper for font-lock defaults.
 
