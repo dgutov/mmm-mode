@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.9 2000/07/12 05:45:29 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.10 2001/01/11 00:56:30 mas Exp $
 
 ;;{{{ GPL
 
@@ -85,6 +85,7 @@ Saves the name of the tag matched.")
                  _ "\n" @ "</%text>" @)))
    (mason-doc
     :submode text-mode
+    :face mmm-comment-submode-face
     :front "<%doc>"
     :back "</%doc>"
     :face nil
@@ -92,6 +93,12 @@ Saves the name of the tag matched.")
                  _ "\n" @ "</%doc>" @)))
    (mason-perl
     :submode ,mmm-mason-perl-mode
+    :match-face (("<%perl>" . mmm-code-submode-face)
+                 ("<%init>" . mmm-init-submode-face)
+                 ("<%cleanup>" . mmm-cleanup-submode-face)
+                 ("<%once>" . mmm-init-submode-face)
+                 ("<%filter>" . mmm-special-submode-face)
+                 ("<%shared>" . mmm-init-submode-face))
     :front ,mmm-mason-perl-tags-regexp
     :back "</%~1>"
     :save-matches 1
@@ -106,6 +113,7 @@ Saves the name of the tag matched.")
              (?s mason-<%shared> ?, . "shared")))
    (mason-pseudo-perl
     :submode ,mmm-mason-perl-mode
+    :face mmm-declaration-submode-face
     :front ,mmm-mason-pseudo-perl-tags-regexp
     :back "</%~1>"
     :save-matches 1
@@ -117,6 +125,7 @@ Saves the name of the tag matched.")
              (?r mason-<%attr> ?. . "attr")))
    (mason-inline
     :submode ,mmm-mason-perl-mode
+    :face mmm-output-submode-face
     :front "<%"
     :front-verify mmm-mason-verify-inline
     :back "%>"
@@ -124,19 +133,26 @@ Saves the name of the tag matched.")
              (?5 mason-<%-%> ?% . nil)))
    (mason-call
     :submode ,mmm-mason-perl-mode
+    :face mmm-special-submode-face
     :front "<&"
     :back "&>"
     :insert ((?& mason-<&-&> nil @ "<&" @ " " _ " " @ "&>" @)
              (?7 mason-<&-&> ?% . nil)))
+   (mason-one-line-comment
+    :submode text-mode
+    :face mmm-comment-submode-face
+    :front "^%#"
+    :back "\n"
+    :insert ((?# mason-%-comment nil (mmm-mason-start-line)
+                @ "%" @ "# " _ @ '(mmm-mason-end-line) "\n" @)
+             (?3 mason-%-comment ?# . nil)))
    (mason-one-line
     :submode ,mmm-mason-perl-mode
+    :face mmm-code-submode-face
     :front "^%"
     :back "\n"
     :insert ((return mason-%-line nil (mmm-mason-start-line)
-                     @ "%" @ " " _ @ '(mmm-mason-end-line) "\n" @)
-             (?# mason-%-comment nil (mmm-mason-start-line)
-                 @ "%" @ "# " _ @ '(mmm-mason-end-line) "\n" @)
-             (?3 mason-%-comment ?# . nil)))))
+                     @ "%" @ " " _ @ '(mmm-mason-end-line) "\n" @)))))
 
 ;;}}}
 ;;{{{ One-line Sections

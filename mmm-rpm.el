@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Marcus Harnisch <Marcus.Harnisch@gmx.net>
 
 ;; Author:  Marcus Harnisch <Marcus.Harnisch@gmx.net>
-;; Version: $Id: mmm-rpm.el,v 1.2 2000/08/21 23:25:52 mas Exp $
+;; Version: $Id: mmm-rpm.el,v 1.3 2001/01/11 00:56:30 mas Exp $
 
 ;;{{{ GPL
 
@@ -66,6 +66,7 @@
  'rpm
  `((rpm-sh
     :submode sh-mode
+    :face mmm-code-submode-face
     ;; match tags that starts sh-script region
     :front ,mmm-rpm-sh-start-regexp
     ;; match end of buffer or next tag that ends sh-script region

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.10 2000/08/01 01:54:03 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.11 2001/01/11 00:56:30 mas Exp $
 
 ;;{{{ GPL
 
@@ -40,6 +40,7 @@
 (mmm-add-classes
  '((embedded-css
     :submode css-mode
+    :face mmm-declaration-submode-face
     :front "<style[^>]*>"
     :back "</style>")))
 
@@ -59,6 +60,7 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
  'html-js
  `((js-tag
     :submode ,mmm-javascript-mode
+    :face mmm-code-submode-face
     :front "<script\[^>\]*>"
     :back"</script>"
     :insert ((?j js-tag nil @ "<script language=\"JavaScript\">"
@@ -66,6 +68,7 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
     )
    (js-inline
     :submode ,mmm-javascript-mode
+    :face mmm-code-submode-face
     :front "on\w+=\""
     :back "\"")))
 
@@ -148,9 +151,14 @@ Usually either `perl-mode' or `cperl-mode'. The default is
     :front "\\[\\([-\\+!\\*\\$]\\)"
     :back "~1\\]"
     :save-matches 1
+    :match-face (("[+" . mmm-output-submode-face)
+                 ("[-" . mmm-code-submode-face)
+                 ("[!" . mmm-init-submode-face)
+                 ("[*" . mmm-code-submode-face)
+                 ("[$" . mmm-special-submode-face))
     :insert ((?p embperl "Region Type (Character): " @ "[" str
                  @ " " _ " " @ str "]" @)
-             (?+ embperl+ ?p . "+")
+             (?+ embperl+ ?p . "+")             
              (?- embperl- ?p . "-")
              (?! embperl! ?p . "!")
              (?* embperl* ?p . "*")
@@ -159,6 +167,7 @@ Usually either `perl-mode' or `cperl-mode'. The default is
     )
    (embperl-comment
     :submode text-mode
+    :face mmm-comment-submode-face
     :front "\\[#"
     :back "#\\]"
     :insert ((?# embperl-comment nil @ "[#" @ " " _ " " @ "#]" @))
