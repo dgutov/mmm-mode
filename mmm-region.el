@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
-;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.34 2001/05/14 22:39:32 viritrilbia Exp $
+;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Version: $Id: mmm-region.el,v 1.35 2003/03/02 20:29:27 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -30,6 +30,9 @@
 ;; and inspect submode regions, as well as functions that make them
 ;; behave like the submode with respect to syntax tables, local maps,
 ;; font lock, etc.
+
+;; See mmm-class.el for functions which scan the buffer and decide
+;; where to create regions.
 
 ;;; Code:
 
@@ -138,6 +141,7 @@ Return non-nil if the current region changed."
             mmm-current-submode (if ovl (overlay-get ovl 'mmm-mode)))
       t)))
 
+;; This function is, I think, mostly for hacking font-lock.
 (defun mmm-set-current-submode (mode &optional pos)
   "Set the current submode to MODE and the current region to whatever
 region of that mode is present at POS, or nil if none."
@@ -156,7 +160,7 @@ TYPE is passed on to `mmm-overlays-at', which see."
     (if ovl (overlay-get ovl 'mmm-mode))))
 
 ;;}}}
-;;{{{ Match Front & Back
+;;{{{ Delimiter Matching and Boundaries
 
 (defun mmm-match-front (ovl)
   "Return non-nil if the front delimiter of OVL matches as it should.
@@ -189,9 +193,6 @@ appropriately."
           (looking-at back)
         (funcall back ovl)))))
 
-;;}}}
-;;{{{ Delimiter Boundaries
-
 (defun mmm-front-start (ovl)
   "Return the position at which the front delimiter of OVL starts.
 If OVL is not front-bounded correctly, return its start position."
@@ -209,41 +210,50 @@ If OVL is not back-bounded correctly, return its end position."
       (overlay-end ovl))))
 
 ;;}}}
+;;{{{ Narrow to Region
 
-;; CREATION & DELETION
-;;{{{ Markers
-
-(defun mmm-make-marker (pos beg-p sticky-p)
-  "Make a marker at POS that is or isn't sticky.
-BEG-P represents whether the marker delimits the beginning of a
-region \(or the end of it). STICKY-P is whether it should be sticky,
-i.e. whether text inserted at the marker should be inside the region."
-  (let ((mkr (set-marker (make-marker) pos)))
-    (set-marker-insertion-type mkr (if beg-p (not sticky-p) sticky-p))
-    mkr))
+(defun mmm-narrow-to-submode-region (&optional pos)
+  "Narrow to the submode region at point."
+  (interactive)
+  ;; Probably don't use mmm-current-overlay here, because this is
+  ;; sometimes called from inside messy functions.
+  (let ((ovl (mmm-overlay-at (or pos (point)))))
+    (when ovl
+      (narrow-to-region (overlay-start ovl) (overlay-end ovl)))))
 
 ;;}}}
+
+;; CREATION & DELETION
 ;;{{{ Make Submode Regions
 
 (defun mmm-valid-submode-region (submode beg end)
-  "Check if the region between BEGIN and END is valid for SUBMODE.
-Checks whether it overlaps other submode regions and whether SUBMODE
-is valid in the existing submode regions.
-Signals errors."
-  (let ((priority (length (mmm-overlays-at beg)))
-	(ovl (mmm-overlay-at beg)))
-    (if (< priority 1)
-	t
-      (if (not (eq (mmm-overlay-at beg)
-		   (mmm-overlay-at end)))
-	  (signal 'mmm-subregion-crosses-parents 
-                  (list (mmm-submode-at beg)
-                        (mmm-submode-at end)))
-	(if (eq submode 
-		(if ovl (overlay-get ovl 'mmm-mode)))
-	    (signal 'mmm-subregion-invalid-parent
-                    (list (overlay-get ovl 'mmm-mode)))
-	  t)))))
+  "Check if the region between BEG and END is valid for SUBMODE.
+This region must be entirely contained within zero or more existing
+submode regions, none of which start or end inside it, and it must be
+a valid child of the highest-priority of those regions, if any.
+Signals errors, returns `t' if no error."
+  ;; First check if the placement is valid.  Every existing region
+  ;; that overlaps this one must contain it in its entirety.
+  (let ((violators (remove-if-not
+		    #'(lambda (ovl)
+			(or (> (overlay-start ovl) beg)
+			    (< (overlay-end ovl)   end)))
+		    (mmm-overlays-in beg end))))
+    (if violators
+	(signal 'mmm-subregion-invalid-placement
+		violators)))
+  ;; Now check if it is inside a valid parent
+  (let ((parent-mode (mmm-submode-at beg)))
+    (and parent-mode
+	 ;; TODO: Actually check parents here.  For present purposes,
+	 ;; we just make sure we aren't putting a submode inside one
+	 ;; of the same type.  Actually, what we should really be
+	 ;; doing is checking classes/names of regions, not just the
+	 ;; submodes.
+	 (eq submode parent-mode)
+	 (signal 'mmm-subregion-invalid-parent
+		 (list parent-mode))))
+  t)
 
 (defun* mmm-make-region
     (submode beg end &rest rest &key (front "") (back "")
@@ -256,9 +266,9 @@ FRONT and BACK are regexps or functions to match the correct
 delimiters--see `mmm-match-front' and `mmm-match-back'.  BEG-STICKY
 and END-STICKY determine whether the front and back of the region,
 respectively, are sticky with respect to new insertion.  CREATION-HOOK
-should be a function to run after the region is created.  All other
-keyword arguments are stored as properties of the overlay,
-un-keyword-ified."
+should be a function to run after the region is created, with point at
+the start of the new region.  All other keyword arguments are stored
+as properties of the overlay, un-keyword-ified."
   (mmm-valid-submode-region submode beg end)
   (setq rest (append rest (list :front front :back back :beg-sticky
                                 beg-sticky :end-sticky end-sticky)))
@@ -358,6 +368,7 @@ is non-nil, don't quit if the info is already there."
           ;; Now make a new temporary buffer.
           (set-buffer (mmm-make-temp-buffer (current-buffer)
                                             mmm-temp-buffer-name))
+	  ;; Handle stupid modes that need the file name set
           (if (memq mode mmm-set-file-name-for-modes)
               (setq buffer-file-name filename)))
         (funcall mode)
@@ -375,7 +386,8 @@ is non-nil, don't quit if the info is already there."
                                  (not (memq major-mode
                                             (cdr font-lock-global-modes)))
                                (memq major-mode font-lock-global-modes)))))
-            ;; Don't actually fontify, but note that we should.
+            ;; Don't actually fontify in the temp buffer, but note
+            ;; that we should fontify when we use this mode.
             (put mode 'mmm-font-lock-mode t))
           ;; Get the font-lock variables
           (when mmm-font-lock-available-p
@@ -423,14 +435,11 @@ different keymaps, syntax tables, local variables, etc. for submodes."
       (mmm-update-mode-info mode)
       (mmm-set-local-variables mode)
       (mmm-enable-font-lock mode))
-    (if mmm-current-submode
-        (setq mode-name
-              (mmm-format-string
-               mmm-submode-mode-line-format
-               `(("~M" . ,(get mmm-primary-mode 'mmm-mode-name))
-                 ("~m" . ,(get mmm-current-submode 'mmm-mode-name)))))
-      (setq mode-name (get mmm-primary-mode 'mmm-mode-name)))
-    (force-mode-line-update)))
+    (mmm-set-mode-line)
+    (dolist (func (if mmm-current-overlay
+		      (overlay-get mmm-current-overlay 'entry-hook)
+		    mmm-primary-mode-entry-hook))
+      (ignore-errors (funcall func)))))
 
 (defun mmm-add-hooks ()
   (make-local-hook 'post-command-hook)
@@ -560,29 +569,34 @@ region and mode for the previous position."
 ;;}}}
 ;;{{{ Get Submode Regions
 
-(defun mmm-submode-changes-in (start stop)
+;;; In theory, these are general functions that have nothing to do
+;;; with font-lock, but they aren't used anywhere else, so we might as
+;;; well have them close.
+
+(defun mmm-submode-changes-in (start stop &optional strict delim)
   "Return a list of all submode-change positions from START to STOP.
-The list is sorted in order of increasing buffer position, and the
-boundary positions are included."
+The list is sorted in order of increasing buffer position.  The
+optional parameters STRICT and DELIM are passed to `mmm-overlays-in',
+which see."
   (sort (remove-duplicates
          (list* start stop
                 (mapcan #'(lambda (ovl)
                             `(,(overlay-start ovl)
                               ,(overlay-end ovl)))
-                        (mmm-overlays-in start stop t t))))
+                        (mmm-overlays-in start stop strict delim))))
 
         #'<))
 
 (defun mmm-regions-in (start stop)
   "Return a list of regions of the form (MODE BEG END) whose disjoint
-union covers the region from START to STOP."
+union covers the region from START to STOP, including delimiters."
   (let ((regions 
          (maplist #'(lambda (pos-list)
                       (if (cdr pos-list)
                           (list (or (mmm-submode-at (car pos-list) 'beg)
                                     mmm-primary-mode)
                                 (car pos-list) (cadr pos-list))))
-                  (mmm-submode-changes-in start stop))))
+                  (mmm-submode-changes-in start stop t t))))
     (setcdr (last regions 2) nil)
     regions))
 
@@ -615,7 +629,7 @@ of the REGIONS covers START to STOP."
   ;; preventing `mmm-beginning-of-syntax' from doing The Right Thing.
   ;; I don't know why it does this, but let's undo it here.
   (let ((font-lock-beginning-of-syntax-function 'mmm-beginning-of-syntax))
-    (mapcar #'(lambda (elt)
+    (mapc #'(lambda (elt)
                 (when (get (car elt) 'mmm-font-lock-mode)
                   (mmm-fontify-region-list (car elt) (cdr elt))))
             (mmm-regions-alist start stop)))
@@ -627,7 +641,7 @@ of the REGIONS covers START to STOP."
   (save-excursion
     (let (;(major-mode mode)
           (func (get mode 'mmm-fontify-region-function)))
-      (mapcar #'(lambda (reg)
+      (mapc #'(lambda (reg)
                   (goto-char (car reg))
                   ;; Here we do the same sort of thing that
                   ;; `mmm-update-submode-region' does, but we force it
