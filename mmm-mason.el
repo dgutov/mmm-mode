@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.7 2000/05/10 08:08:15 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.8 2000/06/29 18:50:54 mas Exp $
 
 ;;{{{ GPL
 
@@ -52,7 +52,9 @@
 ;; (delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
 ;; (delete '("\\.shtml$" . sgml-html-mode) auto-mode-alist)
 
-;; Maybe these problems will be fixed in the future.
+;; I haven't experienced these problems as yet, so I have continued to
+;; use `sgml-html-mode'.  If you don't have problems, you can as well;
+;; replace `html-mode' everywhere in the suggested code with it.
 
 ;;}}}
 ;;{{{ autohandlers and dhandlers
