@@ -1,0 +1,83 @@
+-*-text-*-
+                Using MMM Mode for Mason: An Overview
+                =====================================
+
+  Since many users of MMM Mode use it for Mason <www.masonhq.com>, and
+  since the Mason submode class is the most complex one supplied, a
+  few comments regarding its usage are in order.  Even if you don't
+  use Mason, this file may be of interest to you as an example of MMM
+  usage and possible problems.
+
+INSTALLATION AND LOADING
+
+  For general installation and information, see the README file and
+  the texinfo documentation.  The submode class for Mason components
+  is called `mason' and must be loaded from `mmm-mason.el' before it
+  can be used; the easiest way to put the following line in .emacs:
+
+  (require 'mmm-mason)
+
+MODES AND EXTENSIONS
+
+  If you want to have mason submodes automatically in all Mason files,
+  you can use `mmm-mode-ext-classes-alist'; the details depend on what
+  you call your Mason components and what major mode you use.  Some
+  example elements of `mmm-mode-ext-classes-alist' follow, with
+  comments on the corresponding naming scheme.
+
+  (html-mode "\\.html\\'" mason)         ;; Any .html file in html-mode
+  (hm--html-mode nil mason)              ;; Any buffer in hm--html-mode
+  (sgml-mode nil mason)                  ;; Any buffer in sgml-mode
+  (nil "\\.\\(mason\\|html\\)\\'" mason) ;; All .mason and .html files
+  (nil "\\.m[dc]\\'" mason)              ;; All .md and .mc files
+  (nil "\\`/var/www/mason/" mason)       ;; Any file in the directory
+  (nil nil mason)                        ;; All buffers.
+
+  If you use an extension for your Mason files that emacs does not
+  automatically place in your preferred HTML Mode (be it html-mode,
+  sgml-html-mode, hm--html-mode, or whatever), you will probably want
+  to associate that extension with your HTML Mode (this is a feature
+  of emacs, not MMM Mode).  An example is shown below.
+
+  (add-to-list 'auto-mode-alist '("\\.mason\\'" . html-mode))
+
+  This also goes for "special" Mason files such as autohandlers and
+  dhandlers.  The code below tells emacs to use html-mode for files
+  named `autohandler' and `dhandler'.
+
+  (add-to-list 'auto-mode-alist '("\\(auto\\|d\\)handler\\'" . html-mode))
+
+  An alternate solution is to change the names of your autohandlers
+  and dhandlers so that emacs recognizes them as HTML automatically.
+
+CPERL PROBLEMS
+
+  There are certain problems with CPerl mode in submode regions.  (Not
+  to say that the original perl-mode would do any better--it hasn't
+  been much tried.)  First of all, the first line of a Perl section
+  is usually indented as if it were a continuation line.  A fix for
+  this is to start with a semicolon on the first line.  The insertion
+  key commands do this whenever the Mason syntax allows it.
+
+  <%perl>;
+  print $var;
+  </%perl>
+
+  In addition, some users have reported that the CPerl indentation
+  sometimes does not work.  This problem has not yet been tracked
+  down, however, and more data about when it happens would be helpful.
+
+PSGML PROBLEMS
+
+  Michael Alan Dorman has reported problems using PSGML with Mason. He
+  suggests adding these lines to .emacs to turn it off.
+
+  (delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
+  (delete '("\\.shtml$" . sgml-html-mode) auto-mode-alist)
+
+  Other users report using PSGML with Mason and MMM Mode without
+  difficulty.  If you don't have problems and want to use PSGML,
+  simply replace `html-mode' everywhere in the suggested code with
+  `sgml-html-mode' or `sgml-mode'.  Similarly, if you are using XEmacs
+  and want to use the alternate HTML mode `hm--html-mode', replace
+  `html-mode' with that symbol.
