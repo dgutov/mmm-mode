@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.47 2001/05/14 22:39:18 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.48 2001/05/16 23:19:05 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -133,12 +133,23 @@
     (c-extra-toplevel-key nil ,mmm-c-derived-modes)
     (c-inexpr-class-key nil ,mmm-c-derived-modes)
     (c-conditional-key nil ,mmm-c-derived-modes)
-    ;; User indentation style control
-    (((lambda () c-indentation-style) . c-set-style)
-     nil ,mmm-c-derived-modes)
-    ;; XEmacs makes this a local variable
-    ,@(when mmm-xemacs
-        '((c-offsets-alist nil ,mmm-c-derived-modes)))
+    ;; Indentation style control variables.
+    ;; These have to be localized in Emacs: see `mmm-mode-on'.
+    ,@(mapcar
+       #'(lambda (var) (list var nil mmm-c-derived-modes))
+       '(c-offsets-alist
+         c-basic-offset
+         c-file-style
+         c-file-offsets
+         c-comment-only-line-offset
+         c-cleanup-list
+         c-hanging-braces-alist
+         c-hanging-colons-alist
+         c-hanging-comment-starter-p
+         c-hanging-comment-ender-p
+         c-backslash-column
+         c-label-minimum-indentation
+         c-indentation-style))
     ;; Skeleton insertion
     skeleton-transformation
     ;; Abbrev mode
