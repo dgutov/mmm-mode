@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.5 2000/05/18 18:34:36 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.6 2000/06/08 11:41:30 mas Exp $
 
 ;;{{{ GPL
 
@@ -289,8 +289,15 @@ mode for it to be a submode or a major mode with submodes."
 ;; I know, but at the moment I don't have time to think of a neater
 ;; solution.
 
+;; Actually, `vm-mail' is the only command I know of which does this,
+;; and one could argue that such behavior is noncompliant with Emacs
+;; standards.  The advice seems to cause trouble under XEmacs, but I
+;; haven't had any problems with it under Emacs, so until something
+;; goes wrong, I'll leave it in for the latter only.
+
 (defvar mmm-local-maps-alist ()
-  "Which local maps have been changed in this buffer.")
+  "Which local maps have been changed in this buffer.
+Not used under XEmacs.")
 (make-variable-buffer-local 'mmm-local-maps-alist)
 
 ;; Save the real function away for our use.
@@ -298,15 +305,17 @@ mode for it to be a submode or a major mode with submodes."
   "Shut up the byte compiler")
 (fset 'mmm-real-use-local-map (symbol-function 'use-local-map))
 
-(defadvice use-local-map (after mmm-keep-record activate compile)
-  "Keep track of which local maps have been changed in which buffers."
-  (mmm-valid-buffer
-   (mmm-update-current-submode)
-   (let* ((mode (or mmm-current-submode major-mode))
-          (map (assq mode mmm-local-maps-alist)))
-     (if map
-         (setcdr map (current-local-map))
-       (push (cons mode (current-local-map)) mmm-local-maps-alist)))))
+(unless mmm-xemacs
+  (defadvice use-local-map (after mmm-keep-record activate compile)
+    "Keep track of which local maps have been changed in which buffers."
+    (mmm-valid-buffer
+     (mmm-update-current-submode)
+     (let* ((mode (or mmm-current-submode major-mode))
+            (map (assq mode mmm-local-maps-alist)))
+       (if map
+           (setcdr map (current-local-map))
+         (push (cons mode (current-local-map)) mmm-local-maps-alist)))))
+  )
 
 ;;}}}
 ;;{{{ Updating Hooks
