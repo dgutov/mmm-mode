@@ -79,43 +79,44 @@ This is edition @value{EDITION} of the MMM Mode Manual, last updated
 @end ifinfo
 
 @menu
-* Overview::                What MMM Mode is and how it can be used.
-* Basic Concepts::          A simple explanation of how it works.
-* Installation::            How to install MMM Mode.
-* Quick Start::             Getting started using MMM Mode quickly.
+* Overview::                    What MMM Mode is and how it can be used.
+* Basic Concepts::              A simple explanation of how it works.
+* Installation::                How to install MMM Mode.
+* Quick Start::                 Getting started using MMM Mode quickly.
 
 MMM Mode Basics
 
-* MMM Minor Mode::          The Emacs minor mode that manages it all.
-* Submode Classes::         What they are and how to use them.
-* Selecting Classes::       How MMM Mode knows what classes to use.
-* Insertion::               Inserting new submode regions automatically.
-* Re-parsing::              Re-scanning for submode regions.
-* Interactive::             Adding submode regions manually.
-* Global Mode::             Turning MMM Mode on automatically.
+* MMM Minor Mode::              The Emacs minor mode that manages it all.
+* Submode Classes::             What they are and how to use them.
+* Selecting Classes::           How MMM Mode knows what classes to use.
+* Insertion::                   Inserting new submode regions automatically.
+* Re-parsing::                  Re-scanning for submode regions.
+* Interactive::                 Adding submode regions manually.
+* Global Mode::                 Turning MMM Mode on automatically.
 
 Customizing MMM Mode
 
-* Submode Faces::           How submode regions are highlighted.
-* Mode Line::               What is displayed in the mode line.
-* Key Bindings::            Customizing the MMM Mode key bindings.
-* Local Variables::         What local variables are saved for submodes.
-* Hooks::                   How to make MMM Mode run your code.
+* Submode Faces::               How submode regions are highlighted.
+* Mode Line::                   What is displayed in the mode line.
+* Key Bindings::                Customizing the MMM Mode key bindings.
+* Local Variables::             What local variables are saved for submodes.
+* Hooks::                       How to make MMM Mode run your code.
 
 Supplied Submode Classes
 
-* Mason::                   Mason syntax for server-side Perl in HTML.
-* Eval-Elisp::              Emacs Lisp in @code{eval} file variables.
-* HTML Here-documents::     HTML in Perl here-documents.
-* Javascript::              Javascript embedded in HTML.
-* Embedded CSS::            CSS Styles embedded in HTML.
-* HTML in PL/SQL::          HTML output by PL/SQL @code{htp.p} methods.
+* Mason::                       Mason syntax for server-side Perl in HTML.
+* Eval-Elisp::                  Emacs Lisp in @code{eval} file variables.
+* HTML Here-documents::         HTML in Perl here-documents.
+* Javascript::                  Javascript embedded in HTML.
+* Embedded CSS::                CSS Styles embedded in HTML.
+* HTML in PL/SQL::              HTML output by PL/SQL @code{htp.p} methods.
+* Embperl::                     Another syntax for Perl in HTML.
 
 Indices
 
-* Concept Index::           Index of MMM Mode Concepts.
-* Function Index::          Index of functions and variables of MMM Mode.
-* Keystroke Index::         Index of key bindings in MMM Mode.
+* Concept Index::               Index of MMM Mode Concepts.
+* Function Index::              Index of functions and variables of MMM Mode.
+* Keystroke Index::             Index of key bindings in MMM Mode.
 
 Writing Submode Classes
 @c Put stuff here
@@ -125,17 +126,17 @@ Writing Submode Classes
 
 The MMM Minor Mode
 
-* Enabling MMM Mode::       Turning MMM Mode on and off.
-* MMM Mode Keys::           Default key bindings in MMM Mode.
+* Enabling MMM Mode::           Turning MMM Mode on and off.
+* MMM Mode Keys::               Default key bindings in MMM Mode.
 
 How MMM Mode selects submode classes
 
-* File Classes::            Classes for a single file.
-* Mode-Ext Classes::        Classes for a given mode or extension.
+* File Classes::                Classes for a single file.
+* Mode-Ext Classes::            Classes for a given mode or extension.
 
 MMM Global Mode
 
-* Major Mode Hook::         Using MMM's Major Mode Hook
+* Major Mode Hook::             Using MMM's Major Mode Hook
 
 @end detailmenu
 @end menu
@@ -372,8 +373,8 @@ Minor mode is denoted by @samp{MMM} in the mode line (@pxref{Mode
 Line}).
 
 @menu
-* Enabling MMM Mode::                        Turning MMM Mode on and off.
-* MMM Mode Keys::                        Default key bindings in MMM Mode.
+* Enabling MMM Mode::           Turning MMM Mode on and off.
+* MMM Mode Keys::               Default key bindings in MMM Mode.
 @end menu
 
 
@@ -509,8 +510,8 @@ to the buffer. This covers the first two sources; the latter is covered
 in a later chapter.
 
 @menu
-* File Classes::                                Classes for a single file.
-* Mode-Ext Classes::                                Classes for a given mode or extension.
+* File Classes::                Classes for a single file.
+* Mode-Ext Classes::            Classes for a given mode or extension.
 @end menu
 
 
@@ -907,14 +908,19 @@ This submode class is not yet ported to the new syntax.
 @chapter CSS embedded in HTML
 
 
-@node HTML in PL/SQL, Concept Index, Embedded CSS, Top
+@node HTML in PL/SQL, Embperl, Embedded CSS, Top
 @comment  node-name,  next,  previous,  up
 @chapter HTML in PL/SQL @code{htp.p} Methods
 
 This submode class is not yet ported to the new syntax.
 
+@node Embperl, Concept Index, HTML in PL/SQL, Top
+@comment  node-name,  next,  previous,  up
+@chapter Embperl: More Perl in HTML
 
-@node Concept Index, Function Index, HTML in PL/SQL, Top
+Not yet described.
+
+@node Concept Index, Function Index, Embperl, Top
 @comment  node-name,  next,  previous,  up
 @chapter Concept Index
 
