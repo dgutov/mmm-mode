@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.6 2000/06/30 02:41:53 mas Exp $
+;; Version: $Id: mmm-mode.el,v 1.7 2000/06/30 20:55:22 mas Exp $
 ;; Keywords: convenience faces languages tools
 
 ;;{{{ GPL
@@ -98,11 +98,6 @@
 (require 'mmm-univ)
 
 ;;{{{ Toggle Function
-
-(defvar mmm-mode nil
-  "Non-nil means MMM Mode is turned on in this buffer.
-Do not set this variable directly; use the function `mmm-mode'.")
-(make-variable-buffer-local 'mmm-mode)
 
 (defun mmm-mode (&optional arg)
   "Minor mode to allow multiple major modes in one buffer.
