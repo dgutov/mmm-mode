@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.13 2000/07/29 22:42:23 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.14 2000/08/02 23:46:38 mas Exp $
 
 ;;{{{ GPL
 
@@ -95,11 +95,13 @@ invoked by a public class in the same file."
   (autoload 'mmm-mode-on "mmm-mode" "Turn on MMM Mode. See `mmm-mode'.")
   (autoload 'mmm-mode-off "mmm-mode" "Turn off MMM Mode. See `mmm-mode'.")
   (autoload 'mmm-update-font-lock-buffer "mmm-region")
+  (autoload 'mmm-ensure-fboundp "mmm-utils")
   (autoload 'mmm-mode "mmm-mode"
     "Minor mode to allow multiple major modes in one buffer.
 Without ARG, toggle MMM Mode. With ARG, turn MMM Mode on iff ARG is
 positive and off otherwise." t))
 
+;; These may actually be used.
 (autoload 'mmm-ify-by-class "mmm-cmds" "" t)
 (autoload 'mmm-ify-by-regexp "mmm-cmds" "" t)
 (autoload 'mmm-ify-region "mmm-cmds" "" t)
