@@ -127,6 +127,20 @@ Writing Submode Classes
 
 The MMM Minor Mode
 
+* Enabling MMM Mode::           Turning MMM Mode on and off.
+* MMM Mode Keys::               Default key bindings in MMM Mode.
+
+How MMM Mode selects submode classes
+
+* File Classes::                Classes for a single file.
+* Mode-Ext Classes::            Classes for a given mode or extension.
+* Global Classes::              Classes for all MMM Mode buffers.
+
+MMM Global Mode
+
+* Major Mode Hook::             Using MMM's Major Mode Hook
+
+@end detailmenu
 @end menu
 
 @node Overview, Basic Concepts, Top, Top
