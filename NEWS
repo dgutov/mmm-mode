@@ -4,6 +4,24 @@ See the file COPYING for copying conditions.
 
 Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
+* Changes in MMM Mode 0.4.4
+
+** Tab Completion on defined submode classes in `mmm-ify-by-class'
+
+** Here-Document submode class can now recognize any submode
+
+As long as the name of the here-document is or begins with the name of
+the appropriate submode, suitably mangled, such as <<HTML or
+<<HTML_MODE or <<HTML_MODE_EOF, it should be correctly recognized.
+
+** New File Variables submode class
+
+Actually, this is an old submode class that now works (better than
+before) with the new post-0.3.8 syntax for class definition.  It is a
+good candidate for membership in `mmm-global-classes' if you use many
+file-local variables, but is not there by default.
+
+
 * Changes in MMM Mode 0.4.3
 
 ** Syntax of Universal Class Changed
