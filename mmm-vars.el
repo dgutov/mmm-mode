@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.46 2001/02/23 22:44:28 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.47 2001/05/14 22:39:18 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -53,12 +53,21 @@
 
 ;; Signalled when we try to put a submode region inside one where it
 ;; isn't meant to go.
-(put 'mmm-invalid-parent
+(put 'mmm-subregion-invalid-parent
      'error-conditions
-     '(mmm-invalid-parent mmm-error error))
-(put 'mmm-invalid-parent
+     '(mmm-subregion-invalid-parent mmm-error error))
+(put 'mmm-subregion-invalid-parent
      'error-message
      "Invalid submode region parent")
+
+;; Signalled when a submode region thinks it should start inside one
+;; other submode and end in a different one.
+(put 'mmm-subregion-crosses-parents
+     'error-conditions
+     '(mmm-subregion-crosses-parents mmm-error error))
+(put 'mmm-subregion-crosses-parents
+     'error-message
+     "Submode region crosses parents")
 
 ;; Signalled when we try to apply a submode class that doesn't exist.
 (put 'mmm-invalid-submode-class
