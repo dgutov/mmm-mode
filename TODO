@@ -3,25 +3,15 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
-Add a flag to specify with more detail where submode regions start and
-stop with respect to the matches.  Perhaps a flag that takes a
-function as argument, with several supplied functions to choose from.
-`next-newline' and `previous-newline' are possible ones, as are
-beginning, end, and current default.  They should be passed the
-submode class and inspect the match data.  Maybe they return info in
-the match data as well.
-
-Add `mmm-global-classes' variable, specifying submode classes that
-apply to all buffers in which MMM Mode is on.  Not buffer-local by
-default, but can be turned off file locally.  Supply a class which
-lets you delimit regions and specify the mode, e.g. %[cperl]%
-... %[/cperl]%.  For this, need a class parameter which specifies the
-submode dynamically rather than statically, say :find-submode?
-If mmm-global-mode is 'maybe, it would be nice to detect whether a
-buffer contains such strings to conditionally turn MMM on.
+Let :[front,back]-offset take a function as argument, with several
+supplied functions to choose from, such as `next-newline' and
+`previous-newline' are possible ones, as are beginning, end, and
+current default.  They should be passed the submode class and inspect
+the match data.  Maybe they return info in the match data as well.
 
 Improve font-locking somehow.  Maybe narrow the region before
 fontifying, maybe trap or advise `parse-partial-sexp' (and friends?).
+This may no longer be necessary; waiting advised.
 
 The local-variables improvements can probably be used to set minor
 modes locally to submode regions.  This could replace tmmofl,
@@ -34,7 +24,7 @@ doesn't work as it should.
 
 Trap paragraph motion commands to stop at submode boundaries?
 
-Add JDE-mode, JavaSQL (see +mmm), Embperl, Eperl, ASP, etc.
+Add JDE-mode, JavaSQL (see +mmm), Eperl, ASP, etc.
 
 How about this? Whenever text is inserted anywhere in the buffer:
 1. If in or after a region (with hanging back?), scan for its back.
@@ -58,12 +48,12 @@ maybe do it in that class hook. But other classes might have similar
 single-line regions. Add a new submode class argument, such as KEYMAP,
 or even ONE-LINE?
 
-How about allowing nested submode regions? A submode class could
-specify its "parent" submode class. This could also be used to
-implement htp.p, by first scanning for the function calls as a
-major-mode submode region, then requiring that parent type for the
-HTML mode class. Similarly, eval-elisp could have one class to find
-the Local Variables list, then another within it.
+Allowing nested submode regions.  A submode class can specify its
+"parent" submode class.  This could also be used to implement htp.p,
+by first scanning for the function calls as a major-mode submode
+region, then requiring that parent type for the HTML mode class.
+Similarly, eval-elisp could have one class to find the Local Variables
+list, then another within it.
 
 Ought %text in Mason to be a non-submode, since any Mason tags inside
 it will probably be /edited/ as Perl (being, say, code examples)? Only
