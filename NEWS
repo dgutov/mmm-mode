@@ -21,6 +21,23 @@ before) with the new post-0.3.8 syntax for class definition.  It is a
 good candidate for membership in `mmm-global-classes' if you use many
 file-local variables, but is not there by default.
 
+** New flags :include-{front,back}
+
+If the keywords INCLUDE-FRONT or INCLUDE-BACK are set to non-nil
+values in a submode class definition, the corresponding delimiter will
+be included inside the submode region.
+
+** New values for :{front,back}-offset
+
+The keywords FRONT-OFFSET and BACK-OFFSET can now be function to call,
+such as `beginning-of-line' or `end-of-line', or lists of values to
+apply in sequence, such as (end-of-line 1).
+
+** Search for next region now starts at end of previous one
+
+...rather than at the end of the previous region's ending delimiter.
+This allows matching regions ended only by the start of the next one.
+
 
 * Changes in MMM Mode 0.4.3
 
