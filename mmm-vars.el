@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.6 2000/06/23 22:58:54 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.7 2000/06/26 22:19:40 mas Exp $
 
 ;;{{{ GPL
 
@@ -80,11 +80,13 @@
 ;;{{{ Save Local Variables
 
 (defcustom mmm-save-local-variables 
-  '(comment-start 
+  '(
+    mode-name
+    comment-start 
     comment-end
-    comment-line-start-skip     ; For fortran-mode
+    (comment-line-start-skip buffer (fortran-mode))
     comment-start-skip
-    comment-column
+    (comment-column buffer)
     comment-indent-function
     comment-line-break-function
     sentence-end
@@ -92,15 +94,69 @@
     font-lock-keywords-only
     font-lock-keywords-case-fold-search
     font-lock-syntax-table
-    font-lock-mark-block-function       ; Replace this?
+    font-lock-mark-block-function       ; Override this?
     font-lock-syntactic-keywords
+    ;; Don't use `function' (#') here!!  We're already inside `quote'!
+    (font-lock-mode nil (lambda () (featurep 'font-lock)))
     indent-line-function
-    skeleton-transformation)
-  "Which local variables to save for secondary major modes.
+    (c-basic-offset buffer (cc-mode))
+    skeleton-transformation
+    ((syntax-table . set-syntax-table))
+    ((current-local-map . use-local-map) buffer)
+    )
+  "Which local variables to save for major mode regions.
+Each element has the form \(VARIABLE [TYPE [MODES]]), causing VARIABLE
+to be saved for all major modes in the list MODES.  If MODES is t or
+absent, the variable is saved for all major modes.  MODES can also be
+a function of no arguments which returns non-nil whenever the variable
+should be saved.
+
+TYPE should be either the symbol `global', meaning to save the
+variable globally, the symbol `buffer', meaning to save it per buffer,
+or the symbol `region', meaning to save it for each submode region.
+If TYPE has any other value, such as nil, or is absent, the variable
+is saved globally.  If all optional parameters are omitted, the
+element may be simply VARIABLE instead of \(VARIABLE).
+
+It is possible for VARIABLE to be not a symbol but a cons cell of the
+form \(GETTER . SETTER), thus specifying special functions to set and
+get the value of the \"variable\".  This is used for objects like
+local maps, syntax tables, etc. which need to be installed in a
+special way.  GETTER should be a function of no arguments, and SETTER
+a function of one.  In this case, even if TYPE and MODES are omitted,
+the list cannot be flattened--it must be \((GETTER . SETTER)).
+\"Variables\" of this type cannot be seen with `mmm-get-saved-local'.
+
+A single variable may appear more than once in this list, with
+different modes and/or types.  If the same mode appears more than once
+for the same variable with different types, the behavior is undefined.
 Changing the value of this variable after MMM Mode has been activated
-in some buffer may produce unpredictable results."
+in some buffer may produce unpredictable results.
+
+Globally saved variables are saved in the mmm-local-variables property
+of the mode symbol.  Buffer saved variables are saved in the alist
+`mmm-buffer-saved-locals'.  Region saved variables are saved in the
+mmm-local-variables property of the overlay."
   :group 'mmm
   :type '(repeat (symbol :tag "Variable")))
+
+(defvar mmm-buffer-saved-locals ()
+  "Stores saved local variables for this buffer, by mode.
+Each element looks like \(MODE \(VAR VALUE) ...).")
+(make-variable-buffer-local 'mmm-buffer-saved-locals)
+
+(defvar mmm-region-saved-locals-defaults ()
+  "Stores saved defaults for region-saved locals, by mode.
+Each element looks like \(MODE \(VAR VALUE) ...).  Used to initialize
+new submode regions.")
+(make-variable-buffer-local 'mmm-region-saved-locals-defaults)
+
+(defvar mmm-region-saved-locals-for-dominant ()
+  "Stores saved region locals for the dominant major mode.
+The dominant major mode is considered to be one region for purposes of
+saving region variables.  Region-saved variables for submode regions
+are saved as overlay properties.")
+(make-variable-buffer-local 'mmm-region-saved-locals-for-dominant)
 
 ;;}}}
 ;;{{{ Default Submode Face
@@ -428,6 +484,12 @@ and the end of the back delimiter.")
 (defun mmm-version ()
   (interactive)
   (message "MMM Mode version %s by Michael Abraham Shulman" mmm-version))
+
+;;}}}
+;;{{{ Temp Buffer Name
+
+(defvar mmm-temp-buffer-name " *mmm-temp*"
+  "Name for temporary buffers created by MMM Mode.")
 
 ;;}}}
 ;;{{{ Interactive History
