@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.31 2001/02/08 23:37:53 viritrilbia Exp $
+;; Version: $Id: mmm-region.el,v 1.32 2001/04/26 22:26:35 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -228,6 +228,7 @@ i.e. whether text inserted at the marker should be inside the region."
 (defun* mmm-make-region
     (submode beg end &rest rest &key (front "") (back "")
              (beg-sticky t) (end-sticky t) face creation-hook
+             ;start stop submode insert private front-offset back-offset front-match back-match
              &allow-other-keys
              )
   "Make a submode region from BEG to END of SUBMODE in FACE.
