@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.2 2000/04/30 01:47:04 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.3 2000/04/30 07:53:20 mas Exp $
 
 ;;{{{ GPL
 
@@ -34,8 +34,10 @@
 ;;; Code:
 
 (require 'cl)
+(require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-utils)
+(require 'mmm-auto)
 (progn
   (require 'mmm-vars))
 
@@ -281,6 +283,31 @@ mode for it to be a submode or a major mode with submodes."
     (mmm-font-lock-mode ,font-lock-mode)))
 
 ;;}}}
+;;{{{ Local Maps
+
+;; This is for the benefit of commands such as `vm-mail', which calls
+;; `mail-mode' but then changes the local map afterwards. It's kludgy,
+;; I know, but at the moment I don't have time to think of a neater
+;; solution.
+
+(defvar mmm-local-maps-alist ()
+  "Which local maps have been changed in this buffer.")
+(make-variable-buffer-local 'mmm-local-maps-alist)
+
+;; Save the real function away for our use.
+(fset 'mmm-real-use-local-map (symbol-function 'use-local-map))
+
+(defadvice use-local-map (after mmm-keep-record activate compile)
+  "Keep track of which local maps have been changed in which buffers."
+  (mmm-valid-buffer
+   (mmm-update-current-submode)
+   (let* ((mode (or mmm-current-submode major-mode))
+          (map (assq mode mmm-local-maps-alist)))
+     (if map
+         (setcdr map (current-local-map))
+       (push (cons mode (current-local-map)) mmm-local-maps-alist)))))
+
+;;}}}
 ;;{{{ Updating Hooks
 
 (defun mmm-update-submode-region ()
@@ -338,31 +365,6 @@ maps, syntax tables, etc. for submodes."
 	      (list var (and (boundp var)
 			     (symbol-value var))))
 	  mmm-save-local-variables))
-
-;;}}}
-;;{{{ Local Maps
-
-;; This is for the benefit of commands such as `vm-mail', which calls
-;; `mail-mode' but then changes the local map afterwards. It's kludgy,
-;; I know, but at the moment I don't have time to think of a neater
-;; solution.
-
-(defvar mmm-local-maps-alist ()
-  "Which local maps have been changed in this buffer.")
-(make-variable-buffer-local 'mmm-local-maps-alist)
-
-;; Save the real function away for our use.
-(fset 'mmm-real-use-local-map (symbol-function 'use-local-map))
-
-(defadvice use-local-map (after mmm-keep-record activate compile)
-  "Keep track of which local maps have been changed in which buffers."
-  (mmm-valid-buffer
-   (mmm-update-current-submode)
-   (let* ((mode (or mmm-current-submode major-mode))
-          (map (assq mode mmm-local-maps-alist)))
-     (if map
-         (setcdr map (current-local-map))
-       (push (cons mode (current-local-map)) mmm-local-maps-alist)))))
 
 ;;}}}
 
