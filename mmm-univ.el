@@ -36,10 +36,10 @@
 
 (mmm-add-classes
  `((universal
-    :front "%\\[\\([^]]+\\)\\]%"
-    :back "%\\[/~1\\]%"
-    :insert ((?/ universal "Submode: " @ "%[" str "]%" @ "\n" _ "\n"
-                 @ "%[/" str "]%" @))
+    :front "\\[%\\([^]]+\\)%\\]"
+    :back "\\[%/~1%\\]"
+    :insert ((?/ universal "Submode: " @ "[%" str "%]" @ "\n" _ "\n"
+                 @ "[%/" str "%]" @))
     :match-submode ,#'(lambda (str)
                         (string-match "[a-zA-Z-]+" str)
                         (let ((modestr (match-string 0 str)))
