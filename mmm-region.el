@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.19 2000/07/11 02:44:51 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.20 2000/07/11 21:59:23 mas Exp $
 
 ;;{{{ GPL
 
@@ -319,7 +319,7 @@ which is set here as well.  See `mmm-save-local-variables'."
           (when (buffer-live-p (get-buffer mmm-temp-buffer-name))
             (kill-buffer mmm-temp-buffer-name))
           ;; Now make a new temporary buffer.
-          (set-buffer (make-indirect-buffer (current-buffer)
+          (set-buffer (mmm-make-temp-buffer (current-buffer)
                                             mmm-temp-buffer-name))
           ;; We have to set this for each file, because the user may
           ;; have code that inspects buffer-file-name.
@@ -328,25 +328,24 @@ which is set here as well.  See `mmm-save-local-variables'."
         (when (featurep 'font-lock)
           ;; XEmacs doesn't have global-font-lock-mode (or rather, it
           ;; has nothing but global-font-lock-mode).
-          (unless mmm-xemacs
-            ;; Code copied from font-lock.el to detect when font-lock
-            ;; should be on via global-font-lock-mode.
-            (and (or font-lock-defaults
-                     (assq major-mode font-lock-defaults-alist))
-                 (or (eq font-lock-global-modes t)
-                     (if (eq (car-safe font-lock-global-modes) 'not)
-                         (not (memq major-mode (cdr font-lock-global-modes)))
-                       (memq major-mode font-lock-global-modes)))
-                 ;; Don't actually fontify, but note that we should.
-                 (make-local-variable 'font-lock-mode)
-                 (setq font-lock-mode t)))
+          (when (or mmm-xemacs
+                    ;; Code copied from font-lock.el to detect when font-lock
+                    ;; should be on via global-font-lock-mode.
+                    (and (or font-lock-defaults
+                             (assq major-mode font-lock-defaults-alist))
+                         (or (eq font-lock-global-modes t)
+                             (if (eq (car-safe font-lock-global-modes) 'not)
+                                 (not (memq major-mode
+                                            (cdr font-lock-global-modes)))
+                               (memq major-mode font-lock-global-modes)))))
+            ;; Don't actually fontify, but note that we should.
+            (put mode 'mmm-font-lock-mode t))
           ;; Get the font-lock variables
           (when mmm-font-lock-available-p
             (font-lock-set-defaults))
           ;; These can't be in the local variables list, because we
           ;; replace their actual values, but we want to use their
           ;; original values elsewhere.
-          (put mode 'mmm-font-lock-mode font-lock-mode)
           (put mode 'mmm-fontify-region-function
                font-lock-fontify-region-function)
           (put mode 'mmm-beginning-of-syntax-function
