@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.16 2001/04/26 22:27:36 viritrilbia Exp $
+;; Version: $Id: mmm-class.el,v 1.17 2001/07/05 06:15:11 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -159,7 +159,8 @@ the rest of the arguments are for an actual class being applied. See
     (mmm-save-all
      (goto-char start)
      (loop for (beg end matched-front matched-back
-                    matched-submode matched-face back-to resume-at) =
+                    matched-submode matched-face
+                    invalid-resume ok-resume) =
                     (apply #'mmm-match-region :start (point) all)
            while beg
            if (and end          ; match-submode, if present, succeeded.
@@ -170,13 +171,13 @@ the rest of the arguments are for an actual class being applied. See
                  (apply #'mmm-make-region (or matched-submode submode)
                         beg end :front matched-front :back matched-back
                         :face (or matched-face face) all)
-		 (goto-char resume-at))
+		 (goto-char ok-resume))
              ;; If our region is invalid, go back to the end of the
              ;; front match and continue on.
-             (mmm-invalid-parent (goto-char back-to)))
+             (mmm-invalid-parent (goto-char invalid-resume)))
            ;; If match-submode was unable to find a match, go back to
            ;; the end of the front match and continue on.
-           else do (goto-char back-to)
+           else do (goto-char invalid-resume)
            )))))
 
 ;;}}}
@@ -189,15 +190,16 @@ the rest of the arguments are for an actual class being applied. See
 	  front-match back-match end-not-begin
           &allow-other-keys)
   "Find the first valid region between point and STOP.
-Return \(BEG END FRONT-FORM BACK-FORM SUBMODE FACE BACK-TO) specifying
-the region.  See `mmm-match-and-verify' for the valid values of FRONT
-and BACK \(markers, regexps, or functions).  A nil value for END means
-that MATCH-SUBMODE failed to find a valid submode.  BACK-TO is the
-point at which the search should continue if the region is invalid."
+Return \(BEG END FRONT-FORM BACK-FORM SUBMODE FACE INVALID-RESUME OK-RESUME)
+specifying the region.  See `mmm-match-and-verify' for the valid
+values of FRONT and BACK \(markers, regexps, or functions).  A nil
+value for END means that MATCH-SUBMODE failed to find a valid submode.
+INVALID-RESUME is the point at which the search should continue if the
+region is invalid, and OK-RESUME if the region is valid."
   (when (mmm-match-and-verify front start stop front-verify)
     (let ((beg (mmm-match->point include-front front-offset
 				 front-match back-match))
-          (back-to (match-end front-match))
+          (invalid-resume (match-end front-match))
           (front-form (mmm-get-form front-form)))
       (let ((submode (if match-submode
                          (condition-case nil
@@ -206,7 +208,8 @@ point at which the search should continue if the region is invalid."
                            (mmm-no-matching-submode
                             (return-from
                                 mmm-match-region
-                              (values nil nil nil nil nil back-to))))
+                              (values beg nil nil nil nil nil
+                                      invalid-resume nil))))
                        nil))
             (face (cond ((functionp match-face)
                          (mmm-save-all
@@ -221,10 +224,11 @@ point at which the search should continue if the region is invalid."
           (let* ((end (mmm-match->point (not include-back) back-offset 
 					front-match back-match))
 		 (back-form (mmm-get-form back-form))
-		 (resume-at (if end-not-begin 
+		 (ok-resume (if end-not-begin 
 				(match-end back-match)
 			      end)))
-            (values beg end front-form back-form submode face back-to resume-at)))))))
+            (values beg end front-form back-form submode face
+                    invalid-resume ok-resume)))))))
 
 (defun mmm-match->point (beginp offset front-match back-match)
   "Find a point of starting or stopping from the match data.  If
