@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.3 2000/06/26 22:23:16 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.4 2000/06/29 18:23:01 mas Exp $
 
 ;;{{{ GPL
 
@@ -43,7 +43,9 @@
 This means if not currently in one of the temporary buffers that MMM
 Mode creates, and not in one of `mmm-never-modes'."
   `(unless (or (equal (buffer-name) mmm-temp-buffer-name)
-               (memq major-mode mmm-never-modes))
+               (memq major-mode mmm-never-modes)
+               noninteractive
+               (eq (aref (buffer-name) 0) ?\ ))
      ,@body))
 
 ;;;(def-edebug-spec mmm-valid-buffer t)
