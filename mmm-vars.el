@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.30 2000/08/29 09:27:34 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.31 2000/08/29 21:06:51 mas Exp $
 
 ;;{{{ GPL
 
@@ -112,6 +112,8 @@
     indent-line-function
     (c-basic-offset buffer (cc-mode))
     skeleton-transformation
+    abbrev-mode
+    local-abbrev-table
     ((syntax-table . set-syntax-table))
     ((current-local-map . use-local-map) buffer)
     )
