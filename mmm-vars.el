@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.8 2000/06/27 00:35:02 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.9 2000/06/27 02:47:45 mas Exp $
 
 ;;{{{ GPL
 
@@ -81,7 +81,6 @@
 
 (defcustom mmm-save-local-variables 
   '(;; Don't use `function' (#') here!!  We're already inside `quote'!
-    mode-name
     comment-start 
     comment-end
     (comment-line-start-skip buffer (fortran-mode))
@@ -379,7 +378,7 @@ an existing buffer."
 ;; NON-USER VARIABLES
 ;;{{{ Classes Alist
 
-;; :parent could be an all-class argument. Same with :keymap.
+;; :parent could be an all-class argument.  Same with :keymap.
 (defvar mmm-classes-alist nil
   "*Alist containing all defined mmm submode classes.
 Each element looks like \(CLASS . ARGS) where CLASS is a symbol
@@ -431,19 +430,25 @@ the corresponding value of \(match-string n) after matching FRONT,
 where N is between 0 and SAVE-MATCHES.
 
 FRONT-FORM and BACK-FORM, if given, must supply a regexp used to match
-the *actual* delimiter. If they are strings, they are used as-is. If
+the *actual* delimiter.  If they are strings, they are used as-is.  If
 they are functions, they are called and must inspect the match data.
-If they are lists, their `car' is taken as the delimiter. The default
+If they are lists, their `car' is taken as the delimiter.  The default
 for both is \(regexp-quote \(match-string 0)).
 
-The last case is usually used for functions. Such a function must take
-1-2 arguments, the first being the overlay in question, and the second
-meaning to insert the delimiter and adjust the overlay rather than
-just matching the delimiter. See `mmm-match-front', `mmm-match-back',
-and `mmm-end-current-region'.
+The last case--them being a list--is usually used to set the delimiter
+to a function.  Such a function must take 1-2 arguments, the first
+being the overlay in question, and the second meaning to insert the
+delimiter and adjust the overlay rather than just matching the
+delimiter.  See `mmm-match-front', `mmm-match-back', and
+`mmm-end-current-region'.
 
 CASE-FOLD-SEARCH, if specified, controls whether the search is
 case-insensitive. See `case-fold-search'. It defaults to `t'.
+
+CREATION-HOOK, if specified, should be a function which is run
+whenever a submode region is created, with point at the beginning of
+the new region.  One use for it is to set region-saved local variables
+\(see `mmm-save-local-variables').
 
 INSERT specifies the keypress insertion spec for such submode regions.
 INSERT's value should be list of elements of the form \(KEY NAME .
