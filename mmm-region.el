@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.10 2000/06/27 02:47:32 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.11 2000/06/27 03:25:20 mas Exp $
 
 ;;{{{ GPL
 
@@ -58,7 +58,8 @@ i.e. whether text inserted at the marker should be inside the region."
 (defun* mmm-make-region
     (submode beg end &rest rest &key (front "") (back "")
              (beg-sticky t) (end-sticky t) face creation-hook
-             &allow-other-keys)
+             ;&allow-other-keys
+             )
   "Make a submode region from BEG to END of SUBMODE in FACE.
 FACE defaults to `mmm-default-submode-face'.  FRONT and BACK are
 regexps or functions to match the correct delimiters--see
@@ -96,13 +97,15 @@ arguments are stored as properties of the overlay, un-keyword-ified."
               (,mmm-evaporate-property t)
               (face ,(or face (if submode 'mmm-default-submode-face)))
               ))
-    (when submode
-      (save-excursion
-        (goto-char (overlay-start ovl))
-        (mmm-run-submode-hook submode)
-        (when creation-hook
-          (funcall creation-hook))
-        (mmm-save-changed-local-variables ovl submode)))
+    (save-excursion
+      (goto-char (overlay-start ovl))
+      (mmm-set-local-variables submode)
+      (mmm-run-submode-hook submode)
+      (when creation-hook
+        (funcall creation-hook))
+      (mmm-save-changed-local-variables ovl submode))
+    (setq mmm-previous-submode submode
+          mmm-previous-overlay ovl)
     (mmm-update-current-submode)
     ovl))
 
@@ -497,7 +500,8 @@ Looks up both global, buffer, and region saves."
   "Save by-buffer and by-region variables for OVL and MODE.
 Called when we move to a new submode region, with OVL and MODE the
 region and mode for the previous position."
-  (let ((buffer-vars (cdr (assq mode mmm-buffer-saved-locals)))
+  (let ((buffer-vars (cdr (assq (or mode major-mode)
+                                mmm-buffer-saved-locals)))
         (region-vars (if ovl
                          (overlay-get ovl 'mmm-local-variables)
                        mmm-region-saved-locals-for-dominant))
