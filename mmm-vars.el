@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.7 2000/06/26 22:19:40 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.8 2000/06/27 00:35:02 mas Exp $
 
 ;;{{{ GPL
 
@@ -80,7 +80,7 @@
 ;;{{{ Save Local Variables
 
 (defcustom mmm-save-local-variables 
-  '(
+  '(;; Don't use `function' (#') here!!  We're already inside `quote'!
     mode-name
     comment-start 
     comment-end
@@ -96,8 +96,6 @@
     font-lock-syntax-table
     font-lock-mark-block-function       ; Override this?
     font-lock-syntactic-keywords
-    ;; Don't use `function' (#') here!!  We're already inside `quote'!
-    (font-lock-mode nil (lambda () (featurep 'font-lock)))
     indent-line-function
     (c-basic-offset buffer (cc-mode))
     skeleton-transformation

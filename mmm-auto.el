@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.5 2000/05/24 09:13:00 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.6 2000/06/27 00:35:02 mas Exp $
 
 ;;{{{ GPL
 
@@ -104,6 +104,9 @@ positive and off otherwise." t))
 (defun mmm-major-mode-change ()
   "Add mode hooks to turn MMM Mode on where appropriate.
 Actually adds `mmm-run-major-mode-hook' to all major mode hooks."
+  (and (boundp 'mmm-mode)
+       mmm-mode
+       (mmm-mode-off))
   (unless (window-minibuffer-p (selected-window))
     (loop for lookback from 4
           for frame = (backtrace-frame lookback)

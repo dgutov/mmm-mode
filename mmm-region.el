@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.8 2000/06/26 22:22:43 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.9 2000/06/27 00:35:02 mas Exp $
 
 ;;{{{ GPL
 
@@ -319,12 +319,14 @@ which is set here as well.  See `mmm-save-local-variables'."
                          (not (memq major-mode (cdr font-lock-global-modes)))
                        (memq major-mode font-lock-global-modes)))
                  ;; Don't actually fontify, but note that we should.
+                 (make-local-variable 'font-lock-mode)
                  (setq font-lock-mode t)))
           ;; Get the font-lock variables
           (font-lock-set-defaults)
           ;; These can't be in the local variables list, because we
           ;; replace their actual values, but we want to use their
           ;; original values elsewhere.
+          (put mode 'mmm-font-lock-mode font-lock-mode)
           (put mode 'mmm-fontify-region-function
                font-lock-fontify-region-function)
           (put mode 'mmm-beginning-of-syntax-function
@@ -393,7 +395,7 @@ different keymaps, syntax tables, local variables, etc. for submodes."
       (mmm-update-mode-info mode)
       (mmm-set-local-variables mode)
 ;       (and (featurep 'font-lock)
-;            (mmm-get-saved-local mode 'font-lock-mode)
+;            (get mode 'mmm-font-lock-mode)
 ;            (font-lock-mode 1))
       )
     (if mmm-current-submode
@@ -407,8 +409,8 @@ different keymaps, syntax tables, local variables, etc. for submodes."
     (force-mode-line-update)))
 
 (defun mmm-add-hooks ()
-  (make-local-hook 'change-major-mode-hook)
-  (add-hook 'change-major-mode-hook 'mmm-mode-off nil 'local)
+;  (make-local-hook 'change-major-mode-hook)
+;  (add-hook 'change-major-mode-hook 'mmm-mode-off nil 'local)
   (make-local-hook 'post-command-hook)
   (add-hook 'post-command-hook 'mmm-update-submode-region nil 'local))
 
@@ -567,7 +569,7 @@ of the REGIONS covers START to STOP."
   ;; I don't know why it does this, but let's undo it here.
   (let ((font-lock-beginning-of-syntax-function 'mmm-beginning-of-syntax))
     (mapcar #'(lambda (elt)
-                (when (mmm-get-saved-local (car elt) 'font-lock-mode)
+                (when (get (car elt) 'mmm-font-lock-mode)
                   (mmm-fontify-region-list (car elt) (cdr elt))))
             (mmm-regions-alist start stop)))
   (mmm-update-submode-region)
