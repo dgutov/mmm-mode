@@ -1,3 +1,13 @@
+2004-06-16  Alan Shutko  <ats@acm.org>
+
+	* mmm-noweb.el (mmm-syntax-region-list)
+	(mmm-syntax-other-regions, mmm-word-other-regions)
+	(mmm-space-other-regions, mmm-undo-syntax-other-regions): Added
+	from Joe's email.  They're here right now, until a better place
+	can be found.
+
+	* configure.in: Incr version for release.
+
 2004-06-10  Alan Shutko  <ats@acm.org>
 
 	* mmm-class.el (mmm-ify): Change defaults for front-delim and

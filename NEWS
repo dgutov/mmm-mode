@@ -1,14 +1,10 @@
 MMM Mode NEWS -- history of user-visible changes.  -*-outline-*-
-Copyright (C) 2003 Michael Abraham Shulman
+Copyright (C) 2003, 2004 Michael Abraham Shulman
 See the file COPYING for copying conditions.
 
 Please submit bug reports at http://sourceforge.net/projects/mmm-mode/
 
 * Changes in MMM Mode 0.4.8
-
-** Improved Syntax Handling
-
-(Not actually added yet, but it will be by the time 0.4.8 is released)
 
 ** Delimiter Regions
 
@@ -30,8 +26,7 @@ included for people who wish to build their own SRPM to install from.
 
 Many thanks to Joe Kelsey for writing a very intelligent class for
 editing Noweb files, and to Alan Shutko for one for CWeb files.  We
-also have a mode for SGML DTD definitions from Yann Dirson, and (at
-long last) a PHP mode.
+also have a mode for SGML DTD definitions from Yann Dirson.
 
 ** Numerous bugfixes and small improvements
 

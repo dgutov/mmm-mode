@@ -1,6 +1,6 @@
 ;;; mmm-noweb.el --- MMM submode class for Noweb programs
 ;;
-;; Copyright 2003 Joe Kelsey <joe@zircon.seattle.wa.us>
+;; Copyright 2003, 2004 Joe Kelsey <joe@zircon.seattle.wa.us>
 ;;
 ;; The filling, completion and chunk motion commands either taken
 ;; directly from or inspired by code in:
@@ -361,6 +361,49 @@ chunks."
 ;; TODO: make this overlay go away if mmm is turned off
 
 ;;}}}
+
+;; These functions below living here temporarily until a real place is
+;; found.
+
+(defun mmm-syntax-region-list (syntax regions)
+  "Apply SYNTAX to a list of REGIONS of the form (BEG END).
+If SYNTAX is not nil, set the syntax-table property of each region.
+If SYNTAX is nil, remove the region syntax-table property.
+See `mmm-syntax-region'."
+  (mapcar #'(lambda (reg)
+	      (mmm-syntax-region (car reg) (cadr reg) syntax))
+	  regions))
+
+(defun mmm-syntax-other-regions (syntax &optional name)
+  "Apply SYNTAX cell to other regions.
+Regions are separated by name, using either `mmm-name-at' or the
+optional NAME to determine the current region name."
+  (if (null name)
+      (setq name (or (mmm-name-at)
+		     (symbol-name mmm-primary-mode))))
+  (mapcar #'(lambda (reg)
+	      (if (not (string= (car reg) name))
+		  (mmm-syntax-region-list syntax (cdr reg))))
+	  (mmm-names-alist (point-min) (point-max))))
+
+(defun mmm-word-other-regions ()
+  "Give all other regions word syntax."
+  (interactive)
+  (mmm-syntax-other-regions '(2 . 0))
+  (setq parse-sexp-lookup-properties t))
+
+(defun mmm-space-other-regions ()
+  "Give all other regions space syntax."
+  (interactive)
+  (mmm-syntax-other-regions '(0 . 0))
+  (setq parse-sexp-lookup-properties t))
+
+(defun mmm-undo-syntax-other-regions ()
+  "Remove syntax-table property from other regions."
+  (interactive)
+  (mmm-syntax-other-regions nil)
+  (setq parse-sexp-lookup-properties nil))
+
 
 (provide 'mmm-noweb)
 
