@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.50 2002/11/12 02:44:06 alanshutko Exp $
+;; Version: $Id: mmm-vars.el,v 1.51 2003/03/02 20:16:32 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -39,6 +39,7 @@
 
 ;; Otherwise it complains about undefined variables.
 (eval-when-compile
+  (defvar mmm-current-submode)
   (defvar mmm-save-local-variables)
   (defvar mmm-mode-string)
   (defvar mmm-submode-mode-line-format)
@@ -51,6 +52,9 @@
 ;;}}}
 ;;{{{ Error Conditions
 
+;; Most of these should be caught internally and never seen by the
+;; user, except when the user is creating submode regions manually.
+
 ;; Signalled when we try to put a submode region inside one where it
 ;; isn't meant to go.
 (put 'mmm-subregion-invalid-parent
@@ -60,14 +64,14 @@
      'error-message
      "Invalid submode region parent")
 
-;; Signalled when a submode region thinks it should start inside one
-;; other submode and end in a different one.
-(put 'mmm-subregion-crosses-parents
+;; Signalled when we try to put a submode region overlapping others in
+;; an invalid way.
+(put 'mmm-subregion-invalid-placement
      'error-conditions
-     '(mmm-subregion-crosses-parents mmm-error error))
-(put 'mmm-subregion-crosses-parents
+     '(mmm-subregion-invalid-placement mmm-error error))
+(put 'mmm-subregion-invalid-placement
      'error-message
-     "Submode region crosses parents")
+     "Submode region placement invalid")
 
 ;; Signalled when we try to apply a submode class that doesn't exist.
 (put 'mmm-invalid-submode-class
@@ -78,8 +82,8 @@
      "Invalid or undefined submode class")
 
 ;; Signalled by :match-submode functions when they are unable to
-;; resolve a submode.  Should always be caught and never seen by the
-;; user.
+;; resolve a submode.  This error should *always* be caught internally
+;; and never seen by the user.
 (put 'mmm-no-matching-submode
      'error-conditions
      '(mmm-no-matching-submode mmm-error error))
@@ -331,11 +335,43 @@ Also used at decoration level 2 for submodes not specifying a type."
   :type 'string)
 
 (defcustom mmm-submode-mode-line-format "~M[~m]"
-  "*Format of the Major Mode Mode-line display when point is in a
-submode region. ~M means the name of the default major mode, ~m means
-the name of the submode."
+  "*Format of the mode-line display when point is in a submode region.
+
+~M is replaced by the name of the primary major mode \(which may be
+replaced by a combined-mode function, see the info documentation).
+
+~m is replaced by the submode region overlay's `display-name'
+property, if it has one.  Otherwise it is replaced by the mode name of
+the submode region.
+
+If `mmm-primary-mode-display-name' is non-nil, then this variable is
+used even when point is not in a submode region \(i.e. it is in a
+primary mode region), with ~m being replaced by the value of that
+variable."
   :group 'mmm
   :type 'string)
+
+(defvar mmm-primary-mode-display-name nil
+  "If non-nil, displayed in the mode line next to the major mode name
+\(or whatever that has been replaced by) when outside all submode
+regions, i.e. in a primary mode region.")
+(make-variable-buffer-local 'mmm-primary-mode-display-name)
+
+(defun mmm-set-mode-line ()
+  "Set the mode line display correctly for the current submode,
+according to `mmm-submode-mode-line-format."
+  (let ((primary (get mmm-primary-mode 'mmm-mode-name))
+	(submode (if mmm-current-overlay
+		     (or (overlay-get mmm-current-overlay 'display-name)
+			 (get mmm-current-submode 'mmm-mode-name))
+		   mmm-outside-submode-display-name)))
+    (if submode
+	(setq mode-name
+	      (mmm-format-string mmm-submode-mode-line-format
+				 `(("~M" . ,primary)
+				   ("~m" . ,submode))))
+      (setq mode-name primary)))
+  (force-mode-line-update))
 
 ;;}}}
 ;;{{{ Submode Classes
@@ -500,7 +536,7 @@ HTML mode the dominant mode.
 A hook named mmm-<submode>-submode-hook is run when a submode region
 of a given mode is created. For example, `mmm-cperl-mode-submode-hook'
 is run whenever a CPerl mode submode region is created, in any buffer.
-When submode hooks are run, point is guaranteed to be at the start of
+When this hooks are run, point is guaranteed to be at the start of
 the newly created submode region.
 
 Finally, a hook named mmm-<class>-class-hook is run whenever a buffer
@@ -534,6 +570,18 @@ the current buffer.")
     (mmm-run-constructed-hook class "class")
     (add-to-list 'mmm-class-hooks-run class)))
 
+(defvar mmm-primary-mode-entry-hook nil
+  "Hook run when point moves into a region of the primary mode.
+Each submode region can have an `entry-hook' property which is run
+when they are entered, but since primary mode regions have no overlay
+to store properties, this is a buffer-local variable.
+
+N.B. This variable is not a standard Emacs hook.  Unlike Emacs'
+\"local hooks\" it has *no* global value, only a local one.  Its value
+should always be a list of functions \(possibly empty) and never a
+single function.  It may be used with `add-hook', however.")
+(make-variable-buffer-local 'mmm-primary-mode-entry-hook)
+
 ;;}}}
 ;;{{{ Major Mode Hook
 
@@ -558,6 +606,12 @@ an existing buffer."
 ;;}}}
 ;;{{{ MMM Global Mode
 
+;;; There's a point to be made that this variable should default to
+;;; `maybe' (i.e. not nil and not t), because that's what practically
+;;; everyone wants.  I subscribe, however, to the view that simply
+;;; *loading* a lisp extension should not change the (user-visible)
+;;; behavior of Emacs, until it is configured or turned on in some
+;;; way, which dictates that the default for this must be nil.
 (defcustom mmm-global-mode nil
   "*Specify in which buffers to turn on MMM Mode automatically.
 
@@ -572,9 +626,8 @@ an existing buffer."
                  (other :tag "Maybe" maybe))
   :require 'mmm-mode)
 
-;;}}}
-;;{{{ "Never" Modes
-
+;; These are not traditional editing modes, so mmm makes no sense, and
+;; can mess things up seriously if it doesn't know not to try.
 (defcustom mmm-never-modes
   '(
     help-mode
@@ -594,10 +647,10 @@ an existing buffer."
 ;;{{{ Buffer File Name
 
 (defvar mmm-set-file-name-for-modes '(mew-draft-mode)
-  "List of modes for which temporary buffers have a file name.
-If so, it is the same as that of the parent buffer.  In general, this
-has been found to cause more problems than it solves, but some modes
-require it.")
+  "List of modes for which the temporary buffers MMM creates have a
+file name.  In these modes, this file name is the same as that of the
+parent buffer.  In general, this has been found to cause more problems
+than it solves, but some modes require it.")
 
 ;;}}}
 
@@ -622,30 +675,36 @@ Do not set this variable directly; use the function `mmm-mode'.")
 ;; :parent could be an all-class argument.  Same with :keymap.
 (defvar mmm-classes-alist nil
   "Alist containing all defined mmm submode classes.
-Each element looks like \(CLASS . ARGS) where CLASS is a symbol
-representing the submode class and ARGS is a list of keyword
+A submode class is a named recipe for parsing a document into submode
+regions, and sometimes for inserting new ones while editing.
+
+Each element of this alist looks like \(CLASS . ARGS) where CLASS is a
+symbol naming the submode class and ARGS is a list of keyword
 arguments, called a \"class specifier\". There are a large number of
-accepted keyword arguments.
+accepted keyword arguments in the class specifier.
 
 The argument CLASSES, if supplied, must be a list of other submode
-classes \(or class specifiers), representing other classes to call.
-FACE, if supplied, overrides FACE arguments to these classes, but all
-other arguments to this class are ignored.
+class names, or class specifiers, representing other classes to call
+recursively.  The FACE arguments of these classes are overridden by
+the FACE argument of this class.  If the argument CLASSES is supplied,
+all other arguments to this class are ignored.  That is, \"grouping\"
+classes can do nothing but group other classes.
 
-The argument HANDLER, if supplied, overrides any other processing. It
-must be a function, and all the arguments are passed to it as
+The argument HANDLER, if supplied, also overrides any other processing.
+It must be a function, and all the arguments are passed to it as
 keywords, and it must do everything. See `mmm-ify' for what sorts of
 things it must do. This back-door interface should be cleaned up.
 
-The argument FACE, if supplied, specifies the display face of the
-submode regions under decoration level 2.  It must be a valid face.
-The standard faces used for submode regions are `mmm-*-submode-face'
-where * is one of `init', `cleanup', `declaration', `comment',
-`output', `special', or `code'.  A more flexible alternative is the
-argument MATCH-FACE.  MATCH-FACE can be a function, which is called
-with one argument, the form of the front delimiter \(found from
-FRONT-FORM, below), and should return the face to use.  It can also be
-an alist, each element of the form \(DELIM . FACE).
+The optional argument FACE gives the display face of the submode
+regions under high decoration (see `mmm-submode-decoration-level').
+It must be a valid face.  The standard faces used for submode regions
+are `mmm-*-submode-face' where * is one of `init', `cleanup',
+`declaration', `comment', `output', `special', or `code'.  A more
+flexible alternative is the argument MATCH-FACE.  MATCH-FACE can be a
+function, which is called with one argument, the form of the front
+delimiter \(found from FRONT-FORM, below), and should return the face
+to use.  It can also be an alist, each element of the form \(DELIM
+. FACE).
 
 If neither CLASSES nor HANDLER are supplied, either SUBMODE or
 MATCH-SUBMODE must be.  SUBMODE specifies the submode to use for the
@@ -746,7 +805,7 @@ and is not for the user to see.")
     (add-to-list 'mmm-classes-alist class)))
 
 (defun mmm-add-group (group classes)
-  "Add CLASSES and a group named GROUP containing them all.
+  "Add CLASSES and a \"grouping class\" named GROUP which calls them all.
 The CLASSES are all made private, i.e. non-user-visible."
   (mmm-add-classes (mapcar #'(lambda (class)
                                (append class
@@ -755,10 +814,21 @@ The CLASSES are all made private, i.e. non-user-visible."
   (add-to-list 'mmm-classes-alist
                (list group :classes (mapcar #'first classes))))
 
+(defun mmm-add-to-group (group classes)
+  "Add CLASSES to the \"grouping class\" named GROUP.
+The CLASSES are all made private, i.e. non-user-visible."
+  (mmm-add-classes (mapcar #'(lambda (class)
+                               (append class
+                                       '(:private t)))
+                           classes))
+  (mmm-set-class-parameter group :classes
+			   (append  (mmm-get-class-parameter group :classes)
+				    (mapcar #'first classes))))
+
 ;;}}}
 ;;{{{ Version Number
 
-(defconst mmm-version "0.4.7"
+(defconst mmm-version "0.4.7a"
   "Current version of MMM Mode.")
 
 (defun mmm-version ()
