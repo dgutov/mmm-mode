@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.12 2000/06/30 20:54:58 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.13 2000/07/29 22:42:23 mas Exp $
 
 ;;{{{ GPL
 
@@ -62,7 +62,33 @@
 (require 'cl)
 (require 'mmm-vars)
 
-;;{{{ Autoloads
+;;{{{ Autoload Submode Classes
+
+(defvar mmm-autoloaded-classes
+  '((mason "mmm-mason" nil)
+    (embedded-css "mmm-sample" nil)
+    (html-js "mmm-sample" nil)
+    (here-doc "mmm-sample" nil)
+    (embperl "mmm-sample" nil)
+    (file-variables "mmm-sample" nil))
+  "Alist of submode classes autoloaded from files.
+Elements look like \(CLASS FILE PRIVATE) where CLASS is a submode
+class symbol, FILE is a string suitable for passing to `load', and
+PRIVATE is non-nil if the class is invisible to the user.  Classes can
+be added to this list with `mmm-autoload-class'.")
+
+(defun mmm-autoload-class (class file &optional private)
+  "Autoload submode class CLASS from file FILE.
+PRIVATE, if non-nil, means the class is user-invisible.  In general,
+private classes need not be autoloaded, since they will usually be
+invoked by a public class in the same file."
+  ;; Don't autoload already defined classes
+  (unless (assq class mmm-classes-alist)
+    (add-to-list 'mmm-autoloaded-classes
+                 (list class file private))))
+
+;;}}}
+;;{{{ Autoload Functions
 
 ;; To shut up the byte compiler.
 (eval-and-compile
