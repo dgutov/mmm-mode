@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.18 2000/07/11 02:35:28 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.19 2000/07/11 02:44:51 mas Exp $
 
 ;;{{{ GPL
 
@@ -341,7 +341,8 @@ which is set here as well.  See `mmm-save-local-variables'."
                  (make-local-variable 'font-lock-mode)
                  (setq font-lock-mode t)))
           ;; Get the font-lock variables
-          (font-lock-set-defaults)
+          (when mmm-font-lock-available-p
+            (font-lock-set-defaults))
           ;; These can't be in the local variables list, because we
           ;; replace their actual values, but we want to use their
           ;; original values elsewhere.
@@ -488,21 +489,23 @@ region and mode for the previous position."
 (defun mmm-enable-font-lock (mode)
   "Turn on font lock if it is not already on and MODE enables it."
   (mmm-update-mode-info mode)
-  (and (not font-lock-mode)
+  (and mmm-font-lock-available-p
+       (not font-lock-mode)
        (get mode 'mmm-font-lock-mode)
        (font-lock-mode 1)))
 
 (defun mmm-update-font-lock-buffer ()
   "Turn on font lock iff any mode in the buffer enables it."
-  (if (some #'(lambda (mode)
-                (get mode 'mmm-font-lock-mode))
-            (remove-duplicates
-             (cons major-mode
-                   (mapcar #'(lambda (ovl)
-                               (overlay-get ovl 'mmm-mode))
-                           (mmm-overlays-in (point-min) (point-max))))))
-      (font-lock-mode 1)
-    (font-lock-mode 0)))
+  (when mmm-font-lock-available-p
+    (if (some #'(lambda (mode)
+                  (get mode 'mmm-font-lock-mode))
+              (remove-duplicates
+               (cons major-mode
+                     (mapcar #'(lambda (ovl)
+                                 (overlay-get ovl 'mmm-mode))
+                             (mmm-overlays-in (point-min) (point-max))))))
+        (font-lock-mode 1)
+      (font-lock-mode 0))))
 
 (defun mmm-refontify-maybe (&optional start stop)
   "Re-fontify from START to STOP, or entire buffer, if enabled."
