@@ -1,3 +1,64 @@
+2000-06-08  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-region.el (use-local-map):
+	Conditioned advice definition on not XEmacs.
+
+2000-05-28  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* .cvsignore:
+	Added info file and auxiliary compilation and texinfo files.
+
+	* .cvsignore: Added configure auxiliary files.
+
+	* .cvsignore: Ignored Makefile.in, Makefile, and configure.
+
+	* COPYING, INSTALL, install-sh, mdate-sh, missing, mkinstalldirs, texinfo.tex:
+	Added files required by automake.
+
+	* mmm.texinfo, elisp-comp, TODO, README, NEWS, ChangeLog, AUTHORS:
+	Added to CVS (formerly not under RCS).
+
+2000-05-24  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-auto.el: Pre-added major mode hook to text-mode-hook.
+
+2000-05-19  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-vars.el (mmm-version): changed to 0.3.8.
+
+2000-05-18  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-region.el:
+	Moved `require's back to top level for byte-compiling.  Added dummy
+	definition of `mmm-real-use-local-map' to shut up byte compiler.
+
+	* mmm-mode.el, mmm-cmds.el, mmm-class.el:
+	Moved `require's back to top level for byte-compiling.
+
+	* mmm-auto.el: `require'd mmm-vars at top level for byte-compiling.
+
+	* Makefile.am:
+	Added all the elisp files to EXTRA_DIST, since Automake doesn't see
+	them as sources for the distribution.
+
+2000-05-10  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-mason.el: Fixed bug: # is not allowed in symbols.
+
+	* mmm-mason.el:
+	Changed insertion key of <%doc> to `d' and added insertion of %#
+	comment lines with insertion keys `#' and `3'.
+
+	* mmm-mason.el:
+	Distinguished between Perl sections and pseudo-Perl sections.  The one
+	inserts ; at the beginning for indentation hack, the other doesn't
+	because the Mason syntax doesn't allow it and indentation is generally
+	unnecessary anyway.
+
+	* mmm-cmds.el:
+	Fixed "sub"-insertion specs like <%perl> under <%TAG> not to insert
+	the interactor string.
+
 2000-05-03  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
 
 	* mmm-mason.el: Added dependencies on mmm-compat and mmm-vars.
