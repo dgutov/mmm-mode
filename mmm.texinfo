@@ -1152,9 +1152,9 @@ following line in .emacs:
 @end lisp
 
 The current Mason class is intended to correctly recognize all syntax
-valid in Mason 0.87.  There are insertion keys for most of the available
-syntax; use @code{mmm-insertion-help} (@kbd{C-c % h} by default) with
-Mason on to get a list.
+valid in Mason @value{MASON_VERSION}.  There are insertion keys for most
+of the available syntax; use @code{mmm-insertion-help} (@kbd{C-c % h} by
+default) with Mason on to get a list.
 
 If you want to have mason submodes automatically in all Mason files, you
 can use automatic mode and filename associations; the details depend on
