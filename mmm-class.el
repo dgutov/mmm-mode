@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.5 2000/06/27 02:46:56 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.6 2000/06/30 02:42:46 mas Exp $
 
 ;;{{{ GPL
 
@@ -99,20 +99,13 @@ error once all classes have been applied."
 ;;{{{ Apply All Classes
 
 (defun* mmm-apply-all (&key (start (point-min)) (stop (point-max)))
-  "MMM-ify START to STOP by mode/ext, `mmm-classes', and history."
+  "MMM-ify from START to STOP by all submode classes.
+The classes come from mode/ext, `mmm-classes', `mmm-global-classes',
+and interactive history."
   (mmm-clear-overlays start stop 'strict)
-  (mmm-apply-classes (mmm-get-all-classes) :start start :stop stop)
+  (mmm-apply-classes (mmm-get-all-classes t) :start start :stop stop)
   (mmm-update-current-submode)
   (mmm-refontify-maybe start stop))
-
-(defun mmm-refontify-maybe (start stop)
-  "Re-fontify from START to STOP."
-  (and (featurep 'font-lock)
-       font-lock-mode
-       (if (or start stop)
-           (font-lock-fontify-region (or start (point-min))
-                                     (or stop (point-max)))
-         (font-lock-fontify-buffer))))
 
 ;;}}}
 ;;{{{ Scan for Regions
@@ -124,8 +117,10 @@ error once all classes have been applied."
            (beg-sticky (not (number-or-marker-p front)))
            (end-sticky (not (number-or-marker-p back)))
            (front-offset 0) (back-offset 0) front-verify back-verify
-           front-form back-form creation-hook
-           &allow-other-keys)
+           front-form back-form creation-hook match-submode
+           ;insert
+           &allow-other-keys
+           )
   "Create submode regions from START to STOP according to arguments.
 If CLASSES is supplied, it must be a list of valid CLASSes. Otherwise,
 the rest of the arguments are for an actual class being applied. See
@@ -144,19 +139,20 @@ the rest of the arguments are for an actual class being applied. See
    (t
     (mmm-save-all
      (goto-char start)
-     (loop for (beg end front-form back-form) =
+     (loop for (beg end front-form back-form matched-submode) =
            (apply #'mmm-match-region :start (point)
                   (mmm-save-keywords front back stop
                     save-matches front-offset back-offset front-verify
-                    back-verify front-form back-form))
+                    back-verify front-form back-form match-submode))
            while beg
            while (/= beg end)   ; Sanity check
            do
            (condition-case nil
-               (mmm-make-region submode beg end :face face
-                 :front front-form :back back-form
-                 :beg-sticky beg-sticky :end-sticky end-sticky
-                 :creation-hook creation-hook)
+               (mmm-make-region
+                (or matched-submode submode) beg end
+                :face face :front front-form :back back-form
+                :beg-sticky beg-sticky :end-sticky end-sticky
+                :creation-hook creation-hook)
              ;; If our region is invalid, go back to the end of the front
              ;; match and continue on.
              (mmm-invalid-parent (goto-char (- beg front-offset)))))))))
@@ -166,19 +162,22 @@ the rest of the arguments are for an actual class being applied. See
 
 (defun* mmm-match-region
     (&key front back start stop front-verify back-verify front-offset
-          back-offset save-matches front-form back-form)
+          back-offset save-matches front-form back-form match-submode)
   "Find the first valid region between point and STOP.
-Return \(BEG END FRONT-FORM BACK-FORM) specifying the region. See
-`mmm-match-and-verify' for the valid values of FRONT and BACK
-\(markers, regexps, or functions)."
+Return \(BEG END FRONT-FORM BACK-FORM SUBMODE) specifying the
+region.  See `mmm-match-and-verify' for the valid values of FRONT and
+BACK \(markers, regexps, or functions)."
   (when (mmm-match-and-verify front start stop front-verify)
-    (let ((beg (+ (match-end 0) front-offset))
-          (front-form (mmm-get-form front-form)))
+    (let* ((beg (+ (match-end 0) front-offset))
+           (front-form (mmm-get-form front-form))
+           (submode (if match-submode
+                        (mmm-save-all (funcall match-submode front-form))
+                      nil)))
       (when (mmm-match-and-verify (mmm-format-matches back save-matches)
                                   beg stop back-verify)
         (let ((end (+ (match-beginning 0) back-offset))
               (back-form (mmm-get-form back-form)))
-          (values beg end front-form back-form))))))
+          (values beg end front-form back-form submode))))))
 
 (defun mmm-match-and-verify (pos start stop &optional verify)
   "Find first match for POS between point and STOP satisfying VERIFY.
@@ -214,7 +213,7 @@ its `car' \(usually in this case, FORM is a one-element list
 containing a function to be used as the delimiter form."
   (cond ((stringp form) form)
         ((not form) (mmm-default-get-form))
-        ((functionp form) (funcall form))
+        ((functionp form) (mmm-save-all (funcall form)))
         ((listp form) (car form))))
 
 (defun mmm-default-get-form ()
