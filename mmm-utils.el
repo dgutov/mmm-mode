@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.5 2000/06/30 00:47:23 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.6 2000/06/30 02:42:05 mas Exp $
 
 ;;{{{ GPL
 
@@ -39,16 +39,19 @@
 ;; only `mmm-mode-on' really needs it. Kept it as a macro, though,
 ;; for modularity and in case we need it somewhere else.
 (defmacro mmm-valid-buffer (&rest body)
-  "Execute BODY if in a valid buffer for MMM Mode to be enabled.
-This means if not currently in one of the temporary buffers that MMM
-Mode creates, and not in one of `mmm-never-modes'."
-  `(unless (or (equal (buffer-name) mmm-temp-buffer-name)
+  "Execute BODY if in a valid buffer for MMM Mode to be enabled.  This
+means not hidden, not a minibuffer, not in batch mode, and not in of
+`mmm-never-modes'."
+  `(unless (or (eq (aref (buffer-name) 0) ?\ )
+               (window-minibuffer-p (selected-window))
                (memq major-mode mmm-never-modes)
                noninteractive
-               (eq (aref (buffer-name) 0) ?\ ))
+               ;; Unnecessary as now hidden
+;;;               (equal (buffer-name) mmm-temp-buffer-name)
+               )
      ,@body))
 
-(def-edebug-spec mmm-valid-buffer t)
+;;;(def-edebug-spec mmm-valid-buffer t)
 
 ;;}}}
 ;;{{{ Save Everything
@@ -62,7 +65,7 @@ restrictions, and match data."
        (save-match-data
          ,@body))))
 
-(def-edebug-spec mmm-save-all t)
+;;;(def-edebug-spec mmm-save-all t)
 
 ;;}}}
 ;;{{{ String Formatting

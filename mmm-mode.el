@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.5 2000/06/26 22:20:48 mas Exp $
+;; Version: $Id: mmm-mode.el,v 1.6 2000/06/30 02:41:53 mas Exp $
 ;; Keywords: convenience faces languages tools
 
 ;;{{{ GPL
@@ -95,6 +95,7 @@
 (require 'mmm-class)
 ;; This file is set up to autoload by `mmm-auto.el'.
 ;; (require 'mmm-cmds)
+(require 'mmm-univ)
 
 ;;{{{ Toggle Function
 
@@ -328,11 +329,10 @@ Programming | Tools | Mmm, except the major mode and submode hooks
      (mmm-set-local-variables major-mode)
      (mmm-add-hooks)
      (mmm-fixup-skeleton)
-     (when (featurep 'font-lock)
-       (make-local-variable 'font-lock-fontify-region-function)
-       (make-local-variable 'font-lock-beginning-of-syntax-function)
-       (setq font-lock-fontify-region-function 'mmm-fontify-region
-             font-lock-beginning-of-syntax-function 'mmm-beginning-of-syntax))
+     (make-local-variable 'font-lock-fontify-region-function)
+     (make-local-variable 'font-lock-beginning-of-syntax-function)
+     (setq font-lock-fontify-region-function 'mmm-fontify-region
+           font-lock-beginning-of-syntax-function 'mmm-beginning-of-syntax)
      (setq mmm-mode t)
      (condition-case err
          (mmm-apply-all)
@@ -359,9 +359,8 @@ Programming | Tools | Mmm, except the major mode and submode hooks
     (mmm-clear-mode-ext-classes)
     (mmm-clear-local-variables)
     (mmm-update-submode-region)
-    (and (featurep 'font-lock)
-         font-lock-mode
-         (font-lock-fontify-buffer))
+    (mmm-update-font-lock-buffer)
+    (mmm-refontify-maybe)
     (setq mmm-mode nil)))
 
 (add-to-list 'minor-mode-alist (list 'mmm-mode mmm-mode-string))

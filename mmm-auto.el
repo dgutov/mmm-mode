@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.9 2000/06/29 18:23:41 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.10 2000/06/30 02:43:01 mas Exp $
 
 ;;{{{ GPL
 
@@ -107,9 +107,10 @@ everything in `mmm-major-mode-hook' will be run."
   "Run major mode hook for the buffers in `mmm-changed-buffers-list'."
   (remove-hook 'post-command-hook 'mmm-check-changed-buffers)
   (dolist (buffer mmm-changed-buffers-list)
-    (and (not (window-minibuffer-p (get-buffer-window buffer)))
-         (buffer-live-p buffer)
-         (mmm-run-major-mode-hook buffer)))
+    (when (buffer-live-p buffer)
+      (save-excursion
+        (set-buffer buffer)
+        (mmm-run-major-mode-hook))))
   (setq mmm-changed-buffers-list '()))
 
 (defun mmm-mode-on-maybe ()
@@ -118,7 +119,8 @@ Turn on MMM Mode if `global-mmm-mode' is non-nil and there are classes
 to apply, or always if `global-mmm-mode' is t."
   (cond ((eq mmm-global-mode t) (mmm-mode-on))
         ((not mmm-global-mode))
-        ((mmm-get-all-classes) (mmm-mode-on))))
+        ((mmm-get-all-classes nil) (mmm-mode-on)))
+  (mmm-update-font-lock-buffer))
 
 (add-hook 'mmm-major-mode-hook 'mmm-mode-on-maybe)
 

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.6 2000/06/27 00:34:02 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.7 2000/06/30 02:41:36 mas Exp $
 
 ;;{{{ GPL
 
@@ -42,9 +42,7 @@
   (interactive "SSubmode Class: ")
   (mmm-apply-class class)
   (mmm-add-to-history class)
-  (and (featurep 'font-lock)
-       font-lock-mode
-       (font-lock-fontify-buffer)))
+  (mmm-update-font-lock-buffer))
 
 ;;}}}
 ;;{{{ Applying by the Region
@@ -56,12 +54,10 @@
   (setq front (mmm-make-marker front t nil)
         back (mmm-make-marker back nil nil))
   (mmm-add-to-history `(:submode ,submode :front ,front :back ,back))
-  (and (featurep 'font-lock)
-       font-lock-mode
-       (font-lock-fontify-buffer)))
+  (mmm-enable-font-lock submode))
 
 ;;}}}
-;;{{{ Applying simple Regexps
+;;{{{ Applying Simple Regexps
 
 (defun mmm-ify-by-regexp
   (submode front front-offset back back-offset save-matches)
@@ -78,9 +74,7 @@ nNumber of matched substrings to save: ")
                 front-offset back-offset save-matches)))
     (apply #'mmm-ify args)
     (mmm-add-to-history args))
-  (and (featurep 'font-lock)
-       font-lock-mode
-       (font-lock-fontify-buffer)))
+  (mmm-enable-font-lock submode))
 
 ;;}}}
 ;;{{{ Re-parsing Areas
@@ -250,22 +244,28 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
         (destructuring-bind (back end beg front) skeleton-positions
           ;; TODO: Find a way to trap invalid-parent signals from
           ;; make-region and undo the skeleton insertion.
-          (mmm-make-region (plist-get class :submode) beg end
-                           :front (buffer-substring front beg)
-                           :back (buffer-substring end back)
-                           :face (plist-get class :face)
-                           :beg-sticky (plist-get class :beg-sticky)
-                           :end-sticky (plist-get class :end-sticky))
-          (and (featurep 'font-lock)
-               font-lock-mode
-               (font-lock-fontify-region front back)))))))
+          (let* ((match-submode (plist-get class :match-submode))
+                 (front-str (buffer-substring front beg))
+                 (back-str (buffer-substring end back))
+                 (submode
+                  (if match-submode
+                      (mmm-save-all (funcall match-submode front-str))
+                    (plist-get class :submode))))
+            (mmm-make-region
+             submode beg end :front front-str :back back-str
+             :face (plist-get class :face)
+             :beg-sticky (plist-get class :beg-sticky)
+             :end-sticky (plist-get class :end-sticky)
+             :creation-hook (plist-get class :creation-hook))
+            (mmm-enable-font-lock submode)))))))
 
 (defun mmm-get-insertion-spec (key &optional classlist)
   "Get the insertion info for KEY from all classes in CLASSLIST.
 Return \(CLASS SKEL STR) where CLASS is the class spec a match was
 found in, SKEL is the skeleton to insert, and STR is the argument.
-CLASSLIST defaults to the return value of `mmm-get-all-classes'."
-  (loop for classname in (or classlist (mmm-get-all-classes))
+CLASSLIST defaults to the return value of `mmm-get-all-classes',
+including global classes."
+  (loop for classname in (or classlist (mmm-get-all-classes t))
         for class = (mmm-get-class-spec classname)
         for inserts = (plist-get class :insert)
         for skel = (cddr (assoc key inserts))
@@ -323,7 +323,7 @@ is a symbol naming the insertion."
 Elements look like \(KEY NAME ...) where KEY is an insertion key and
 NAME is a symbol naming the insertion."
   (remove-duplicates
-   (loop for classname in (or classlist (mmm-get-all-classes))
+   (loop for classname in (or classlist (mmm-get-all-classes t))
          for class = (mmm-get-class-spec classname)
          append (plist-get class :insert) into keys
          ;; If we have a group class, recurse.

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.14 2000/06/29 18:48:47 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.15 2000/06/30 02:43:17 mas Exp $
 
 ;;{{{ GPL
 
@@ -515,6 +515,26 @@ region and mode for the previous position."
        (get mode 'mmm-font-lock-mode)
        (font-lock-mode 1)))
 
+(defun mmm-update-font-lock-buffer ()
+  "Turn on font lock iff any mode in the buffer enables it."
+  (if (some #'(lambda (mode)
+                (get mode 'mmm-font-lock-mode))
+            (remove-duplicates
+             (cons major-mode
+                   (mapcar #'(lambda (ovl)
+                               (overlay-get ovl 'mmm-mode))
+                           (mmm-overlays-in (point-min) (point-max))))))
+      (font-lock-mode 1)
+    (font-lock-mode 0)))
+
+(defun mmm-refontify-maybe (&optional start stop)
+  "Re-fontify from START to STOP, or entire buffer, if enabled."
+  (and font-lock-mode
+       (if (or start stop)
+           (font-lock-fontify-region (or start (point-min))
+                                     (or stop (point-max)))
+         (font-lock-fontify-buffer))))
+
 ;;}}}
 ;;{{{ Get Submode Regions
 
@@ -566,6 +586,9 @@ of the REGIONS covers START to STOP."
   "Fontify from START to STOP keeping track of submodes correctly."
   (when loudly
     (message "Fontifying %s with submode regions..." (buffer-name)))
+  ;; Necessary to catch changes in font-lock cache state and position.
+  (mmm-save-changed-local-variables
+   mmm-current-overlay mmm-current-submode)
   ;; For some reason `font-lock-fontify-block' binds this to nil, thus
   ;; preventing `mmm-beginning-of-syntax' from doing The Right Thing.
   ;; I don't know why it does this, but let's undo it here.
@@ -583,10 +606,6 @@ of the REGIONS covers START to STOP."
     (let ((major-mode mode)
           (func (get mode 'mmm-fontify-region-function)))
       (mapcar #'(lambda (reg)
-                  ;; Next line is necessary to catch changes in
-                  ;; font-lock cache state and position.
-                  (mmm-save-changed-local-variables
-                   mmm-current-overlay mmm-current-submode)
                   (goto-char (car reg))
                   ;; Here we do the same sort of thing that
                   ;; `mmm-update-submode-region' does, but we force it
@@ -594,7 +613,10 @@ of the REGIONS covers START to STOP."
                   ;; fontify, or change the mode line.
                   (mmm-set-current-submode mode)
                   (mmm-set-local-variables mode)
-                  (funcall func (car reg) (cadr reg) nil))
+                  (funcall func (car reg) (cadr reg) nil)
+                  ;; Catch changes in font-lock cache.
+                  (mmm-save-changed-local-variables
+                   mmm-current-overlay mmm-current-submode))
               regions))))
 
 ;;}}}
