@@ -14,10 +14,10 @@ the name of the mailing list.
 
 Put the following line in your Emacs initialization file:
 
-  (set-face-background 'mmm-default-submode-face nil)
+  (setq 'mmm-submode-decoration-level 0)
 
 You may want to try using MMM Mode for a while with the background
-highlight, however, or merely changing it to different color.  There
+highlight, however, or merely changing it to a different color.  There
 are two reasons it's there by default:
 
 1. MMM Mode isn't as smart as you might hope it would be about
@@ -26,7 +26,9 @@ are two reasons it's there by default:
 
 2. Just like the rest of font-lock, it helps you mentally organize the
    code; you can see at a glance that THIS code is executed as Perl,
-   but THAT code is straight HTML (or whatever).
+   but THAT code is straight HTML (or whatever).  You can get even
+   more help by setting the above variable to 2, in which case regions
+   will get a background color according to their function.
 
 * I typed `<%' (or other delimiter) but I'm still in the wrong mode.
 
@@ -90,6 +92,9 @@ best there, but don't let that stop you from trying it under other
 emacsen.  If you encounter problems, feel free to ask the mailing
 list, but success is not guaranteed.
 
+MMM Mode will support Emacs 21 as soon as possible.  It appears to
+work relatively well already, but extensive testing has not been done.
+
 * XEmacs says `Symbol's function definition is void: make-indirect-buffer'.
 
 You probably used FSF Emacs to compile MMM as it is the one used by
@@ -98,7 +103,7 @@ when byte compiling, do the following:
 
 $ cd mmm-mode-x.x.x
 $ make distclean
-$ EMACS=/usr/bin/xemacs ./configure
+$ ./configure --with-xemacs=/path/to/xemacs
 $ make
 $ make install
 
@@ -110,6 +115,6 @@ MMM Mode; always be sure you have compiled for the correct emacsen.
 * You haven't answered my question; how can I get more help?
 
 At the MMM Mode web site, <http://mmm-mode.sourceforge.net>, there is
-a link to the sign-up page for the MMM Mode mailing list.  When asking
-a question on the list, be sure to give the versions of emacs and MMM
-Mode you are using, and any other relevant information.
+a link to the subscription page for the MMM Mode mailing list.  When
+asking a question on the list, be sure to give the versions of emacs
+and MMM Mode you are using, and any other relevant information.
