@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.4 2000/06/30 02:34:12 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.5 2000/07/21 00:17:21 mas Exp $
 
 ;;{{{ GPL
 
@@ -44,21 +44,6 @@
     :back "</style>")))
 
 ;;}}}
-;;{{{ HTML Here-documents
-
-;; A little more complicated regexp to match all Perl here-documents
-;; whose identifiers include the string "HTML". We use :save-matches
-;; to match the end of the named here-document. This class has not
-;; been extensively tested.
-
-(mmm-add-classes
- '((perl-html
-    :submode html-mode
-    :front "<<\\([a-zA-Z0-9_-]*HTML[a-zA-Z0-9_-]*\\).*\n"
-    :back "^~1$"
-    :save-matches 1)))
-
-;;}}}
 ;;{{{ Javascript in HTML
 
 (defvar mmm-javascript-mode
@@ -75,11 +60,48 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
  `((js-tag
     :submode ,mmm-javascript-mode
     :front "<script\[^>\]*>"
-    :back"</script>")
+    :back"</script>"
+    :insert ((?j js-tag nil @ "<script language=\"JavaScript\">"
+                 @ "\n" _ "\n" @ "</script>" @))
+    )
    (js-inline
     :submode ,mmm-javascript-mode
     :front "on\w+=\""
     :back "\"")))
+
+;;}}}
+;;{{{ Here-documents
+
+;; Here we match the here-document syntax used by Perl and shell
+;; scripts.  We assume that the delimiter of the here-document is the
+;; mode name with or without `-mode', such as <<HTML or <<HTML-MODE.
+;; Hyphens may be replaced with underscores to make <<HTML_MODE and
+;; the mode name is converted to lower case.  Additional characters
+;; may be added after `MODE', such as <<HTML_MODE_EOF.
+
+(defun mmm-here-doc-get-mode (string)
+  (string-match "[a-zA-Z_-]+" string)
+  (setq string (match-string 0 string))
+  (let* ((case-fold-search t)
+         (modestr (if (string-match "mode" string)
+                      (downcase (substring string 0 (match-end 0)))
+                    (concat (downcase string) "-mode"))))
+    (while (string-match "_" modestr)
+      (setq modestr (replace-match "-" nil nil modestr)))
+    (and modestr (intern modestr))))
+
+(mmm-add-classes
+ `((here-doc
+    :front "<<\\([a-zA-Z0-9_-]+\\).*\n"
+    :back "^~1$"
+    :save-matches 1
+    :front-verify ,#'(lambda ()
+                       (fboundp
+                        (mmm-here-doc-get-mode (match-string 0))))
+    :match-submode mmm-here-doc-get-mode
+    :insert ((?d here-doc "Here-document Name: " @ "<<" str _ "\n"
+                 @ "\n" @ str "\n" @))
+    )))
 
 ;;}}}
 ;;{{{ Embperl
@@ -96,11 +118,22 @@ Usually either `perl-mode' or `cperl-mode'. The default is
     :submode cperl-mode
     :front "\\[\\([-\\+!\\*\\$]\\)"
     :back "~1\\]"
-    :save-matches 1)
+    :save-matches 1
+    :insert ((?p embperl "Region Type (Character): " @ "[" str
+                 @ " " _ " " @ str "]" @)
+             (?+ embperl+ ?p . "+")
+             (?- embperl- ?p . "-")
+             (?! embperl! ?p . "!")
+             (?* embperl* ?p . "*")
+             (?$ embperl$ ?p . "$")
+             )
+    )
    (embperl-comment
     :submode text-mode
     :front "\\[#"
-    :back "#\\]")))
+    :back "#\\]"
+    :insert ((?# embperl-comment nil @ "[#" @ " " _ " " @ "#]" @))
+    )))
 
 ;;}}}
 
