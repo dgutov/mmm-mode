@@ -43,7 +43,9 @@ CONFIGURATION
     (require 'mmm-auto)
 
   The second installs only the major-mode hooks and sets up MMM Mode
-  to load itself automatically when necessary.
+  to load itself automatically when necessary.  If you plan to use one
+  of the supplied submode classes, you will have to load that as well;
+  see the Info file for instructions.
 
 DOCUMENTATION
 
