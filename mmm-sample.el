@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.14 2001/01/13 03:55:46 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.15 2001/01/15 00:52:36 mas Exp $
 
 ;;{{{ GPL
 
@@ -89,13 +89,13 @@ and MODE is a major mode function symbol.")
 (defun mmm-here-doc-get-mode (string)
   (string-match "[a-zA-Z_-]+" string)
   (setq string (match-string 0 string))
-  (or (mmm-ensure-fboundp
+  (or (mmm-ensure-modename
        ;; First try the user override variable.
        (some #'(lambda (pair)
                 (if (string-match (car pair) string) (cdr pair) nil))
              mmm-here-doc-mode-alist))
       (let ((words (split-string (downcase string) "[_-]+")))
-        (or (mmm-ensure-fboundp
+        (or (mmm-ensure-modename
              ;; Try the whole name, stopping at "mode" if present.
              (intern
               (mapconcat #'identity
@@ -104,12 +104,12 @@ and MODE is a major mode function symbol.")
                          "-")))
             ;; Try each word with -mode tacked on
             (some #'(lambda (word)
-                      (mmm-ensure-fboundp
+                      (mmm-ensure-modename
                        (intern (concat word "-mode"))))
                   words)
             ;; Try each pair of words with -mode tacked on
             (loop for (one two) on words
-                  if (mmm-ensure-fboundp
+                  if (mmm-ensure-modename
                       (intern (concat one two "-mode")))
                   return it)
             ;; I'm unaware of any modes whose names, minus `-mode',

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.8 2001/01/14 01:26:09 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.9 2001/01/15 00:52:36 mas Exp $
 
 ;;{{{ GPL
 
@@ -139,9 +139,14 @@ string."
 ;;}}}
 ;;{{{ Ensure fboundp
 
-(defun mmm-ensure-fboundp (symbol)
-  "Return SYMBOL if it is `fboundp', else nil."
-  (if (fboundp symbol) symbol nil))
+(defun mmm-ensure-modename (symbol)
+  "Return SYMBOL if it is a valid submode name, else nil.
+Valid submode names are either `fboundp' or present as the `car' of an
+element in `mmm-major-mode-preferences'."
+  (if (or (fboundp symbol)
+          (assq symbol mmm-major-mode-preferences))
+      symbol
+    nil))
 
 ;;}}}
 

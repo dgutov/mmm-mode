@@ -40,9 +40,8 @@
   (let ((modestr (intern (if (string-match "mode\\'" string)
                              string
                            (concat string "-mode")))))
-    (if (fboundp modestr)
-        modestr
-      (signal 'mmm-no-matching-submode nil))))
+    (or (mmm-ensure-modename modestr)
+        (signal 'mmm-no-matching-submode nil))))
 
 (mmm-add-classes
  `((universal
