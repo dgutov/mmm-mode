@@ -100,6 +100,7 @@ Customizing MMM Mode
 * Mode Line::                   What is displayed in the mode line.
 * Key Bindings::                Customizing the MMM Mode key bindings.
 * Local Variables::             What local variables are saved for submodes.
+* Changing Classes::            Changing the supplied submode classes.
 * Hooks::                       How to make MMM Mode run your code.
 
 Supplied Submode Classes
@@ -133,6 +134,7 @@ How MMM Mode selects submode classes
 
 * File Classes::                Classes for a single file.
 * Mode-Ext Classes::            Classes for a given mode or extension.
+* Global Classes::              Classes for all MMM Mode buffers.
 
 MMM Global Mode
 
@@ -400,7 +402,7 @@ off) manually with @kbd{M-x mmm-mode}, in which case it applies all
 submode classes associated with the buffer. Turning MMM Mode off
 automatically removes all submode regions from the buffer.
 
-@deffn Command mmm-mode arg
+@deffn Command mmm-mode @var{arg}
 Toggle the state of MMM Mode in the current buffer. If @var{arg} is
 supplied, turn MMM Mode on if and only if @var{arg} is positive.
 @end deffn
@@ -512,6 +514,7 @@ in a later chapter.
 @menu
 * File Classes::                Classes for a single file.
 * Mode-Ext Classes::            Classes for a given mode or extension.
+* Global Classes::              Classes for all MMM Mode buffers.
 @end menu
 
 
@@ -533,7 +536,7 @@ desired value of @code{mmm-classes} for the file in question. It can
 also be done with a local variables list at the end of the file.
 
 
-@node Mode-Ext Classes,  , File Classes, Selecting Classes
+@node Mode-Ext Classes, Global Classes, File Classes, Selecting Classes
 @comment  node-name,  next,  previous,  up
 @section Submode Classes Associated with Modes and Extensions
 
@@ -559,7 +562,7 @@ buffers even if there are no actual submode classes being applied.
 @xref{Global Mode}.
 @end defopt
 
-@defun mmm-add-mode-ext-class mode ext class
+@defun mmm-add-mode-ext-class @var{mode} @var{ext} @var{class}
 This function adds an element to @code{mmm-mode-ext-classes-alist},
 associating the submode class @var{class} with the major mode @var{mode}
 and extension @var{ext}.
@@ -569,6 +572,38 @@ the value of @code{mmm-mode-ext-classes-alist}, rather than setting it
 directly. In this version it is provided purely for convenience and
 backward compatibility.
 @end defun
+
+
+@node Global Classes,  , Mode-Ext Classes, Selecting Classes
+@comment  node-name,  next,  previous,  up
+@section Globally Applied Classes and the Universal Class
+
+In addition to file-local and mode-ext-associated submode classes, MMM
+Mode also allows you to specify that certain submode classes apply to
+@emph{all} buffers in which MMM Mode is enabled.
+
+@defopt mmm-global-classes
+This variable's value should be a list of submode classes that apply to
+all buffers with MMM Mode on.  It can be overriden in a file local
+variables list, such as to disable global class for a specific file.
+Its default value is @code{(universal)}.
+@end defopt
+
+The default global class is the ``universal class'', which is defined in
+the file @file{mmm-univ.el} (loaded automatically), and allows the
+author of text to specify that a certain section of it be in a specific
+major mode.  Thus, for example, when writing an email message that
+includes sample code, the author can allow readers of the message (who
+use emacs and MMM) to view the code in the appropriate major mode.  The
+syntax used is @samp{@{%@var{mode}%@} ... @{%/@var{mode}%@}}, where
+@var{mode} should be the name of the major mode, with or without the
+customary @samp{-mode} suffix: for example, both @samp{cperl} and
+@samp{cperl-mode} are acceptable.
+
+The universal class also defines an insertion key, @samp{/}, which
+prompts for the submode to use.  @xref{Insertion}.  The universal class
+is most useful when @code{mmm-global-mode} is set to @code{t};
+@ref{Global Mode}.
 
 
 @node Insertion, Re-parsing, Selecting Classes, Top
@@ -659,12 +694,11 @@ Describe @code{mmm-parse-buffer}, @code{mmm-parse-region},
 @cindex interactive mmm-ification, history of
 
 There are several commands you can use to create submode regions
-interactively, rather than by applying a submode class to a buffer. I
-find these commands (in particular, @code{mmm-ify-region}) to be most useful
-when I am editing a file or email message and want to include a snippet
-of code in some other language. For example, when I email someone a few
-lines of elisp code, I often put those lines in Emacs-Lisp mode to get
-the indentation nice and make sure the syntax is correct.
+interactively, rather than by applying a submode class to a buffer.
+These commands (in particular, @code{mmm-ify-region}), can be useful
+when editing a file or email message containing a snippet of code in
+some other language.  Also see @ref{Global Classes}, for an alternate
+approach to the same problem.
 
 @table @kbd
 @item C-c % C-r
@@ -810,15 +844,64 @@ buffers:
 @cindex customizing submode faces
 @cindex default submode face
 
-[add stuff here]
+By default, MMM Mode highlights all submode regions with a light gray
+background color.  You can change the color of the highlight, or turn it
+off entirely.  You might want to do this if you don't like how it looks,
+or if you want to use background colors for font-lock (the submode
+highlight, if present, overrides any font-lock background coloring).
+The highlight is done with the face @code{mmm-default-submode-face}
+(@pxref{Faces, , emacs, The Emacs Manual}) which can be customized,
+either through the Emacs ``customize'' interface or using direct Lisp
+commands.  To turn the highlight off, add the following line to your
+@file{.emacs} file:
 
-This can conflict with font-lock, if font-lock wants to use a background
-color. In such cases, the submode face takes precedence. If this bothers
-you, you can turn it off.
+@lisp
+(set-face-background 'mmm-default-submode-face nil)
+@end lisp
+
+To set the highlight color, a similar syntax can be used:
+
+@lisp
+(set-face-background 'mmm-default-submode-face "blue")
+@end lisp
+
+Of course, other aspects of the face can also be set, such as the
+foreground color, bold, underline, etc.  These are more likely to
+conflict with font-lock, however, so only a background color is
+recommended.
+
 
 @node Mode Line, Key Bindings, Submode Faces, Top
 @comment  node-name,  next,  previous,  up
 @chapter Customizing the Mode Line Display
+
+By default, when in a submode region, MMM Mode changes the section of
+the mode line (@pxref{Mode Line, , , emacs, The Emacs Manual}) that
+normally displays the major mode name---for example, @samp{HTML}---to
+instead show both the dominant major mode and the currently active
+submode---for example, @samp{HTML[CPerl]}.  You can change this format,
+however.
+
+@defopt mmm-submode-mode-line-format
+The value of this variable should be a string containing one or both of
+the escape sequences @samp{~M} and @samp{~m}.  The string displayed in
+the major mode section of the mode line when in a submode is obtained by
+replacing all occurrences of @samp{~M} with the dominant major mode name
+and @samp{~m} with the currently active submode name.  For example, to
+display only the currently active submode, set this variable to
+@samp{~m}.  The default value is @samp{~M[~m]}.
+@end defopt
+
+The MMM minor mode also normally displays the string @samp{MMM} in the
+minor mode section of the mode line to indicate when it is active.  You
+can customize or disable this as well.
+
+@defopt mmm-mode-string
+This string is displayed in the minor mode section of the mode line when
+the MMM minor mode is active.  If nonempty, it should begin with a space
+to separate the MMM indicator from that of other minor modes.  To
+eliminate the indicator entirely, set this variable to the empty string.
+@end defopt
 
 
 @node Key Bindings, Local Variables, Mode Line, Top
@@ -826,14 +909,56 @@ you, you can turn it off.
 @chapter Customizing the MMM Mode Key Bindings
 
 
-@node Local Variables, Hooks, Key Bindings, Top
+
+@node Local Variables, Changing Classes, Key Bindings, Top
 @comment  node-name,  next,  previous,  up
 @chapter Changing Saved Local Variables
 
 
-@node Hooks, Mason, Local Variables, Top
+
+@node Changing Classes, Hooks, Local Variables, Top
+@comment  node-name,  next,  previous,  up
+@chapter Changing the Supplied Submode Classes
+
+
+
+
+@node Hooks, Mason, Changing Classes, Top
 @comment  node-name,  next,  previous,  up
 @chapter Hooks Provided by MMM Mode
+
+MMM Mode defines several hook variables (@pxref{Hooks, , , emacs, The
+Emacs Manual}) which are run at different times.  The most often used is
+@code{mmm-major-mode-hook} which is described in @ref{Major Mode Hook},
+but there are a couple others.
+
+@defvar mmm-mode-hook
+This normal hook is run whenever MMM Mode is enabled in a buffer.
+@end defvar
+
+@defvar mmm-@var{major-mode}-hook
+This is actually a whole set of hook variables, a different one for
+every major mode.  Whenever MMM Mode is enabled in a buffer, the
+corresponding hook variable for the dominant major mode is run.
+@end defvar
+
+@defvar mmm-@var{submode}-submode-hook
+Again, this is a set of one hook variable per major mode.  These hooks
+are run whenever a submode region of the corresponding major mode is
+created in any buffer, with point at the start of the new submode
+region.
+@end defvar
+
+@defvar mmm-@var{class}-class-hook
+This is a set of one hook variable per submode class.  These hooks are
+run when a submode class is first applied to a given buffer.
+@end defvar
+
+Submode classes also have a @code{:creation-hook} parameter which should
+be a function to run whenever a submode region is created with that
+class, with point at the beginning of the submode region.  This can be
+set for supplied submode classes with @code{mmm-set-class-parameter};
+@ref{Changing Classes}.
 
 
 @node Mason, Eval-Elisp, Hooks, Top
