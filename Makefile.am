@@ -4,7 +4,7 @@
 
 lisp_LISP = mmm-compat.el mmm-vars.el mmm-utils.el mmm-auto.el \
   mmm-region.el mmm-class.el mmm-cmds.el mmm-mode.el \
-  mmm-sample.el mmm-mason.el
+  mmm-sample.el mmm-mason.el mmm-univ.el
 
 info_TEXINFOS = mmm.texinfo
 
