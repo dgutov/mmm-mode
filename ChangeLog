@@ -1,5 +1,12 @@
 2000-06-08  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
 
+	* configure.in, mmm-vars.el: Released 0.3.9.
+
+	* mmm-region.el (use-local-map):
+	Conditioned advice definition on not XEmacs.
+
+2000-06-08  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
 	* mmm-region.el (use-local-map):
 	Conditioned advice definition on not XEmacs.
 
