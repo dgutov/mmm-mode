@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.48 2001/05/16 23:19:05 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.49 2002/03/09 01:41:34 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -100,7 +100,8 @@
 ;;{{{ Save Local Variables
 
 (defvar mmm-c-derived-modes
-  '(c-mode c++-mode objc-mode pike-mode java-mode jde-mode javascript-mode))
+  '(c-mode c++-mode objc-mode pike-mode java-mode jde-mode javascript-mode
+    php-mode))
 
 (defvar mmm-save-local-variables 
   `(;; Don't use `function' (#') here!!  We're already inside `quote'!
