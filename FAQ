@@ -2,6 +2,14 @@
               Frequently Asked Questions about MMM Mode
               =========================================
 
+* How do I write/capitalize the name of this package/mode?
+
+However you want.  The author says `MMM Mode' (and occasionally `MMM')
+when discussing the entire package, and `mmm-mode' when discussing the
+emacs mode or function.  He does think, however, that `Mmm' looks
+rather ugly, although that is how SourceForge insists on capitalizing
+the name of the mailing list.
+
 * How do I get rid of that ugly gray background color?
 
 Put the following line in your Emacs initialization file:
