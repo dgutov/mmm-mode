@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.5 2000/06/13 20:01:50 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.6 2000/06/23 22:58:54 mas Exp $
 
 ;;{{{ GPL
 
@@ -82,6 +82,7 @@
 (defcustom mmm-save-local-variables 
   '(comment-start 
     comment-end
+    comment-line-start-skip     ; For fortran-mode
     comment-start-skip
     comment-column
     comment-indent-function
