@@ -1,14 +1,14 @@
 ;;; mmm-mode.el --- Allow Multiple Major Modes in a buffer
 
-;; Copyright (C) 1999 by Michael Abraham Shulman
+;; Copyright (C) 1999, 2004 by Michael Abraham Shulman
 
 ;; Emacs Lisp Archive Entry
 ;; Package: mmm-mode
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
 ;; Keywords: convenience, faces, languages, tools
-;; Version: 0.4.7
+;; Version: 0.4.8
 
-;; Revision: $Id: mmm-mode.el,v 1.16 2003/03/09 17:04:03 viritrilbia Exp $
+;; Revision: $Id: mmm-mode.el,v 1.17 2004/06/16 14:14:18 alanshutko Exp $
 
 ;;{{{ GPL
 

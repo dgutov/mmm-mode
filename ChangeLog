@@ -1,5 +1,11 @@
 2004-06-16  Alan Shutko  <ats@acm.org>
 
+	* version.texi: Release 0.4.8.
+
+	* mmm-vars.el: Release 0.4.8.
+
+	* mmm-mode.el: Release 0.4.8.
+
 	* mmm-noweb.el (mmm-syntax-region-list)
 	(mmm-syntax-other-regions, mmm-word-other-regions)
 	(mmm-space-other-regions, mmm-undo-syntax-other-regions): Added

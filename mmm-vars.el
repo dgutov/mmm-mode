@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000, 2004 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-vars.el,v 1.55 2004/06/01 14:42:49 alanshutko Exp $
+;; Version: $Id: mmm-vars.el,v 1.56 2004/06/16 14:14:18 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -969,7 +969,7 @@ The CLASSES are all made private, i.e. non-user-visible."
 ;;}}}
 ;;{{{ Version Number
 
-(defconst mmm-version "0.4.7a"
+(defconst mmm-version "0.4.8"
   "Current version of MMM Mode.")
 
 (defun mmm-version ()
