@@ -159,7 +159,7 @@ MMM Mode is a general extension to Emacs which has many uses. Currently,
 its most common usage is to edit Mason components. Mason is a
 ``Perl-based web site development and delivery engine'' which executes
 Perl code embedded in HTML and other types of documents. For more
-information, see @url{http://www.masonhq.com}. MMM Mode comes with a
+information, see @uref{http://www.masonhq.com}. MMM Mode comes with a
 submode class (@pxref{Submode Classes}) for editing Mason components
 (@pxref{Mason}).
 
@@ -840,50 +840,61 @@ you, you can turn it off.
 @comment  node-name,  next,  previous,  up
 @chapter Mason: Perl in HTML
 
-The Mason submode class is defined in the file "mmm-mason.el", so to use
-it, you will need to @code{(require 'mmm-mason)}.
+Mason is a syntax to embed Perl code in HTML and other documents.  See
+@uref{http://www.masonhq.com} for more information.  The submode class
+for Mason components is called `mason' and must be loaded from
+`mmm-mason.el' before it can be used; the easiest way to put the
+following line in .emacs:
 
-FIXME: This is copied from the comments in @file{mmm-mason.el}.  Some
-more info would be nice.
+@lisp
+(require 'mmm-mason)
+@end lisp
 
-;; CPerl Workaround
+The current Mason class is intended to correctly recognize all syntax
+valid in Mason 0.87.  There are insertion keys for most of the available
+syntax; use @code{mmm-insertion-help} (@kbd{C-c % h} by default) with
+Mason on to get a list.
 
-;; Note that CPerl mode tends to think it starts in the middle of an
-;; expression at the beginning of a submode region, and indents the
-;; first statement a couple extra columns. A workaround I've found is
-;; to begin all multiline Perl sections with an empty statement:
+If you want to have mason submodes automatically in all Mason files, you
+can use automatic mode and filename associations; the details depend on
+what you call your Mason components and what major mode you use.
+@xref{Mode-Ext Classes}.  If you use an extension for your Mason files
+that emacs does not automatically place in your preferred HTML Mode, you
+will probably want to associate that extension with your HTML Mode as
+well; @ref{Choosing Modes, , , emacs, The Emacs Manual}.  This also goes
+for ``special'' Mason files such as autohandlers and dhandlers.
 
-;; <%perl>;
-;; print $var;
-;; </%perl>
+There are also certain problems with CPerl mode in submode regions.
+(Not to say that the original perl-mode would do any better---it hasn't
+been much tried.)  First of all, the first line of a Perl section is
+usually indented as if it were a continuation line.  A fix for this is
+to start with a semicolon on the first line.  The insertion key commands
+do this whenever the Mason syntax allows it.
 
-;; It isn't pretty, but it isn't ugly either, and it works better than
-;; anything else I can think of.
+@example
+<%perl>;
+print $var;
+</%perl>
+@end example
 
-;; PSGML Workaround
+In addition, some users have reported that the CPerl indentation
+sometimes does not work. This problem has not yet been tracked down,
+however, and more data about when it happens would be helpful.
 
-;; Michael Alan Dorman has reported problems with psgml-mode and
-;; Mason. He suggests adding these lines to .emacs to turn it off.
+Michael Alan Dorman has reported problems using PSGML with Mason.  He
+suggests adding these lines to @file{.emacs} to turn it off.
 
-;; (delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
-;; (delete '("\\.shtml$" . sgml-html-mode) auto-mode-alist)
+@lisp
+(delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
+(delete '("\\.shtml$" . sgml-html-mode) auto-mode-alist)
+@end lisp
 
-;; Maybe these problems will be fixed in the future.
-
-;; autohandlers and dhandlers
-
-;; Another useful thing to do with Mason is putting autohandlers and
-;; dhandlers in html-mode (and thus, assuming mmm-mode-ext-classes is
-;; set up correctly, mmm-mode/mason). One way to do this is a line
-;; such as
-
-;; %# -*- mode: html; mmm-classes: mason -*-
-
-;; at the top of each such file. Another option is to a line like this
-;; to .emacs, which will put all files named "autohandler" or
-;; "dhandler" into html-mode:
-
-;; (add-to-list 'auto-mode-alist '("\\(auto\\|d\\)handler\\'" . html-mode))
+Other users report using PSGML with Mason and MMM Mode without
+difficulty.  If you don't have problems and want to use PSGML, simply
+replace @code{html-mode} everywhere in the suggested code with
+@code{sgml-html-mode} or @code{sgml-mode}.  Similarly, if you are using
+XEmacs and want to use the alternate HTML mode @code{hm--html-mode},
+replace @code{html-mode} with that symbol.
 
 
 @node Eval-Elisp, HTML Here-documents, Mason, Top
