@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.13 2000/06/29 17:41:05 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.14 2000/06/30 02:35:31 mas Exp $
 
 ;;{{{ GPL
 
@@ -189,10 +189,14 @@ the name of the submode."
 ;;{{{ Submode Classes
 
 (defvar mmm-classes nil
-  "*List of classes of submodes that apply to a file.
-Generally set in a local variables list. Can either be one symbol, or
-a list of symbols. Automatically buffer-local.")
+  "*List of submode classes that apply to a buffer.
+Generally set in a file local variables list.  Can either be one
+symbol, or a list of symbols.  Automatically buffer-local.")
 (make-variable-buffer-local 'mmm-classes)
+
+(defvar mmm-global-classes '(universal)
+  "*List of submode classes that apply to all buffers.
+Can be overridden in a file local variables list.")
 
 ;;}}}
 ;;{{{ Modes and Extensions
@@ -340,11 +344,8 @@ an existing buffer."
   :group 'mmm
   :type 'hook)
 
-(defun mmm-run-major-mode-hook (&optional buffer)
-  (save-excursion
-    (if (buffer-live-p buffer)
-        (set-buffer buffer))
-    (run-hooks 'mmm-major-mode-hook)))
+(defun mmm-run-major-mode-hook ()
+  (run-hooks 'mmm-major-mode-hook))
 
 ;;}}}
 ;;{{{ MMM Global Mode
@@ -551,12 +552,13 @@ Uses `mmm-mode-ext-classes-alist' to find submode classes."
                         (string-match ext (buffer-file-name))))
            t))))
 
-(defun mmm-get-all-classes ()
+(defun mmm-get-all-classes (global)
   "Return a list of all classes applicable to the current buffer.
 These come from mode/ext associations, `mmm-classes', and interactive
-history."
+history, as well as `mmm-global-classes' if GLOBAL is non-nil."
   (append mmm-interactive-history
           (if (listp mmm-classes) mmm-classes (list mmm-classes))
+          (if global mmm-global-classes ())
           (mmm-get-mode-ext-classes)))
 
 ;;}}}
