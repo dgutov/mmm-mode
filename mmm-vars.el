@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.23 2000/07/29 22:59:35 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.24 2000/07/29 23:11:35 mas Exp $
 
 ;;{{{ GPL
 
@@ -503,7 +503,11 @@ skeleton defined for OTHER-KEY but pass it the argument ARG as the
 insertion should have the symbol `_' where point \(or wrapped text)
 should go, and the symbol `@' in four different places: at the
 beginning of the front delimiter, the beginning of the submode region,
-the end of the submode region, and the end of the back delimiter.")
+the end of the submode region, and the end of the back delimiter.
+
+PRIVATE, if supplied and non-nil, means that this class is a private
+or internal class, usually one invoked by another class via :classes,
+and is not for the user to see.")
 
 (defun mmm-add-classes (classes)
   "Add the submode classes CLASSES to `mmm-classes-alist'."
