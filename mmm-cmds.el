@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.10 2000/07/29 22:42:03 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.11 2000/08/24 22:52:58 mas Exp $
 
 ;;{{{ GPL
 
@@ -88,8 +88,8 @@ nOffset from Front Regexp:
 sBack Regexp: 
 nOffset from Back Regexp: 
 nNumber of matched substrings to save: ")
-  (let ((args (mmm-save-keywords submode front back
-                front-offset back-offset save-matches)))
+  (let ((args (mmm-save-keywords submode front back front-offset
+                                 back-offset save-matches)))
     (apply #'mmm-ify args)
     (mmm-add-to-history args))
   (mmm-enable-font-lock submode))
