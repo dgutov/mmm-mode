@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.16 2000/08/21 23:26:29 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.17 2001/01/12 23:39:27 mas Exp $
 
 ;;{{{ GPL
 
@@ -70,6 +70,8 @@
     (html-js "mmm-sample" nil)
     (here-doc "mmm-sample" nil)
     (embperl "mmm-sample" nil)
+    (eperl "mmm-sample" nil)
+    (jsp "mmm-sample" nil)
     (file-variables "mmm-sample" nil)
     (rpm-sh "mmm-rpm" t)
     (rpm "mmm-rpm" nil)
