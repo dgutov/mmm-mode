@@ -4,6 +4,25 @@ See the file COPYING for copying conditions.
 
 Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
+* Changes in MMM Mode 0.4.2
+
+** Global Classes and `Universal' Class
+
+The new variable `mmm-global-classes' is the inverse of `mmm-classes'
+in that it contains submode classes which apply to all MMM Mode
+buffers unless turned off manually with file-local variables.  By
+default, it contains the class `universal', which defines the syntax
+%[MODE]% ... %[/MODE]% to specify regions of any mode.  This allows,
+for instance, example code embedded in an email to be both edited by
+the sender and viewed by the receiver in an appropriate mode.
+
+** New Embperl Submode Class
+
+The new supplied submode class `embperl', which can be loaded with
+(require 'mmm-sample), detects the Embperl syntax [+...+] (and so on)
+for embedded Perl code.
+
+
 * Changes in MMM Mode 0.4.1
 
 ** Font Lock Parsing Speed Improved
