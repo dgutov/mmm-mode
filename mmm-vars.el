@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.19 2000/07/13 23:48:04 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.20 2000/07/21 00:50:36 mas Exp $
 
 ;;{{{ GPL
 
@@ -66,6 +66,16 @@
 (put 'mmm-invalid-submode-class
      'error-message
      "Invalid or undefined submode class")
+
+;; Signalled by :match-submode functions when they are unable to
+;; resolve a submode.  Should always be caught and never seen by the
+;; user.
+(put 'mmm-no-matching-submode
+     'error-conditions
+     '(mmm-no-matching-submode mmm-error error))
+(put 'mmm-no-matching-submode
+     'error-message
+     "Internal error: no matching submode.")
 
 ;;}}}
 
@@ -395,7 +405,7 @@ Do not set this variable directly; use the function `mmm-mode'.")
 
 ;; :parent could be an all-class argument.  Same with :keymap.
 (defvar mmm-classes-alist nil
-  "*Alist containing all defined mmm submode classes.
+  "Alist containing all defined mmm submode classes.
 Each element looks like \(CLASS . ARGS) where CLASS is a symbol
 representing the submode class and ARGS is a list of keyword
 arguments, called a \"class specifier\". There are a large number of
@@ -421,7 +431,9 @@ submode regions, a symbol such as `cperl-mode' or `emacs-lisp-mode',
 while MATCH-SUBMODE must be a function to be called immediately after
 a match is found for FRONT, which is passed one argument, the form of
 the front delimiter \(found from FRONT-FORM, below), and return a
-symbol such as SUBMODE would be set to.
+symbol such as SUBMODE would be set to.  If MATCH-SUBMODE detects an
+invalid match--for example a specified mode which is not `fboundp'--it
+should \(signal 'mmm-no-matching-submode nil).
 
 FRONT and BACK are the means to find the submode regions, and can be
 either buffer positions \(number-or-markers), regular expressions, or
