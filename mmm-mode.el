@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.3 2000/04/30 08:03:10 mas Exp $
+;; Version: $Id: mmm-mode.el,v 1.4 2000/05/18 18:29:37 mas Exp $
 ;; Keywords: convenience faces languages tools
 
 ;;{{{ GPL
@@ -89,14 +89,13 @@
 (require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-utils)
-(when t
-  (require 'mmm-vars)
-  (require 'mmm-auto)
-  (require 'mmm-region)
-  (require 'mmm-class)
-  ;; This file is set up to autoload by `mmm-auto.el'.
-  ;; (require 'mmm-cmds)
-  )
+(require 'mmm-vars)
+(require 'mmm-auto)
+(require 'mmm-region)
+(require 'mmm-class)
+;; This file is set up to autoload by `mmm-auto.el'.
+;; (require 'mmm-cmds)
+
 ;;{{{ Toggle Function
 
 (defvar mmm-mode nil
