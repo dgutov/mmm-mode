@@ -8,7 +8,7 @@
 ;; Keywords: convenience, faces, languages, tools
 ;; Version: 0.4.7
 
-;; Revision: $Id: mmm-mode.el,v 1.12 2001/02/23 22:44:28 viritrilbia Exp $
+;; Revision: $Id: mmm-mode.el,v 1.13 2001/05/16 23:19:27 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -319,6 +319,8 @@ Programming | Tools | Mmm, except the major mode and submode hooks
   (mmm-valid-buffer
    (unless mmm-mode
      (setq mmm-primary-mode major-mode)
+     (when (fboundp 'c-make-styles-buffer-local)
+       (c-make-styles-buffer-local t))
      (mmm-update-mode-info major-mode)
      (setq mmm-region-saved-locals-for-dominant
            (list* (list 'font-lock-cache-state nil)
@@ -336,7 +338,7 @@ Programming | Tools | Mmm, except the major mode and submode hooks
      (setq mmm-mode t)
      (condition-case err
          (mmm-apply-all)
-       (mmm-invalid-submode-class
+       (mmm-error
         ;; Complain, but don't die, since we want files to go ahead
         ;; and be opened anyway, and the mode to go ahead and be
         ;; turned on. Should we delete all previously made submode
