@@ -1,3 +1,7 @@
+2004-06-02  Alan Shutko  <ats@acm.org>
+
+	* mmm-sample.el (html-js): Support JS version in language attribute.
+
 2004-06-01  Alan Shutko  <ats@acm.org>
 
 	* mmm-vars.el (mmm-save-local-variables): Updated cc-mode local

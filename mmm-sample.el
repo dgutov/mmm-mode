@@ -1,9 +1,9 @@
 ;;; mmm-sample.el --- Sample MMM submode classes
 
-;; Copyright (C) 2003 by Michael Abraham Shulman
+;; Copyright (C) 2003, 2004 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-sample.el,v 1.27 2003/04/28 15:16:15 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.28 2004/06/03 00:53:52 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -58,7 +58,7 @@
     :submode javascript
     :face mmm-code-submode-face
     :delimiter-mode nil
-    :front "<script\[^>\]*\\(language=\"javascript\"\\|type=\"text/javascript\"\\)\[^>\]*>"
+    :front "<script\[^>\]*\\(language=\"javascript\\([0-9.]*\\)\"\\|type=\"text/javascript\"\\)\[^>\]*>"
     :back"</script>"
     :insert ((?j js-tag nil @ "<script language=\"JavaScript\">"
                  @ "\n" _ "\n" @ "</script>" @))
