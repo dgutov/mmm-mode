@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.29 2000/08/23 03:53:45 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.30 2000/08/29 09:27:34 mas Exp $
 
 ;;{{{ GPL
 
@@ -99,7 +99,10 @@
     comment-indent-function
     comment-line-break-function
     sentence-end
-    ,@(if mmm-xemacs '(mode-popup-menu) '())
+    ,@(when mmm-xemacs
+        '(mode-popup-menu
+          (((lambda () current-menubar) . set-buffer-menubar))
+          ))
     font-lock-keywords
     font-lock-keywords-only
     font-lock-keywords-case-fold-search
@@ -393,13 +396,11 @@ an existing buffer."
 ;;}}}
 ;;{{{ Buffer File Name
 
-(defvar mmm-set-buffer-file-name-p nil
-  "If non-nil, temporary buffers have `buffer-file-name' set.
-If so, is set to the corresponding value of the parent buffer.  In
-general, this has been found to cause more problems than it solves.
-If you have code in a mode hook that depends on `buffer-file-name'
-being set, I suggest you change it, but if that is infeasible, you may
-set this variable to a non-nil value instead.")
+(defvar mmm-set-file-name-for-modes '(mew-draft-mode)
+  "List of modes for which temporary buffers have a file name.
+If so, it is the same as that of the parent buffer.  In general, this
+has been found to cause more problems than it solves, but some modes
+require it.")
 
 ;;}}}
 
