@@ -1,3 +1,4 @@
-@set UPDATED 18 February 2001
+@set UPDATED 21 February 2003
+@set UPDATED-MONTH February 2003
 @set EDITION 0.4.7
 @set VERSION 0.4.7
