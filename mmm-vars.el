@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000, 2004 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-vars.el,v 1.56 2004/06/16 14:14:18 alanshutko Exp $
+;; Version: $Id: mmm-vars.el,v 1.57 2004/11/19 02:33:36 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -518,6 +518,7 @@ unnecessary. It probably won't go away, though."
 
 (defcustom mmm-major-mode-preferences
   '((perl cperl-mode perl-mode)
+    (python python-mode python-mode)
     (javascript javascript-mode c++-mode)
     (java jde-mode java-mode c++-mode)
     (css css-mode c++-mode))

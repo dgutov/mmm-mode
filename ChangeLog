@@ -1,3 +1,13 @@
+2004-11-18  Alan Shutko  <ats@acm.org>
+
+	* mmm-myghty.el: New mode from Ben Bangert.
+
+	* mmm-vars.el (mmm-major-mode-preferences): Added Python prefs,
+	also from Ben.
+
+	* mmm-auto.el (mmm-autoloaded-classes): Merged Ben Bangert's
+	Myghty class.
+
 2004-06-16  Alan Shutko  <ats@acm.org>
 
 	* version.texi: Release 0.4.8.
