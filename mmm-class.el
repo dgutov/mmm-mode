@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.7 2000/07/11 02:38:08 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.8 2000/07/21 00:51:40 mas Exp $
 
 ;;{{{ GPL
 
@@ -138,23 +138,29 @@ the rest of the arguments are for an actual class being applied. See
    (t
     (mmm-save-all
      (goto-char start)
-     (loop for (beg end front-form back-form matched-submode) =
+     (loop for (beg end matched-front matched-back matched-submode) =
            (apply #'mmm-match-region :start (point)
-                  (mmm-save-keywords front back stop
-                    save-matches front-offset back-offset front-verify
-                    back-verify front-form back-form match-submode))
+                  (mmm-save-keywords
+                   front back stop save-matches front-offset
+                   back-offset front-verify back-verify front-form
+                   back-form match-submode))
            while beg
-           while (/= beg end)   ; Sanity check
-           do
+           while (or (not end) (/= beg end)) ; Sanity check
+           if end do            ; match-submode, if present, succeeded.
            (condition-case nil
                (mmm-make-region
                 (or matched-submode submode) beg end
-                :face face :front front-form :back back-form
+                :front matched-front :back matched-back
                 :beg-sticky beg-sticky :end-sticky end-sticky
-                :creation-hook creation-hook)
+                :face face :creation-hook creation-hook)
              ;; If our region is invalid, go back to the end of the front
              ;; match and continue on.
-             (mmm-invalid-parent (goto-char (- beg front-offset)))))))))
+             (mmm-invalid-parent (goto-char (- beg front-offset))))
+           else do
+           ;; If match-submode was unable to find a match, go back
+           ;; to the end of the front match and continue on.
+           (goto-char (- beg front-offset))
+           )))))
 
 ;;}}}
 ;;{{{ Match Regions
@@ -163,14 +169,21 @@ the rest of the arguments are for an actual class being applied. See
     (&key front back start stop front-verify back-verify front-offset
           back-offset save-matches front-form back-form match-submode)
   "Find the first valid region between point and STOP.
-Return \(BEG END FRONT-FORM BACK-FORM SUBMODE) specifying the
-region.  See `mmm-match-and-verify' for the valid values of FRONT and
-BACK \(markers, regexps, or functions)."
+Return \(BEG END FRONT-FORM BACK-FORM SUBMODE) specifying the region.
+See `mmm-match-and-verify' for the valid values of FRONT and BACK
+\(markers, regexps, or functions).  A nil value for END means that
+MATCH-SUBMODE failed to find a valid submode."
   (when (mmm-match-and-verify front start stop front-verify)
     (let* ((beg (+ (match-end 0) front-offset))
            (front-form (mmm-get-form front-form))
            (submode (if match-submode
-                        (mmm-save-all (funcall match-submode front-form))
+                        (condition-case nil
+                            (mmm-save-all
+                             (funcall match-submode front-form))
+                          (mmm-no-matching-submode
+                           (return-from
+                               mmm-match-region
+                             (values beg nil nil nil nil))))
                       nil)))
       (when (mmm-match-and-verify (mmm-format-matches back save-matches)
                                   beg stop back-verify)
