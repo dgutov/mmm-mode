@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.18 2001/02/08 23:37:53 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.19 2001/04/27 01:10:09 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -64,7 +64,7 @@
    (js-inline
     :submode javascript
     :face mmm-code-submode-face
-    :front "on\w+=\""
+    :front "on\\w+=\""
     :back "\"")))
 
 ;;}}}
