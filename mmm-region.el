@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-region.el,v 1.37 2003/03/19 14:26:45 viritrilbia Exp $
+;; Version: $Id: mmm-region.el,v 1.38 2003/06/19 11:24:04 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -774,7 +774,9 @@ of the REGIONS covers START to STOP."
                 (when (get (car elt) 'mmm-font-lock-mode)
                   (mmm-fontify-region-list (car elt) (cdr elt))))
             (mmm-regions-alist start stop)))
-  (mmm-update-submode-region)
+  ;; With jit-lock, this causes blips in the mode line and menus.
+  ;; Shouldn't be necessary here, since it's in post-command-hook too.
+  ;;(mmm-update-submode-region)
   (when loudly (message nil)))
 
 (defun mmm-fontify-region-list (mode regions)

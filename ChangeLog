@@ -1,3 +1,16 @@
+2003-03-25  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-mode.spec: Added file for building SRPMs, from bishop
+
+	* autogen.sh: Added file for building from CVS
+
+2003-03-22  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-sample.el (html-php): Added new submode class.
+	(eperl): Corrected, added comment detection.
+
+	* mmm-cmds.el (mmm-insert-by-key): Added undo collapsing.
+
 2003-03-09  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
 
 	* mmm-vars.el (mmm-set-mode-line): Added support for "buffer mode"
