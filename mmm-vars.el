@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.20 2000/07/21 00:50:36 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.21 2000/07/22 19:48:06 mas Exp $
 
 ;;{{{ GPL
 
@@ -486,17 +486,17 @@ INSERT's value should be list of elements of the form \(KEY NAME .
 SPEC). Each KEY should be either a character, a function key symbol,
 or a dotted list \(MOD . KEY) where MOD is a symbol for a modifier
 key. The use of any other modifier than meta is discouraged, as
-`mmm-insert-modifiers' defaults to \(control), and other modifiers are
-not very portable. Each NAME should be a symbol representing the
-insertion for that key. Each SPEC can be either a skeleton, suitable
-for passing to `skeleton-insert' to create a submode region, or a
-dotted pair \(OTHER-KEY . ARG) meaning to use the skeleton defined for
-OTHER-KEY but pass it the argument ARG as the `str' variable, possible
-replacing a prompt string. Skeletons for insertion should have the
-symbol `_' where point \(or wrapped text) should go, and the symbol
-`@' in four different places: at the beginning of the front delimiter,
-the beginning of the submode region, the end of the submode region,
-and the end of the back delimiter.")
+`mmm-insert-modifiers' is sometimes set to \(control), and other
+modifiers are not very portable. Each NAME should be a symbol
+representing the insertion for that key. Each SPEC can be either a
+skeleton, suitable for passing to `skeleton-insert' to create a
+submode region, or a dotted pair \(OTHER-KEY . ARG) meaning to use the
+skeleton defined for OTHER-KEY but pass it the argument ARG as the
+`str' variable, possible replacing a prompt string. Skeletons for
+insertion should have the symbol `_' where point \(or wrapped text)
+should go, and the symbol `@' in four different places: at the
+beginning of the front delimiter, the beginning of the submode region,
+the end of the submode region, and the end of the back delimiter.")
 
 (defun mmm-add-classes (classes)
   "Add the submode classes CLASSES to `mmm-classes-alist'."
