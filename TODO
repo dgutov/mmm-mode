@@ -3,6 +3,10 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
+Apostrophes mess up Perl parsing in XEmacs but not Emacs.  I thought
+it was because XEmacs sets `font-lock-beginning-of-syntax-function'
+after MMM does, but changing that that didn't fix it.
+
 Improve re-parsing current region to use inclusion/offsets/etc.
 
 Add JDE-mode, JavaSQL (see +mmm), Eperl, ASP, etc.
