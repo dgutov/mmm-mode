@@ -4,6 +4,14 @@ See the file COPYING for copying conditions.
 
 Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
+* MMM Mode 0.4.6 is a bug-fix release with one user-visible change:
+
+** New Submode Class for RPM Spec Files
+
+Contributed by Marcus Harnisch, the `rpm' submode class allows editing
+appropriate parts of RPM spec files in shell-script mode.
+
+
 * Changes in MMM Mode 0.4.5
 
 ** Font-Lock works again in XEmacs

@@ -1,3 +1,66 @@
+2000-09-12  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* Checklist: Added comment about adding files to the distribution.
+
+	* README: Added comment about installing with multiple emacsen.
+
+	* Makefile.am: Added FAQ
+
+	* mmm-mode.el: Created Emacs Lisp Archive Entry
+
+2000-09-05  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm.texinfo: Set MASON_VERSION.
+
+	* mmm-cmds.el (mmm-display-insertion-key):
+	Prevented (nthcdr -1 ...); breaks in XEmacs.
+
+2000-08-29  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-vars.el (mmm-save-local-variables): Added abbrev-mode variables.
+
+	* mmm-region.el (mmm-update-mode-info):
+	Tested against `mmm-set-file-name-for-modes'.
+
+	* mmm-vars.el (mmm-set-file-name-for-modes):
+	Changed to a list for finer control.
+
+2000-08-24  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-region.el (mmm-make-region):
+	Explicitly set keyword defaults in &rest parameter.
+
+	* mmm-class.el (mmm-ify):
+	Explicitly set defaults for keywords in &rest parameter.
+
+2000-08-23  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-region.el, mmm-vars.el (mmm-set-buffer-file-name-p):
+	Added to control file name setting.
+
+	* mmm-vars.el (mmm-save-local-variables):
+	Added `mode-popup-menu' for XEmacs.
+
+	* mmm-region.el (mmm-update-mode-info):
+	Added some tests for XEmacs 20 to prevent
+	errors and unwanted prompts.
+	Cleared modified flag before killing leftover temporary buffers.
+
+2000-08-21  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm.texinfo:
+	Added comments on RPM Spec, File Variables, and Here-documents.
+
+	* mmm-auto.el: Autoloaded `rpm'.
+
+	* mmm-auto.el: Autoloaded `rpm-sh' submode class from mmm-rpm.el.
+
+	* mmm-rpm.el: Added file (contributed by Marcus Harnisch).
+
+2000-08-17  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-vars.el (mmm-never-modes): Added `forms-mode'.
+	
 2000-08-02  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
 
 	* configure.in, mmm-vars.el, version.texi: Released 0.4.5.
