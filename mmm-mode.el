@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.2 2000/04/30 01:47:04 mas Exp $
+;; Version: $Id: mmm-mode.el,v 1.3 2000/04/30 08:03:10 mas Exp $
 ;; Keywords: convenience faces languages tools
 
 ;;{{{ GPL
@@ -89,7 +89,7 @@
 (require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-utils)
-(progn
+(when t
   (require 'mmm-vars)
   (require 'mmm-auto)
   (require 'mmm-region)
