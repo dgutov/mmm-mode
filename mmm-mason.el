@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.8 2000/06/29 18:50:54 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.9 2000/07/12 05:45:29 mas Exp $
 
 ;;{{{ GPL
 
@@ -27,52 +27,8 @@
 ;;; Commentary:
 
 ;; This file contains the definition of an MMM Mode submode class for
-;; editing Mason components.
-
-;;{{{ CPerl Workaround
-
-;; Note that CPerl mode tends to think it starts in the middle of an
-;; expression at the beginning of a submode region, and indents the
-;; first statement a couple extra columns. A workaround I've found is
-;; to begin all multiline Perl sections with an empty statement:
-
-;; <%perl>;
-;; print $var;
-;; </%perl>
-
-;; It isn't pretty, but it isn't ugly either, and it works better than
-;; anything else I can think of.
-
-;;}}}
-;;{{{ PSGML Workaround
-
-;; Michael Alan Dorman has reported problems with psgml-mode and
-;; Mason. He suggests adding these lines to .emacs to turn it off.
-
-;; (delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
-;; (delete '("\\.shtml$" . sgml-html-mode) auto-mode-alist)
-
-;; I haven't experienced these problems as yet, so I have continued to
-;; use `sgml-html-mode'.  If you don't have problems, you can as well;
-;; replace `html-mode' everywhere in the suggested code with it.
-
-;;}}}
-;;{{{ autohandlers and dhandlers
-
-;; Another useful thing to do with Mason is putting autohandlers and
-;; dhandlers in html-mode (and thus, assuming mmm-mode-ext-classes is
-;; set up correctly, mmm-mode/mason). One way to do this is a line
-;; such as
-
-;; %# -*- mode: html; mmm-classes: mason -*-
-
-;; at the top of each such file. Another option is to a line like this
-;; to .emacs, which will put all files named "autohandler" or
-;; "dhandler" into html-mode:
-
-;; (add-to-list 'auto-mode-alist '("\\(auto\\|d\\)handler\\'" . html-mode))
-
-;;}}}
+;; editing Mason components.  See the file README.Mason for more
+;; details.
 
 ;;; Code:
 
