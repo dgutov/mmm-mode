@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.26 2000/08/29 09:28:02 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.27 2001/01/08 01:43:21 mas Exp $
 
 ;;{{{ GPL
 
@@ -301,19 +301,21 @@ If STRICT, only clear those strictly included, rather than partially."
 ;; BASIC UPDATING
 ;;{{{ Submode Info
 
-(defun mmm-update-mode-info (mode)
+(defun mmm-update-mode-info (mode &optional force)
   "Save the global-saved and buffer-saved variables for MODE.
 Global saving is done on properties of the symbol MODE and buffer
 saving in `mmm-buffer-saved-locals'.  This function must be called for
 both the dominant mode and all submodes, in each file.  Region-saved
 variables are initialized from `mmm-region-saved-locals-defaults',
-which is set here as well.  See `mmm-save-local-variables'."
+which is set here as well.  See `mmm-save-local-variables'.  If FORCE
+is non-nil, don't quit if the info is already there."
   (let ((buffer-entry (assq mode mmm-buffer-saved-locals))
         (region-entry (assq mode mmm-region-saved-locals-defaults))
         global-vars buffer-vars region-vars
         ;; kludge for XEmacs 20
         (html-helper-build-new-buffer nil))
-    (unless (and (get mode 'mmm-local-variables)
+    (unless (and (not force)
+                 (get mode 'mmm-local-variables)
                  buffer-entry
                  region-entry)
       (save-excursion
@@ -338,7 +340,8 @@ which is set here as well.  See `mmm-save-local-variables'."
                     ;; Code copied from font-lock.el to detect when font-lock
                     ;; should be on via global-font-lock-mode.
                     (and (or font-lock-defaults
-                             (assq major-mode font-lock-defaults-alist))
+                             (assq major-mode font-lock-defaults-alist)
+                             (assq major-mode font-lock-keywords-alist))
                          (or (eq font-lock-global-modes t)
                              (if (eq (car-safe font-lock-global-modes) 'not)
                                  (not (memq major-mode
@@ -348,7 +351,9 @@ which is set here as well.  See `mmm-save-local-variables'."
             (put mode 'mmm-font-lock-mode t))
           ;; Get the font-lock variables
           (when mmm-font-lock-available-p
-            (mmm-set-font-lock-defaults))
+            ;; To fool `font-lock-add-keywords'
+            (let ((font-lock-mode t))
+              (mmm-set-font-lock-defaults)))
           ;; These can't be in the local variables list, because we
           ;; replace their actual values, but we want to use their
           ;; original values elsewhere.
