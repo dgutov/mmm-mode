@@ -33,6 +33,13 @@ MODES AND EXTENSIONS
   (nil "\\`/var/www/mason/" mason)       ;; Any file in the directory
   (nil nil mason)                        ;; All buffers.
 
+  In order for any of these to work, you must set `mmm-global-mode' to
+  a non-nil value, such as `t' or `maybe' (the two of which mean
+  different things; see the documentation).  This can be done with a
+  line in .emacs such as the following:
+
+  (setq mmm-global-mode 'maybe)
+
   If you use an extension for your Mason files that emacs does not
   automatically place in your preferred HTML Mode (be it html-mode,
   sgml-html-mode, hm--html-mode, or whatever), you will probably want
@@ -49,6 +56,8 @@ MODES AND EXTENSIONS
 
   An alternate solution is to change the names of your autohandlers
   and dhandlers so that emacs recognizes them as HTML automatically.
+  Similar code can be used to recognize all files in a given directory
+  as HTML and/or Mason.
 
 CPERL PROBLEMS
 
