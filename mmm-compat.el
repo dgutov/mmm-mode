@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-compat.el,v 1.4 2000/07/11 21:57:28 mas Exp $
+;; Version: $Id: mmm-compat.el,v 1.5 2000/07/21 17:08:10 mas Exp $
 
 ;;{{{ GPL
 
@@ -153,6 +153,7 @@ This makes `@' in skeletons act approximately like it does in FSF."
                     '(@ ''(push (point) skeleton-positions)))))
 
 ;;}}}
+;;{{{ Make Temp Buffers (XEmacs)
 
 (defmacro mmm-make-temp-buffer (buffer name)
   "Return a buffer called NAME including the text of BUFFER.
@@ -164,6 +165,7 @@ This text should not be modified."
        (insert-buffer ,buffer)
        (current-buffer))))
 
+;;}}}
 ;;{{{ Font Lock (Emacs w/o X)
 
 (defvar mmm-font-lock-available-p (or window-system mmm-xemacs)
