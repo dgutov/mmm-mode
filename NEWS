@@ -4,6 +4,15 @@ See the file COPYING for copying conditions.
 
 Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
+* Changes in MMM Mode 0.4.5
+
+** Here-Document submode class improved
+
+Here-document names such as <<TEXT_EOF and <<END_PERL_CODE are now
+correctly recognized, and `mmm-here-doc-mode-alist' allows you to
+define your own mappings from here-document names to submodes.
+
+
 * Changes in MMM Mode 0.4.4
 
 ** Tab Completion in `mmm-ify-by-class' (`C-c % C-c')
