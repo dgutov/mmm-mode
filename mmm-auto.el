@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.10 2000/06/30 02:43:01 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.11 2000/06/30 03:26:48 mas Exp $
 
 ;;{{{ GPL
 
@@ -120,7 +120,8 @@ to apply, or always if `global-mmm-mode' is t."
   (cond ((eq mmm-global-mode t) (mmm-mode-on))
         ((not mmm-global-mode))
         ((mmm-get-all-classes nil) (mmm-mode-on)))
-  (mmm-update-font-lock-buffer))
+  (when mmm-mode
+    (mmm-update-font-lock-buffer)))
 
 (add-hook 'mmm-major-mode-hook 'mmm-mode-on-maybe)
 
