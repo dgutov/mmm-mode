@@ -3,13 +3,38 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
-Allow saving of local variables per-buffer rather than just per-mode.
-Per-region, even?
+Allow setting of region-creation hooks et. al. by submode class.  Make
+sure to run `mmm-save-changed-local-variables' afterwards, in case
+they set some things.
+
+Saving local map by buffer, along with post-command-hook (for after
+`vm-mail' done), should fix the vm-mail problem w/o advice.  (Could
+also try to get VM to create its own mode instead of piggybacking on
+mail-mode.)
+
+Use the post-command-hook way instead of stack-walk, to catch
+default-major-mode buffers which don't get re-set by normal-mode after
+the contents are available.
+
+Add a flag to specify with more detail where submode regions start and
+stop with respect to the matches.  Perhaps a flag that takes a
+function as argument, with several supplied functions to choose from.
+`next-newline' and `previous-newline' are possible ones, as are
+beginning, end, and current default.  They should be passed the
+submode class and inspect the match data.
+
+Add `mmm-global-classes' variable, specifying submode classes that
+apply to all buffers in which MMM Mode is on.  Doesn't trigger 'maybe,
+I guess.  Not buffer-local by default, but can be turned off file
+locally.  Supply a class which lets you delimit regions and specify
+the mode, e.g. %[cperl]% ... %[/cperl]%.  For this, need a class
+parameter which specifies the submode dynamically rather than
+statically, say :find-submode?
+
+`mmm-set-class-parameter' and same for `*-get-*'.
 
 Improve font-locking somehow.  Maybe narrow the region before
-fontifying, maybe save parsing state variables from `font-lock' and/or
-`parse-partial-sexp' for each region, maybe even advise the parsing
-functions.
+fontifying, maybe trap or advise `parse-partial-sexp' (and friends?).
 
 Inserting one-line perl sections isn't sticky.  Other sections are
 getting un-stickified too easily, and re-parsing current region
@@ -17,13 +42,7 @@ doesn't work as it should.
 
 Trap paragraph motion commands to stop at submode boundaries?
 
-If we could trap parse-partial-sexp (and friends?) somehow, maybe
-font-lock and indentation would work better.
-
 Add JDE-mode, JavaSQL (see +mmm), Embperl, Eperl, ASP, etc.
-
-Use symbol properties rather than `mmm-classes-alist'?  Maybe once its
-documentation is in the info file.
 
 How about this? Whenever text is inserted anywhere in the buffer:
 1. If in or after a region (with hanging back?), scan for its back.
@@ -59,7 +78,9 @@ it will probably be /edited/ as Perl (being, say, code examples)? Only
 problem is it might confuse the programmer into thinking that code
 will get executed. Maybe use a different face. Could do that with
 another grouping class, say uneval-mason, that overrides the faces of
-mason and has :parent mason-text.
+mason and has :parent mason-text.  Lot of duplication though.  Maybe
+allow a mode to specify what about it changes (in this case, its face)
+if its parent is X, or Y, or whatever.
 
 It'd be nice if submode regions could preserve the indentation of the
 dominant major mode code around them. For example, Perl code embedded
