@@ -36,11 +36,13 @@
 
 (defun mmm-univ-get-mode (string)
   (string-match "[a-zA-Z-]+" string)
-  (let ((modestr (match-string 0 string)))
-    (and modestr
-         (intern (if (equal (substring modestr -5) "-mode")
-                     modestr
-                   (concat modestr "-mode"))))))
+  (setq string (match-string 0 string))
+  (let ((modestr (intern (if (string-match "mode\\'" string)
+                             string
+                           (concat string "-mode")))))
+    (if (fboundp modestr)
+        modestr
+      (signal 'mmm-no-matching-submode nil))))
 
 (mmm-add-classes
  `((universal
@@ -48,9 +50,6 @@
     :back "{%/~1%}"
     :insert ((?/ universal "Submode: " @ "{%" str "%}" @ "\n" _ "\n"
                  @ "{%/" str "%}" @))
-    :front-verify ,#'(lambda ()
-                       (fboundp
-                        (mmm-univ-get-mode (match-string 0))))
     :match-submode mmm-univ-get-mode
     :save-matches 1
     )))
