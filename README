@@ -1,0 +1,74 @@
+
+                        MMM Mode Version 0.3.8
+                        ======================
+
+OVERVIEW
+
+  MMM Mode is a minor mode for Emacs that allows Multiple Major Modes
+  (hence the name) to coexist in one buffer.  It is particularly
+  well-suited to editing embedded code, such as Mason server-side
+  Perl, or HTML output in CGI scripts.
+
+INSTALLATION
+
+  MMM Mode has a standard GNU configure-driven installation.  To
+  install mmm-mode in the standard locations, unpack the archive, `cd'
+  to the mmm-X.X.X directory created, and run these commands:
+
+    ./configure
+    make
+    make install
+
+  Alternately, since currently MMM Mode is written in pure Emacs Lisp,
+  you could just copy all the *.el files in the distribution to a
+  directory in your `load-path', and optionally byte-compile them
+  manually (see the Emacs Manual).  The configure installation also
+  installs the MMM Mode info manual in your site info directory, so if
+  you're installing manually, you might want to do that too.
+
+CONFIGURATION
+
+  Once MMM Mode is installed, it has to be configured correctly.  This
+  can be done in a site-start file or in user's initialization files;
+  probably the latter is preferable, except possibly for autoloads.
+
+  See the info file for full documentation on the available
+  configuration options.  To get started, however, MMM Mode needs to
+  be loaded, either completely, with
+
+    (require 'mmm-mode)
+
+  or conditionally, as necessary, with
+
+    (require 'mmm-auto)
+
+  The second installs only the major-mode hooks and sets up MMM Mode
+  to load itself automatically when necessary.
+
+DOCUMENTATION
+
+  For further information, see (in order) the accompanying info file
+  (as yet incomplete), the documentation strings of functions and
+  variables, the comments in the source code, and the source code
+  itself.
+
+UPDATES
+
+  The latest version of MMM Mode should always be available from
+  http://kurukshetra.cjb.net/elisp.  Check that you have the latest
+  version before reporting a bug.
+
+REPORTING BUGS
+
+  Please report bugs to mmm-bugs@kurukshetra.cjb.net.  Comments,
+  questions, and suggestions are also welcome.
+
+CONTACT INFO
+
+  MMM Mode is written and maintained by Michael Abraham Shulman
+  <mas@kurukshetra.cjb.net>.  Please email me if you would like to be
+  added to my very-low-volume MMM Mode mailing list.  The list gets
+  announcements of new releases, and might one day turn into an actual
+  mailing list for discussion of features.
+
+  Thanks for trying MMM Mode!

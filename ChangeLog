@@ -1,0 +1,373 @@
+2000-05-03  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-mason.el: Added dependencies on mmm-compat and mmm-vars.
+
+2000-04-30  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* configure.in, Makefile.am: New file.
+
+	* mmm-sample.el, mmm-mode.el, mmm-region.el, mmm-auto.el, mmm-class.el, mmm-cmds.el, mmm-mason.el:
+	Changed (progn (require ...)) to (when t (require ...)) because the
+	first is still "top level" for the byte compiler.
+
+	* mmm-region.el:
+	Required font-lock and mmm-auto at top level for byte compilation.
+	Moved local maps to come before updating hooks for byte compilation.
+
+	* mmm-utils.el: Loaded CL at top level for byte-compile.
+
+2000-04-29  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-mode.el, mmm-region.el, mmm-sample.el, mmm-auto.el, mmm-class.el, mmm-cmds.el, mmm-mason.el:
+	Put all `require's not needed at compile-time into `progn's so the
+	byte-compiler doesn't load them (not at top level).  Only `mmm-compat'
+	and `mmm-utils' need to be loaded at compile-time, since they define
+	macros.
+
+2000-04-27  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* All: Started using RCS.
+
+2000-04-27  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-sample.el (mmm-javascript-mode): Created customization
+	variable to select mode to use for javascript regions.
+
+2000-03-26  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* mmm-cmds.el (mmm-get-insertion-spec): Insertion keys now have
+	symbolic names, although they have no definition.
+	(mmm-insertion-help): Command added to give help on insertion
+	keys, the way C-h does for command keys.
+
+	* mmm-vars.el (mmm-get-all-classes): Reversed order, so
+	interactive classes take precedence (for insertion, mainly) over
+	`mmm-classes' which overrides mode/ext classes.
+
+2000-03-24  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* mmm-vars.el (mmm-command-modifiers, mmm-insert-modifiers):
+	Switched defaults to be the way I think it should be. Users can
+	switch back with `mmm-use-old-command-keys'.
+
+	* README: Created file giving information on inital installation.
+
+	* Makefile: Created makefile to compile elisp files and make info
+	file from texinfo file.
+
+	* mmm-region.el: Gave up on conditional stickiness, since it
+	doesn't work in XEmacs and even FSF Emacs has been being flaky
+	with overlay after-change functions. Detecting ends in global
+	`after-change-functions' will work better anyway.
+
+	* mmm-cmds.el: Renamed from `mmm-inter.el'.
+	(mmm-end-current-region): Added command, with key binding.
+
+	* mmm-vars.el (mmm-classes-alist): Documentation updated for
+	unified submode classes.
+
+	* mmm-class.el (mmm-ify): BEG and END arguments removed; just use
+	FRONT and BACK.
+
+	* mmm-utils.el (mmm-format-matches): Ignores non-string arguments.
+
+	* mmm-class.el (mmm-apply-class): Faces supplied for grouping
+	classes now override those on included classes. Parents will do
+	the same thing.
+
+	* mmm-inter.el: Bound `mmm-parse-block' to C-c % 5 as well.
+	(mmm-reparse-current-region): Added command, with key binding.
+
+	* mmm-insert.el: Deleted file, merging contents (insert by
+	keystrokes) into `mmm-inter.el'. Auto-detection insert will
+	probably go elsewhere.
+
+	* mmm-inter.el (mmm-clear-current-region): Uses `mmm-overlay-at'
+	with `all' inclusion type.
+
+	* mmm-region.el (mmm-overlays-at): Added `all' inclusion type.
+
+	* mmm-class.el (mmm-apply-class, etc.): Submode classes have been
+	unified--no more 'regexp, 'region, 'group, etc.
+
+2000-03-23  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* mmm-inter.el (mmm-parse-buffer, mmm-parse-region, mmm-parse-block):
+	Added "Operating...done" messages.
+
+	* mmm-region.el (mmm-make-region): Allowed caller to add extra
+	keyword arguments to be stored as overlay properties, anticipating
+	new future submode classes.
+
+	* mmm-update.el (use-local-map): Advised to keep track of changed
+	local maps.
+
+	* mmm-region.el (mmm-overlays-at): Added inclusion of boundary
+	points based on endpoint stickiness.
+	(mmm-match-front, mmm-match-back): Front and back overlay
+	properties can now be functions rather than regexps, in
+	anticipation of new future submode classes.
+
+2000-03-22  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* mmm-utils.el (mmm-valid-buffer): Renamed and added checking for
+	"never" modes.
+
+	* mmm-vars.el (mmm-never-modes): Added, to prevent "temporary
+	shell-mode buffers" and other unnecessariness.
+
+	* mmm-region.el (mmm-overlays-in): Fixed strictness so it doesn't
+	try to match delimiters of non-mmm overlays.
+
+	* mmm-update.el (mmm-local-maps-alist): Keep track of changed
+	local maps by buffer and major mode.
+	(mmm-update-submode-region): Update mode info for major mode.
+
+	* mmm-sample.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-auto.el: Created file, removing code from `mmm-mode.el'.
+
+	* mason.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-insert.el: Created file, removing code from `mmm-mode.el'.
+
+2000-03-20  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* mmm-update.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-inter.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-class.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-mode.el (mason): Removed highlight for %doc regions.
+
+	* mmm-region.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-utils.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-compat.el: Created file, removing code from `mmm-mode.el'.
+
+	* mmm-vars.el: Created file, removing code from `mmm-mode.el'.
+
+	* TODO: Created TODO file, removing comments from `mmm-mode.el'.
+
+	* ChangeLog: Created ChangeLog file and (more or less) ported
+	existing Change Log to official format.
+
+2000-03-19  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+	        
+	* mmm-mode.el (mmm-global-mode): usurps and extends the role of
+	`mmm-add-find-file-hook'. Other modes can piggyback on our hack by
+	using `mmm-major-mode-hook'.
+        
+	Added :insert class parameters. Classes can now define skeletons
+	to insert submode regions with delimiters based on a keypress.
+
+	Added `mmm-insert-modifiers' and `mmm-command-modifiers' to
+	configure which keys do what.
+
+2000-03-18  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+	
+	* mmm-mode.el: Did a bunch of reorganizing. MMM-ification methods
+	are now submode classes, and what used to be called submode
+	classes are now just a type called :group. User interface is
+	mostly unchanged however. Replaced some gratuitous keywords with
+	normal symbols.
+
+	Added bells and whistles to :regexp class type, allowing custom
+	"plugin" functions to verify matches and get the delimiter forms,
+	the latter of which aren't used yet, but will be soon. Mason
+	class(es) are now all regexps with a plugin or two. Function class
+	type is not (yet?) ported to the new interface, holding back
+	eval-elisp and htp.p with it.
+        
+	Changed a couple of `eval-and-compile's to `eval-when-compile'.
+        
+	Added special "non-submode" regions, where the major mode holds
+	sway, but no submodes allowed (until parents are implemented).
+	Added %doc in text-mode and %text as a non-submode to Mason, and
+	added %flags, %attr, %method, and %shared tags for Mason classes.
+	These will be new in Mason version 0.82.
+        
+2000-03-14  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* Version 0.3.7a released.
+
+	* mmm-mode.el: Put `turn-on-font-lock-if-enabled' back in for FSF
+	  Emacs. Don't know why I thought I could take it out.
+        
+2000------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* Version 0.3.7 released.
+        
+	* mmm-mode.el: Set insertion types of markers added to history to
+	coincide with sticky ends of overlays. It's not perfect, but it's
+	better.
+
+	Renamed mode and submode hook variables to start with `mmm-'.
+
+	Added "class hooks" run whenever a class is first used in a
+	buffer.
+
+	Changes for XEmacs compatibility:
+          - Loaded XEmacs overlay emulation package.
+          - Renamed some overlay properties when in XEmacs
+          - Removed `global-font-lock-mode' dependencies.
+          - Added extra parameter to `regexp-opt' in Mason class.
+        
+	Removed "Disclaimers" comment section; I think we have enough
+	testing that it should work on most systems.
+        
+	Reversed order of Change Log so newer changes come first.
+        
+	Changed the default submode highlight to a more neutral gray.
+        
+	Renamed various "start" and "end" parameters to be more uniform.
+        
+	(mmm-ify-by-region): now checks if the region is in bounds.
+        
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.6c released.
+        
+	* mmm-mode.el: Added comment about putting autohandlers and
+	dhandlers in html-mode.
+
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.6b released.
+        
+	* mmm-mode.el: Added comment about `psgml-mode' thanks to Michael
+	Alan Dorman.
+
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.6a released.
+
+	* mmm-mode.el: Loaded CL at compile-time to prevent execution of
+	macro arguments.
+
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.6 released.
+        
+	* mmm-mode.el: Changes for Emacs 19 compatibility.
+	  - Set keyword variables to themselves.
+	  - Added hacks for absence of custom.el and regexp-opt.
+	  - Added user variable to control use of Perl mode vs CPerl mode.
+	Thanks to Eric A. Zarko for suggestions and testing.
+
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.5a released.
+
+	* mmm-mode.el (mmm-ify-by-all): no longer re-fontifies buffers
+	with no submodes.
+
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.5 released.
+
+	* mmm-mode.el (mmm-fontify-region): now locally binds
+	`font-lock-beginning-of-syntax-function' to
+	`mmm-beginning-of-syntax' since `font-lock-fontify-block' binds it
+	to nil for some reason.
+
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.4 released.
+
+	* mmm-mode.el (mmm-ify-by-class): now fontifies the buffer
+	afterward, like the other interactive MMM-ification functions.
+	Updated a couple doc-strings and prompts.
+        
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.3 released.
+
+	* mmm-mode.el (mmm-regexp-to-regions, mmm-mason-inline): Changed
+	recursion to iteration, since for long files the recursion runs
+	afoul of `max-lisp-eval-depth'.
+	(mason): Commented on workaround for Mason CPerl mess-ups.
+	Submode overlays now evaporate if they have zero width.
+	(mmm-parse-region): now has a key binding and doesn't refontify
+	the entire buffer.
+	
+1999------  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.2 released.
+        
+	* mmm-mode.el (mmm-mode-on, mmm-mode-off): are now interactive.
+	Fixed bug in Mason class: %def, %text, and %doc are now ignored as
+	they should be.
+
+1999-11-21  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.1 released.
+
+	* mmm-mode.el (mmm-ify-by-class) now adds to history rather than
+	`mmm-classes'.
+	Fixed :class keyword so it works correctly.
+	(mmm-add-mode-ext-class): Classes associated with major modes or
+	filenames now do The Right Thing when the major mode is changed.
+	However, `mmm-mode-ext-classes-alist' cannot be directly modified.
+	(mmm-mode): Updated documentation to cover 0.3.x changes.
+        
+1999-11-21  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.3.0 released.
+        
+	* mmm-mode.el (mmm-ify-by-class): Added interactive prompt.
+	(mmm-version): Function added to display version interactively.
+	Fixed and updated customization definitions.
+	(mmm-mode-ext-classes-alist): added, allowing the automatic
+	association of certain major-modes and/or file extensions with
+	submode classes.
+	Allowed submode lists to contain :class keyword, so one class can
+	invoke another one, if they share submode methods.
+
+1999-11-19  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+
+	* Version 0.2.2a released.
+        
+	* mmm-mode.el: Fixed bug.
+
+1999-11-18  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.2.2 released.
+
+	* mmm-mode.el (mmm-mason-inline): Replaces the regexps "<% " and
+	"%>" for HTML::Mason submode class. Inline perl regions don't have
+	to begin with a space, but the regexp "<%" matches "<%perl>" as
+	well, which it shouldn't.
+	Added `save-match-data' calls in all searching functions.
+	Removed unnecessary auxiliary functions.
+
+1999-11-16  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+        
+	* Version 0.2.1 released.
+        
+	* mmm-mode.el: Fixed font-lock absence, with-temp-message absence,
+	mmm-ifying temp buffer.
+
+1999-11-15  Michael Abraham Shulman  <viritrilbia@kurukshetra.cjb.net>
+	
+	* Version 0.2.0 released to HTML::Mason mailing list.
+
+	* Comment: Although nearly 100% of the code for mmm-mode was
+	written by me, the original inspiration came from mmm.el for
+	XEmacs by Gongquan Chen <chen@posc.org>, so I have continued his
+	version-numbering.
+        
+1999-01-12  Gongquan Chen <chen@posc.org>
+        
+	* Version 0.11 released.
+
+	* mmm.el: Fixed doc-strings and style. Thanks to comments from
+	Jari Aalto <jaalto@tre.tele.nokia.fi>
+
+1999-01-11  Gongquan Chen <chen@posc.org>
+	
+	* Version 0.10 released.
+
+	* mmm.el: Initial release of mmm.el on comp.emacs.xemacs

@@ -1,0 +1,63 @@
+Hey Emacs, this is a -*-text-*- file!
+
+                       To Do List for MMM Mode
+                       =======================
+
+Improve font-locking somehow.  Maybe narrow the region before
+fontifying, maybe save parsing state variables from `font-lock' and/or
+`parse-partial-sexp' for each region, maybe even advise the parsing
+functions.
+
+Inserting one-line perl sections isn't sticky.  Other sections are
+getting un-stickified too easily, and re-parsing current region
+doesn't work as it should.
+
+Trap paragraph motion commands to stop at submode boundaries?
+
+If we could trap parse-partial-sexp (and friends?) somehow, maybe
+font-lock and indentation would work better.
+
+Add JDE-mode, JavaSQL (see +mmm), Embperl, Eperl, ASP, etc.
+
+Use symbol properties rather than `mmm-classes-alist'?  Maybe once its
+documentation is in the info file.
+
+How about this? Whenever text is inserted anywhere in the buffer:
+1. If in or after a region (with hanging back?), scan for its back.
+2. If before a region with hanging front, scan for its front?
+3. Scan the inserted text for new regions.
+Mess with the order of scanning for stuff. Of course this could get
+tricky with nested regions, plus we don't want to be too slow while
+people are just typing. Maybe just scan changes of length >1?
+
+Use `mmm-looking-back-at' to auto-detect new submode regions in
+`after-change-functions'. Say we type "<%" and we're suddenly in a
+CPerl region, until we type "%>". Actually, the two-character ending
+delimiter makes that tricky. It would probably be nicer all around to
+just automatically insert the ending delimiter when the beginning one
+is detected, but that must be user-configurable.
+
+When we hit return anywhere in a Mason %-line, it should end the
+submode region. If C-j ended it and began a new one on the next line,
+that would also be nice. This is a rather Mason-specific thing, so
+maybe do it in that class hook. But other classes might have similar
+single-line regions. Add a new submode class argument, such as KEYMAP,
+or even ONE-LINE?
+
+How about allowing nested submode regions? A submode class could
+specify its "parent" submode class. This could also be used to
+implement htp.p, by first scanning for the function calls as a
+major-mode submode region, then requiring that parent type for the
+HTML mode class. Similarly, eval-elisp could have one class to find
+the Local Variables list, then another within it.
+
+Ought %text in Mason to be a non-submode, since any Mason tags inside
+it will probably be /edited/ as Perl (being, say, code examples)? Only
+problem is it might confuse the programmer into thinking that code
+will get executed. Maybe use a different face. Could do that with
+another grouping class, say uneval-mason, that overrides the faces of
+mason and has :parent mason-text.
+
+It'd be nice if submode regions could preserve the indentation of the
+dominant major mode code around them. For example, Perl code embedded
+in HTML where the HTML is indented such as for a table.

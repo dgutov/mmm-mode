@@ -1,0 +1,62 @@
+MMM Mode NEWS -- history of user-visible changes.  -*-outline-*-
+Copyright (C) 2000 Michael Abraham Shulman
+See the file COPYING for copying conditions.
+
+Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
+
+* Changes in MMM Mode 0.3.8
+
+** IMPORTANT: Default key bindings have changed.
+
+The MMM Mode commands, including interactive MMM-ification and
+re-parsing buffer regions, are now bound by default to key sequences
+of the form `C-c % C-<letter>', rather than `C-c % <letter>' as
+in previous versions.  Key sequences of the form `C-c % <letter>' are
+now reserved for submode region insertion.  The old behavior can be
+restored by setting the variable `mmm-use-old-command-keys' to a
+non-nil value before MMM Mode is loaded--then insertion commands are
+bound to `C-c % C-<letter>' sequences.
+
+** New Global Mode added
+
+MMM Global Mode can now turn MMM Mode on automatically in all buffers,
+or only in buffers that have associated submode classes.  It replaces
+the previous function `mmm-add-find-file-hook', which still works for
+now.  A side effect of this change is that it is no longer necessary
+to use `mmm-add-mode-ext-class': `mmm-mode-ext-classes-alist' can be
+modified directly.
+
+The hack used by MMM Global Mode to insinuate itself into all buffers
+is different from, but vaguely similar to, the one used by FSF Emacs'
+Global Font Lock Mode.  In order that future writers of global modes
+don't have to reinvent the wheel, MMM Global Mode provides the hook
+`mmm-major-mode-hook' which is run (in theory) whenever a major mode
+starts up.  Perhaps in future this will be provided in a separate
+package.
+
+** Automatic submode region insertion commands
+
+Submode classes can now define skeletons for automatic insertion of
+submode regions with delimiters.  For example, when using the Mason
+class, the key sequence `C-c % %' will (by default) insert the text
+`<% -!- %>' with point where indicated and submode region already
+present.  These commands also wrap around words as described in the
+documentation of `skeleton-insert'.
+
+** Info Documentation File
+
+MMM Mode now has an (admittedly incomplete) manual in Texinfo format.
+It can be found in the files `mmm.info' or `mmm.texinfo' in the
+distribution.
+
+** Automatic Installation
+
+MMM Mode now uses GNU automake/autoconf for ease of installation.  See
+the files README and INSTALL for more information.
+
+** Changed submode class specification format
+
+This change affects only people who define their own submode classes.
+The format for defining submode classes has changed; it now uses
+keyword arguments for clarity and has a few more possible arguments,
+including skeletons for submode region insertion.
