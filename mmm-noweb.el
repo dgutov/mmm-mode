@@ -330,14 +330,35 @@ chunks."
 	  (if list
 	      (goto-char (cadar (nthcdr cnt list))))))))
 
-(mmm-define-key ?d 'mmm-noweb-narrow-to-doc-chunk)
-(mmm-define-key ?n 'mmm-noweb-goto-next)
-(mmm-define-key ?p 'mmm-noweb-goto-previous)
-(mmm-define-key ?q 'mmm-noweb-fill-chunk)
-;; Cannot use C-g as goto command, so use C-s.
-(mmm-define-key ?s 'mmm-noweb-goto-chunk)
+;;}}}
+;;{{{ Key mappings
 
-(define-key mmm-mode-prefix-map "\t" 'mmm-noweb-complete-chunk)
+(defvar mmm-noweb-map (make-sparse-keymap))
+(defvar mmm-noweb-prefix-map (make-sparse-keymap))
+(define-key mmm-noweb-map mmm-mode-prefix-key mmm-noweb-prefix-map)
+
+(mmm-define-key ?d 'mmm-noweb-narrow-to-doc-chunk mmm-noweb-prefix-map)
+(mmm-define-key ?n 'mmm-noweb-goto-next mmm-noweb-prefix-map)
+(mmm-define-key ?p 'mmm-noweb-goto-previous mmm-noweb-prefix-map)
+(mmm-define-key ?q 'mmm-noweb-fill-chunk mmm-noweb-prefix-map)
+;; Cannot use C-g as goto command, so use C-s.
+(mmm-define-key ?s 'mmm-noweb-goto-chunk mmm-noweb-prefix-map)
+
+(define-key mmm-noweb-prefix-map "\t" 'mmm-noweb-complete-chunk)
+
+;; Don't want to add to either the mmm mode map (used in other mmm
+;; buffers) or the local map (used in other major mode buffers), so we
+;; make a full-buffer spanning overlay and add the map there.
+(defun mmm-noweb-bind-keys ()
+  (save-restriction
+    (widen)
+    (let ((ovl (make-overlay (point-min) (point-max) nil nil t)))
+      ;; 'keymap', not 'local-map'
+      (overlay-put ovl 'keymap mmm-noweb-map))))
+
+(add-hook 'mmm-noweb-class-hook 'mmm-noweb-bind-keys)
+
+;; TODO: make this overlay go away if mmm is turned off
 
 ;;}}}
 

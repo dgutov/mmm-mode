@@ -1,5 +1,8 @@
 2003-03-03  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
 
+	* mmm-noweb.el (mmm-noweb-bind-keys): Implemented a "local to
+	submode class" keymap binding.
+
 	* mmm-vars.el (mmm-set-mode-line): Used correct name for variable.
 
 2003-03-02  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
