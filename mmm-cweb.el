@@ -3,7 +3,7 @@
 ;; Copyright (C) 2001 by Alan Shutko
 
 ;; Author: Alan Shutko <ats@acm.org>
-;; Version: $Id: mmm-cweb.el,v 1.1 2001/05/14 21:16:54 alanshutko Exp $
+;; Version: $Id: mmm-cweb.el,v 1.2 2001/05/14 22:38:25 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -59,9 +59,6 @@
 Checks whether the match is in limbo."
   (not (mmm-cweb-in-limbo (match-beginning 0))))
 
-;;}}}
-;;{{{ Add Classes
-
 (mmm-add-group
  'cweb
  `(
@@ -101,4 +98,4 @@ Checks whether the match is in limbo."
 
 (provide 'mmm-cweb)
 
-;;; mmm-mason.el ends here
+;;; mmm-cweb.el ends here
