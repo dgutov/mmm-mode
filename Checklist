@@ -15,4 +15,7 @@
 4. Update the Changelog file with `vc-update-change-log' (`C-x v a')
    and check it into CVS with invisible comment (#).
 
-5. Run `make dist' and upload the tarball.
+5. Make a CVS snapshot (`C-x v s') of the MMM Mode directory.  This is
+   the point at which a release becomes official.
+
+6. Run `make dist' and upload the tarball.
