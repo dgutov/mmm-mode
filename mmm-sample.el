@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.22 2001/07/05 03:03:42 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.23 2001/07/05 03:10:50 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -125,7 +125,7 @@ and MODE is a major mode function symbol.")
 
 (mmm-add-classes
  '((here-doc
-    :front "<<\\([a-zA-Z0-9_-]+\\)"
+    :front "<<[\"\'\`]?\\([a-zA-Z0-9_-]+\\)"
     :front-offset (end-of-line 1)
     :back "^~1$"
     :save-matches 1
