@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.3 2000/04/30 08:03:09 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.4 2000/05/10 02:50:06 mas Exp $
 
 ;;{{{ GPL
 
@@ -271,7 +271,7 @@ CLASSLIST defaults to the return value of `mmm-get-all-classes'."
         ;; insertion spec with an argument.
         unless (consp (cdr skel))
         do (setq str (cdr skel)
-                 skel (cdr (assoc (car skel) inserts)))
+                 skel (cddr (assoc (car skel) inserts)))
         if skel return (list class skel str)
         ;; If we have a group class, recurse.
         if (plist-get class :classes)
