@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.15 2000/06/30 02:43:17 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.16 2000/06/30 03:25:02 mas Exp $
 
 ;;{{{ GPL
 
@@ -360,34 +360,6 @@ which is set here as well.  See `mmm-save-local-variables'."
           (setcdr region-entry region-vars)
         (push (cons mode region-vars)
               mmm-region-saved-locals-defaults)))))
-
-;;}}}
-;;{{{ Local Maps
-
-;; This is for the benefit of commands such as `vm-mail', which calls
-;; `mail-mode' but then changes the local map afterwards. It's kludgy,
-;; I know, but at the moment I don't have time to think of a neater
-;; solution.
-
-(defvar mmm-local-maps-alist ()
-  "Which local maps have been changed in this buffer.
-Not used under XEmacs.")
-(make-variable-buffer-local 'mmm-local-maps-alist)
-
-;; Save the real function away for our use.
-(defun mmm-real-use-local-map (&rest dummy)
-  "Shut up the byte compiler")
-(fset 'mmm-real-use-local-map (symbol-function 'use-local-map))
-
-; (defadvice use-local-map (after mmm-keep-record activate compile)
-;   "Keep track of which local maps have been changed in which buffers."
-;   (mmm-valid-buffer
-;    (mmm-update-current-submode)
-;    (let* ((mode (or mmm-current-submode major-mode))
-;           (map (assq mode mmm-local-maps-alist)))
-;      (if map
-;          (setcdr map (current-local-map))
-;        (push (cons mode (current-local-map)) mmm-local-maps-alist)))))
 
 ;;}}}
 ;;{{{ Updating Hooks
