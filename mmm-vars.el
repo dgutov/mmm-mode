@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.38 2001/01/13 03:55:46 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.39 2001/01/14 01:26:53 mas Exp $
 
 ;;{{{ GPL
 
@@ -557,10 +557,9 @@ FRONT-VERIFY and BACK-VERIFY, if supplied, must be functions that
 inspect the match data to see if a match found by FRONT or BACK
 respectively is valid.
 
-If SAVE-MATCHES is supplied, it must be a number, and means to format
-BACK, if it is a regexp, by replacing strings of the form \"~N\" by
-the corresponding value of \(match-string n) after matching FRONT,
-where N is between 0 and SAVE-MATCHES.
+If SAVE-MATCHES is non-nil, BACK, if it is a regexp, is formatted by
+replacing strings of the form \"~N\" by the corresponding value of
+\(match-string n) after matching FRONT.
 
 FRONT-FORM and BACK-FORM, if given, must supply a regexp used to match
 the *actual* delimiter.  If they are strings, they are used as-is.  If
