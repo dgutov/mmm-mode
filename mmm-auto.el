@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.14 2000/08/02 23:46:38 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.15 2000/08/21 01:55:52 mas Exp $
 
 ;;{{{ GPL
 
@@ -70,7 +70,9 @@
     (html-js "mmm-sample" nil)
     (here-doc "mmm-sample" nil)
     (embperl "mmm-sample" nil)
-    (file-variables "mmm-sample" nil))
+    (file-variables "mmm-sample" nil)
+    (rpm-sh "mmm-rpm" nil)
+    )
   "Alist of submode classes autoloaded from files.
 Elements look like \(CLASS FILE PRIVATE) where CLASS is a submode
 class symbol, FILE is a string suitable for passing to `load', and
