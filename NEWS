@@ -6,7 +6,16 @@ Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
 * Changes in MMM Mode 0.4.4
 
-** Tab Completion on defined submode classes in `mmm-ify-by-class'
+** Tab Completion in `mmm-ify-by-class' (`C-c % C-c')
+
+When interactively specifying a submode class, completion on all
+defined public (not internal/private) submode classes is available.
+
+** Submode classes can now be autoloaded
+
+You don't need (require 'mmm-mason) or (require 'mmm-sample) in your
+.emacs file any more; all the supplied submode classes that are not
+automatically loaded are autoloaded from their files of definition.
 
 ** Here-Document submode class can now recognize any submode
 
