@@ -1,3 +1,8 @@
+2001-02-12  Alan Shutko  <ats@acm.org>
+
+	* mmm-mason.el (mmm-mason-end-line,mmm-mason-start-line): Use bolp
+	and eolp.
+
 2001-02-03  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
 
 	* mmm-mode.el, mmm-region.el, mmm-vars.el:

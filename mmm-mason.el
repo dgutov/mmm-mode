@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.11 2001/01/11 01:41:12 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.12 2001/02/13 11:27:44 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -152,13 +152,12 @@ Saves the name of the tag matched.")
 ;;{{{ One-line Sections
 
 (defun mmm-mason-start-line ()
-  (if (= (point)
-         (save-excursion (beginning-of-line) (point)))
+  (if (bolp)
       ""
     "\n"))
 
 (defun mmm-mason-end-line ()
-  (if (= (char-after (point)) (string-to-char "\n"))
+  (if (eolp)
       (delete-char 1)))
 
 ;;}}}
