@@ -1,3 +1,13 @@
+2004-06-01  Alan Shutko  <ats@acm.org>
+
+	* mmm-vars.el (mmm-save-local-variables): Updated cc-mode local
+	variables.
+	
+	* Makefile.am (lisp_LISP): Removed mmm-php.el, since it doesn't
+	appear to be in CVS.
+
+	* missing: Updated for automake 1.7.9.
+
 2003-10-18  Alan Shutko  <ats@acm.org>
 
 	* mmm-vars.el (mmm-save-local-variables): Add semantic stuff and
