@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.27 2000/08/17 00:52:46 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.28 2000/08/23 03:39:08 mas Exp $
 
 ;;{{{ GPL
 
@@ -90,7 +90,7 @@
 ;;{{{ Save Local Variables
 
 (defvar mmm-save-local-variables 
-  '(;; Don't use `function' (#') here!!  We're already inside `quote'!
+  `(;; Don't use `function' (#') here!!  We're already inside `quote'!
     comment-start 
     comment-end
     (comment-line-start-skip buffer (fortran-mode))
@@ -99,6 +99,7 @@
     comment-indent-function
     comment-line-break-function
     sentence-end
+    ,@(if mmm-xemacs '(mode-popup-menu) '())
     font-lock-keywords
     font-lock-keywords-only
     font-lock-keywords-case-fold-search
