@@ -2,7 +2,28 @@ MMM Mode NEWS -- history of user-visible changes.  -*-outline-*-
 Copyright (C) 2000 Michael Abraham Shulman
 See the file COPYING for copying conditions.
 
-Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
+Please send MMM Mode bug reports to viritrilbia@users.sourceforge.net
+
+* Changes in MMM Mode 0.4.7
+
+** Multiple Decoration Levels
+
+You now have finer control over how colorful your submode regions are,
+via `mmm-submode-decoration-level'.  Level 0 turns coloring off--no
+messing around with faces required.  Level 1 (default) is the same as
+in previous versions.  Level 2 colors regions according to function:
+initialization, cleanup, output, declaration, comment, etc.
+
+** Preferred Major Modes
+
+The variable `mmm-major-mode-preferences' lets you tell MMM what modes
+you prefer for different programming languages and they will be used
+by all submode classes.
+
+** New Submode Classes
+
+New submode classes for JSP and ePerl are included.
+
 
 * MMM Mode 0.4.6 is a bug-fix release with one user-visible change:
 
