@@ -11,9 +11,10 @@ OVERVIEW
 
 INSTALLATION
 
-  MMM Mode has a standard GNU configure-driven installation.  To
-  install mmm-mode in the standard locations, unpack the archive, `cd'
-  to the mmm-mode-X.X.X directory created, and run these commands:
+  MMM Mode has a standard GNU configure-driven installation.  (See the
+  file INSTALL for generic instructions.)  To install mmm-mode in the
+  standard locations, unpack the archive, `cd' to the mmm-mode-X.X.X
+  directory created, and run these commands:
 
     ./configure
     make
@@ -25,6 +26,19 @@ INSTALLATION
   manually (see the Emacs Manual).  The configure installation also
   installs the MMM Mode info manual in your site info directory, so if
   you're installing manually, you might want to do that too.
+
+  If you have more than one version of emacs installed and want to
+  use MMM in a version other than /usr/bin/emacs, you must set the
+  environment variable EMACS before running `configure', e.g.
+
+    EMACS=/usr/bin/xemacs ./configure
+    make
+    make install
+
+  If you want to use MMM in more than one version of emacs, you must
+  either have separate site-lisp directories (such as Debian does), or
+  load it from source every time; byte-compiled files are not portable
+  between emacsen.
 
 CONFIGURATION
 
