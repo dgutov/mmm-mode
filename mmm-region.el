@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.4 2000/04/30 08:03:10 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.5 2000/05/18 18:34:36 mas Exp $
 
 ;;{{{ GPL
 
@@ -38,8 +38,7 @@
 (require 'mmm-compat)
 (require 'mmm-utils)
 (require 'mmm-auto)
-(when t
-  (require 'mmm-vars))
+(require 'mmm-vars)
 
 ;; CREATION & DELETION
 ;;{{{ Markers
@@ -295,6 +294,8 @@ mode for it to be a submode or a major mode with submodes."
 (make-variable-buffer-local 'mmm-local-maps-alist)
 
 ;; Save the real function away for our use.
+(defun mmm-real-use-local-map (&rest dummy)
+  "Shut up the byte compiler")
 (fset 'mmm-real-use-local-map (symbol-function 'use-local-map))
 
 (defadvice use-local-map (after mmm-keep-record activate compile)
