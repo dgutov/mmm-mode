@@ -1,7 +1,11 @@
-Makefile.in
 Makefile
-configure
+Makefile.in
+aclocal.m4
 confdefs.h
 config.cache
-aclocal.m4
 config.status
+configure
+mmm.info
+script
+stamp-vti
+version.texi
