@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.16 2000/06/30 03:25:02 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.17 2000/06/30 20:55:44 mas Exp $
 
 ;;{{{ GPL
 
@@ -39,92 +39,6 @@
 (require 'mmm-utils)
 (require 'mmm-auto)
 (require 'mmm-vars)
-
-;; CREATION & DELETION
-;;{{{ Markers
-
-(defun mmm-make-marker (pos beg-p sticky-p)
-  "Make a marker at POS that is or isn't sticky.
-BEG-P represents whether the marker delimits the beginning of a
-region \(or the end of it). STICKY-P is whether it should be sticky,
-i.e. whether text inserted at the marker should be inside the region."
-  (let ((mkr (set-marker (make-marker) pos)))
-    (set-marker-insertion-type mkr (if beg-p (not sticky-p) sticky-p))
-    mkr))
-
-;;}}}
-;;{{{ Make Submode Regions
-
-(defun* mmm-make-region
-    (submode beg end &rest rest &key (front "") (back "")
-             (beg-sticky t) (end-sticky t) face creation-hook
-             &allow-other-keys
-             )
-  "Make a submode region from BEG to END of SUBMODE in FACE.
-FACE defaults to `mmm-default-submode-face'.  FRONT and BACK are
-regexps or functions to match the correct delimiters--see
-`mmm-match-front' and `mmm-match-back'.  BEG-STICKY and END-STICKY
-determine whether the front and back of the region, respectively, are
-sticky with respect to new insertion.  CREATION-HOOK should be a
-function to run after the region is created.  All other keyword
-arguments are stored as properties of the overlay, un-keyword-ified."
-  (mmm-mode-on)
-  ;; For now, complain about overlapping regions. Most callers should
-  ;; trap this and continue on. In future, submode regions will be
-  ;; allowed to sit inside others.
-  (when (mmm-overlays-in beg end)
-    (signal 'mmm-invalid-parent nil))
-  (when submode
-    (mmm-update-mode-info submode))
-  ;; Conditionally sticky overlays are by default sticky. Then the
-  ;; insert-in-front and -behind functions fix them.
-  (let ((ovl (make-overlay beg end nil (not beg-sticky) end-sticky)))
-    ;; This loop covers front, back, beg-sticky, end-sticky, and
-    ;; anything else the caller wants to put on the overlay. It also
-    ;; does face, but we re-do that later because we want to
-    ;; defaultify it.
-    (loop for (var val) on rest by #'cddr
-          do (overlay-put ovl (intern (substring (symbol-name var) 1)) val))
-    (mapcar #'(lambda (pair) (overlay-put ovl (car pair) (cadr pair)))
-            `((mmm t)           ; Mark our overlays
-              (mmm-mode ,submode)
-              (mmm-local-variables
-               ;; Have to be careful to make new list structure here
-               ,(list* (list 'font-lock-cache-state nil)
-                       (list 'font-lock-cache-position (make-marker))
-                       (copy-tree (cdr (assq submode mmm-region-saved-locals-defaults)))))
-              ;; These have special meaning to Emacs
-              (,mmm-evaporate-property t)
-              (face ,(or face (if submode 'mmm-default-submode-face)))
-              ))
-    (save-excursion
-      (goto-char (overlay-start ovl))
-      (mmm-set-current-submode submode)
-      (mmm-set-local-variables submode)
-      (mmm-run-submode-hook submode)
-      (when creation-hook
-        (funcall creation-hook))
-      (mmm-save-changed-local-variables ovl submode))
-    (setq mmm-previous-submode submode
-          mmm-previous-overlay ovl)
-    (mmm-update-submode-region)
-    ovl))
-
-;;}}}
-;;{{{ Clear Overlays
-
-;; See also `mmm-clear-current-region'.
-
-(defun mmm-clear-overlays (&optional start stop strict)
-  "Clears all MMM overlays between START and STOP.
-If STRICT, only clear those strictly included, rather than partially."
-  (mapcar #'delete-overlay
-        (mmm-overlays-in (or start (point-min))
-                         (or stop (point-max))
-                         strict))
-  (mmm-update-current-submode))
-
-;;}}}
 
 ;; INSPECTION
 ;;{{{ Current Overlays
@@ -293,6 +207,92 @@ If OVL is not back-bounded correctly, return its end position."
     (if (mmm-match-back ovl)
         (match-end 0)
       (overlay-end ovl))))
+
+;;}}}
+
+;; CREATION & DELETION
+;;{{{ Markers
+
+(defun mmm-make-marker (pos beg-p sticky-p)
+  "Make a marker at POS that is or isn't sticky.
+BEG-P represents whether the marker delimits the beginning of a
+region \(or the end of it). STICKY-P is whether it should be sticky,
+i.e. whether text inserted at the marker should be inside the region."
+  (let ((mkr (set-marker (make-marker) pos)))
+    (set-marker-insertion-type mkr (if beg-p (not sticky-p) sticky-p))
+    mkr))
+
+;;}}}
+;;{{{ Make Submode Regions
+
+(defun* mmm-make-region
+    (submode beg end &rest rest &key (front "") (back "")
+             (beg-sticky t) (end-sticky t) face creation-hook
+             &allow-other-keys
+             )
+  "Make a submode region from BEG to END of SUBMODE in FACE.
+FACE defaults to `mmm-default-submode-face'.  FRONT and BACK are
+regexps or functions to match the correct delimiters--see
+`mmm-match-front' and `mmm-match-back'.  BEG-STICKY and END-STICKY
+determine whether the front and back of the region, respectively, are
+sticky with respect to new insertion.  CREATION-HOOK should be a
+function to run after the region is created.  All other keyword
+arguments are stored as properties of the overlay, un-keyword-ified."
+  (mmm-mode-on)
+  ;; For now, complain about overlapping regions. Most callers should
+  ;; trap this and continue on. In future, submode regions will be
+  ;; allowed to sit inside others.
+  (when (mmm-overlays-in beg end)
+    (signal 'mmm-invalid-parent nil))
+  (when submode
+    (mmm-update-mode-info submode))
+  ;; Conditionally sticky overlays are by default sticky. Then the
+  ;; insert-in-front and -behind functions fix them.
+  (let ((ovl (make-overlay beg end nil (not beg-sticky) end-sticky)))
+    ;; This loop covers front, back, beg-sticky, end-sticky, and
+    ;; anything else the caller wants to put on the overlay. It also
+    ;; does face, but we re-do that later because we want to
+    ;; defaultify it.
+    (loop for (var val) on rest by #'cddr
+          do (overlay-put ovl (intern (substring (symbol-name var) 1)) val))
+    (mapcar #'(lambda (pair) (overlay-put ovl (car pair) (cadr pair)))
+            `((mmm t)           ; Mark our overlays
+              (mmm-mode ,submode)
+              (mmm-local-variables
+               ;; Have to be careful to make new list structure here
+               ,(list* (list 'font-lock-cache-state nil)
+                       (list 'font-lock-cache-position (make-marker))
+                       (copy-tree (cdr (assq submode mmm-region-saved-locals-defaults)))))
+              ;; These have special meaning to Emacs
+              (,mmm-evaporate-property t)
+              (face ,(or face (if submode 'mmm-default-submode-face)))
+              ))
+    (save-excursion
+      (goto-char (overlay-start ovl))
+      (mmm-set-current-submode submode)
+      (mmm-set-local-variables submode)
+      (mmm-run-submode-hook submode)
+      (when creation-hook
+        (funcall creation-hook))
+      (mmm-save-changed-local-variables ovl submode))
+    (setq mmm-previous-submode submode
+          mmm-previous-overlay ovl)
+    (mmm-update-submode-region)
+    ovl))
+
+;;}}}
+;;{{{ Clear Overlays
+
+;; See also `mmm-clear-current-region'.
+
+(defun mmm-clear-overlays (&optional start stop strict)
+  "Clears all MMM overlays between START and STOP.
+If STRICT, only clear those strictly included, rather than partially."
+  (mapcar #'delete-overlay
+        (mmm-overlays-in (or start (point-min))
+                         (or stop (point-max))
+                         strict))
+  (mmm-update-current-submode))
 
 ;;}}}
 
