@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.11 2000/08/24 22:59:38 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.12 2000/09/29 20:43:10 mas Exp $
 
 ;;{{{ GPL
 
@@ -73,12 +73,15 @@ Creates a new parameter if one is not present."
 
 (defun* mmm-apply-class
     (class &optional (start (point-min)) (stop (point-max)) face)
-  "Apply the submode class CLASS from START to STOP in FACE."
+  "Apply the submode class CLASS from START to STOP in FACE.
+If FACE is nil, the face for CLASS is used, or the default face if
+none is specified by CLASS."
   ;; The "special" class t means do nothing. It is used to turn on
   ;; MMM Mode without applying any classes.
   (unless (eq class t)
-    (apply #'mmm-ify :start start :stop stop :face face
-           (mmm-get-class-spec class))))
+    (apply #'mmm-ify :start start :stop stop
+           (append (mmm-get-class-spec class)
+                  (list :face face)))))
 
 (defun* mmm-apply-classes
     (classes &key (start (point-min)) (stop (point-max)) face)
