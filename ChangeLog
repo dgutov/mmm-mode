@@ -1,3 +1,24 @@
+2001-05-16  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-mode.el (mmm-mode-on): Make style variables buffer-local.
+	  Continue on all MMM errors.
+
+	* mmm-vars.el (mmm-save-local-variables): Added all c-modes
+	  indentation style variables.
+
+	* mmm-auto.el, mmm-sample.el:
+	Added `sgml-dtd' submode class from Yann Dirson <ydirson@fr.alcove.com>.
+
+2001-05-15  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-auto.el: Added cweb to autoloaded classes.
+
+2001-05-14  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-region.el: Passed arguments to `signal'.
+
+	* mmm-vars.el: Defined new submode placement error conditions.
+
 2001-05-14  Alan Shutko  <ats@acm.org>
 
 	* mmm-cweb.el: New file.
