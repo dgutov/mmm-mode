@@ -22,7 +22,9 @@ by all submode classes.
 
 ** New Submode Classes
 
-New submode classes for JSP and ePerl are included.
+New submode classes for JSP and ePerl are included.  A major bug in
+the handling of embedded Java (and other C-type languages) was fixed,
+so the JSP class should work consistently.
 
 
 * MMM Mode 0.4.6 is a bug-fix release with one user-visible change:
