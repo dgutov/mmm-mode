@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.13 2000/06/28 01:15:50 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.14 2000/06/29 18:48:47 mas Exp $
 
 ;;{{{ GPL
 
@@ -402,10 +402,7 @@ different keymaps, syntax tables, local variables, etc. for submodes."
     (let ((mode (or mmm-current-submode major-mode)))
       (mmm-update-mode-info mode)
       (mmm-set-local-variables mode)
-;       (and (featurep 'font-lock)
-;            (get mode 'mmm-font-lock-mode)
-;            (font-lock-mode 1))
-      )
+      (mmm-enable-font-lock mode))
     (if mmm-current-submode
         (setq mode-name
               (mmm-format-string
@@ -509,6 +506,16 @@ region and mode for the previous position."
 ;;}}}
 
 ;; FONT LOCK
+;;{{{ Enable Font Lock
+
+(defun mmm-enable-font-lock (mode)
+  "Turn on font lock if it is not already on and MODE enables it."
+  (mmm-update-mode-info mode)
+  (and (not font-lock-mode)
+       (get mode 'mmm-font-lock-mode)
+       (font-lock-mode 1)))
+
+;;}}}
 ;;{{{ Get Submode Regions
 
 (defun mmm-submode-changes-in (start stop)
@@ -576,6 +583,10 @@ of the REGIONS covers START to STOP."
     (let ((major-mode mode)
           (func (get mode 'mmm-fontify-region-function)))
       (mapcar #'(lambda (reg)
+                  ;; Next line is necessary to catch changes in
+                  ;; font-lock cache state and position.
+                  (mmm-save-changed-local-variables
+                   mmm-current-overlay mmm-current-submode)
                   (goto-char (car reg))
                   ;; Here we do the same sort of thing that
                   ;; `mmm-update-submode-region' does, but we force it
