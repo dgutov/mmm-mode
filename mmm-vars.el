@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.22 2000/07/29 17:28:07 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.23 2000/07/29 22:59:35 mas Exp $
 
 ;;{{{ GPL
 
@@ -232,9 +232,7 @@ See `mmm-global-mode'."
   "Add an element to `mmm-mode-ext-classes-alist', which see.
 That variable can now be directly modified, so this function is
 unnecessary. It probably won't go away, though."
-  (if (assq class mmm-classes-alist)
-      (add-to-list 'mmm-mode-ext-classes-alist (list mode ext class))
-    (signal 'mmm-invalid-submode-class (list class))))
+  (add-to-list 'mmm-mode-ext-classes-alist (list mode ext class)))
 
 ;;}}}
 ;;{{{ Key Bindings
@@ -513,8 +511,12 @@ the end of the submode region, and the end of the back delimiter.")
     (add-to-list 'mmm-classes-alist class)))
 
 (defun mmm-add-group (group classes)
-  "Add CLASSES and a group named GROUP containing them all."
-  (mmm-add-classes classes)
+  "Add CLASSES and a group named GROUP containing them all.
+The CLASSES are all made private, i.e. non-user-visible."
+  (mmm-add-classes (mapcar #'(lambda (class)
+                               (append class
+                                       '(:private t)))
+                           classes))
   (add-to-list 'mmm-classes-alist
                (list group :classes (mapcar #'first classes))))
 
