@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.3 2000/04/30 08:03:09 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.4 2000/05/03 21:48:44 mas Exp $
 
 ;;{{{ GPL
 
@@ -74,8 +74,9 @@
 
 ;;; Code:
 
-(when t
-  (require 'mmm-auto))
+(require 'mmm-compat)
+(require 'mmm-vars)
+(require 'mmm-auto)
 
 ;;{{{ Perl Tags
 
