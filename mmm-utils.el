@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.1 2000/04/27 10:35:19 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.2 2000/04/30 07:49:41 mas Exp $
 
 ;;{{{ GPL
 
@@ -30,6 +30,8 @@
 ;; for MMM Mode.
 
 ;;; Code:
+
+(require 'cl)
 
 ;;{{{ Valid Buffer
 
