@@ -1,6 +1,15 @@
+2000-06-28  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* NEWS, configure.in, mmm-vars.el: Released 0.4.1.
+
+	* mmm-region.el (mmm-overlays-in): Added DELIM parameter.
+	(mmm-submode-changes-in): Added strict flags calling overlays-in.
+
 2000-06-27  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
 
-	* mmm-auto.el, mmm-region.el, mmm-vars.el, mmm.texinfo:
+	* configure.in, mmm-vars.el: Released 0.4.0.
+
+	* NEWS, TODO, mmm-auto.el, mmm-region.el, mmm-vars.el, mmm.texinfo:
 	Changed mmm-global-mode to use post-command-hook method rather than
 	stack-walk method.
 
@@ -25,8 +34,7 @@
 	Added setting and clearing local variables with mode on and off.
 
 	* mmm-vars.el (mmm-save-local-variables):
-	Added extra parameters for saving type and
-	modes, and updated documentation.
+	Added extra parameters for saving type and modes, and updated documentation.
 	Created several variables to save buffer- and region- locals.
 	(mmm-temp-buffer-name): Created variable and changed references.
 
