@@ -107,7 +107,7 @@ Customizing MMM Mode
 Supplied Submode Classes
 
 * Mason::                       Mason syntax for server-side Perl in HTML.
-* Eval-Elisp::                  Emacs Lisp in @code{eval} file variables.
+* File Variables::              Elisp code in File Variables.
 * Here-documents::              Code in shell and Perl here-documents.
 * Javascript::                  Javascript embedded in HTML.
 * Embedded CSS::                CSS Styles embedded in HTML.
@@ -1140,7 +1140,7 @@ delimiter.
 
 PRIVATE
 
-@node Mason, Eval-Elisp, Writing Classes, Top
+@node Mason, File Variables, Writing Classes, Top
 @comment  node-name,  next,  previous,  up
 @chapter Mason: Perl in HTML
 
@@ -1222,14 +1222,57 @@ This tells PSGML that the current file is a sub-document of the file
 alleviating its confusion.
 
 
-@node Eval-Elisp, Here-documents, Mason, Top
+@node File Variables, Here-documents, Mason, Top
 @comment  node-name,  next,  previous,  up
-@chapter Eval-Elisp: Elisp in a Local Variables List
+@chapter Elisp in a Local Variables List
+
+Emacs allows the author of a file to specify major and minor modes to be
+used while editing that file, as well as specifying values for other
+local Elisp variables, with a File Variables list.  @xref{File
+Variables, , , emacs, The Emacs Manual}.  Since file variables values
+are Elisp objects (and with the @code{eval} special ``variable'', they
+are forms to be evaluated), one might want to edit them in
+@code{emacs-lisp-mode}.  The submode class @code{file-variables} allows
+this, and is suitable for turning on in a given file with
+@code{mmm-classes}, or in all files with @code{mmm-global-classes}.
 
 
-@node Here-documents, Javascript, Eval-Elisp, Top
+@node Here-documents, Javascript, File Variables, Top
 @comment  node-name,  next,  previous,  up
 @chapter Here-documents
+
+One of the long-time standard syntaxes for outputting large amounts of
+code (or text, or HTML, or whatever) from a script (notably shell
+scripts and Perl scripts) is the here-document syntax:
+
+@example
+print <<END_HTML;
+<html>
+  <head>
+    <title>Test Page</title>
+  </head>
+  <body>
+END_HTML
+@end example
+
+The @code{here-doc} submode class recognizes this syntax, and can even
+guess the correct submode to use in many cases.  For instance, it would
+put the above example in @code{html-mode}, noticing the string
+@samp{HTML} in the name of the here-document.  If you use less than
+evocative here-document names, or if the submode is recognized
+incorrectly for any other reason, you can tell it explicitly what
+submode to use.
+
+@defopt mmm-here-doc-mode-alist
+The value of this variable should be an alist, each element a cons pair
+associating a regular expression to a submode symbol.  Whenever a
+here-document name matches one of these regexps, the corresponding
+submode is applied.  For example, if this variable contains the element
+@code{("CODE" . cc-mode)}, then any here-document whose name contains
+the string @samp{CODE} will be put in @code{cc-mode}.  The value of this
+variable overrides any guessing that the @code{here-doc} submode class
+would do otherwise.
+@end defopt
 
 
 @node Javascript, Embedded CSS, Here-documents, Top
@@ -1250,6 +1293,23 @@ alleviating its confusion.
 @node RPM, Concept Index, Embperl, Top
 @comment  node-name,  next,  previous,  up
 @chapter RPM Spec Files
+
+@file{mmm-rpm.el} contains the definition of an MMM Mode submode class
+for editing shell script sections within RPM (Redhat Package Manager)
+spec files.  It is recommended for use in combination with
+@file{rpm-spec-mode.el} by Stig Bjørlykke <stigb@@tihlde.hist.no> and
+Steve Sanbeg <sanbeg@@dset.com>
+(@uref{http://www.xemacs.org/~stigb/rpm-spec-mode.el}).
+
+Suggested setup code:
+
+@lisp
+(add-to-list 'mmm-mode-ext-classes-alist
+             '(rpm-spec-mode "\\.spec\\'" rpm-sh))
+@end lisp
+
+Thanks to Marcus Harnisch <Marcus.Harnisch@@gmx.net> for contributing
+this submode class.
 
 
 @node Concept Index, Function Index, RPM, Top
