@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.4 2000/05/18 18:28:13 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.5 2000/06/27 02:46:56 mas Exp $
 
 ;;{{{ GPL
 
@@ -49,6 +49,22 @@ class specifier itself."
         ((listp class)          ; A list must be a class spec
          class)
         (t (signal 'mmm-invalid-submode-class (list class)))))
+
+;;}}}
+;;{{{ Get and Set Class Parameters
+
+(defun mmm-get-class-parameter (class param)
+  "Get the value of the parameter PARAM for CLASS, or nil if none."
+  (cadr (member param (mmm-get-class-spec class))))
+
+(defun mmm-set-class-parameter (class param value)
+  "Set the value of the parameter PARAM for CLASS to VALUE.
+Creates a new parameter if one is not present."
+  (let* ((spec (mmm-get-class-spec class))
+         (current (member param spec)))
+    (if current
+        (setcar (cdr current) value)
+      (nconc spec (list param value)))))
 
 ;;}}}
 ;;{{{ Apply Classes
@@ -108,7 +124,7 @@ error once all classes have been applied."
            (beg-sticky (not (number-or-marker-p front)))
            (end-sticky (not (number-or-marker-p back)))
            (front-offset 0) (back-offset 0) front-verify back-verify
-           front-form back-form
+           front-form back-form creation-hook
            &allow-other-keys)
   "Create submode regions from START to STOP according to arguments.
 If CLASSES is supplied, it must be a list of valid CLASSes. Otherwise,
@@ -139,7 +155,8 @@ the rest of the arguments are for an actual class being applied. See
            (condition-case nil
                (mmm-make-region submode beg end :face face
                  :front front-form :back back-form
-                 :beg-sticky beg-sticky :end-sticky end-sticky)
+                 :beg-sticky beg-sticky :end-sticky end-sticky
+                 :creation-hook creation-hook)
              ;; If our region is invalid, go back to the end of the front
              ;; match and continue on.
              (mmm-invalid-parent (goto-char (- beg front-offset)))))))))
