@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.1 2000/04/27 10:34:15 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.2 2000/04/30 01:47:03 mas Exp $
 
 ;;{{{ GPL
 
@@ -32,8 +32,9 @@
 
 (require 'font-lock)
 (require 'mmm-compat)
-(require 'mmm-vars)
-(require 'mmm-class)
+(progn
+  (require 'mmm-vars)
+  (require 'mmm-class))
 
 ;;{{{ Applying Predefined Classes
 

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.1 2000/04/27 10:32:25 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.2 2000/04/30 01:47:03 mas Exp $
 
 ;;{{{ GPL
 
@@ -74,7 +74,8 @@
 ;;; Code:
 
 (require 'cl)
-(require 'mmm-vars)
+(progn
+  (require 'mmm-vars))
 
 ;;{{{ Autoloads
 

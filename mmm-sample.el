@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.1 2000/04/27 10:36:48 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.2 2000/04/30 01:47:04 mas Exp $
 
 ;;{{{ GPL
 
@@ -31,7 +31,8 @@
 
 ;;; Code:
 
-(require 'mmm-auto)
+(progn
+  (require 'mmm-auto))
 
 ;;{{{ CSS embedded in HTML
 

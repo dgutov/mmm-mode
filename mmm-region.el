@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.1 2000/04/27 10:35:40 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.2 2000/04/30 01:47:04 mas Exp $
 
 ;;{{{ GPL
 
@@ -36,7 +36,8 @@
 (require 'cl)
 (require 'mmm-compat)
 (require 'mmm-utils)
-(require 'mmm-vars)
+(progn
+  (require 'mmm-vars))
 
 ;; CREATION & DELETION
 ;;{{{ Markers

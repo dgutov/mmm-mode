@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.1 2000/04/27 10:31:44 mas Exp $
+;; Version: $Id: mmm-mode.el,v 1.2 2000/04/30 01:47:04 mas Exp $
 ;; Keywords: convenience faces languages tools
 
 ;;{{{ GPL
@@ -83,22 +83,20 @@
 
 ;;; Code:
 
-;;{{{ Load Everything Else
-
 (require 'cl)
 ;; If we don't load font-lock now, but it is loaded later, the
 ;; necessary mmm-font-lock- properties may not be there.
 (require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-utils)
-(require 'mmm-vars)
-(require 'mmm-auto)
-(require 'mmm-region)
-(require 'mmm-class)
-;;; This file is set up to autoload by `mmm-auto.el'.
-;;(require 'mmm-cmds)
-
-;;}}}
+(progn
+  (require 'mmm-vars)
+  (require 'mmm-auto)
+  (require 'mmm-region)
+  (require 'mmm-class)
+  ;; This file is set up to autoload by `mmm-auto.el'.
+  ;; (require 'mmm-cmds)
+  )
 ;;{{{ Toggle Function
 
 (defvar mmm-mode nil
