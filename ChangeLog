@@ -1,3 +1,95 @@
+2000-07-12  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* configure.in, mmm-vars.el: Released 0.4.3.
+
+	* mmm-univ.el: Changed %[...]% to [%...%] which looks much nicer.
+
+	* mmm.texinfo: Wrote more about Mason.
+
+	* mmm-mason.el: Moved commentary code to README.Mason.
+
+	* Makefile.am: Added README.Mason to EXTRA_DIST.
+
+	* README.Mason: Created file.
+
+2000-07-11  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-region.el (mmm-update-mode-info):
+	Used `mmm-make-temp-buffer'.  Put font-lock
+	property directly rather than setting the variable first.
+
+	* mmm-mode.el (mmm-mode-off): Reset font-lock variables.
+
+	* mmm-compat.el (mmm-make-temp-buffer):
+	Added as workaround for make-indirect-buffer.
+
+	* mmm-region.el:
+	(mmm-enable-font-lock, mmm-update-font-lock-buffer, mmm-update-mode-info):
+	Conditioned font-lock usage on mmm-font-lock-available-p.
+
+	* mmm-compat.el (mmm-font-lock-available-p): Added flag.
+
+	* mmm-region.el (mmm-update-mode-info):
+	Killed any lingering temporary buffers.
+
+	* mmm-cmds.el (mmm-insert-by-key):
+	Made inserted regions beg- and end-sticky.
+
+	* mmm-compat.el (mmm-keywords-used): Added :classes.
+
+2000-06-30  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* configure.in, mmm-vars.el: Released 0.4.2a.
+
+	* mmm-region.el: Reordered Inspection and Creation for byte compiler.
+
+	* mmm-mode.el: Moved mmm-mode variable to mmm-vars.el.
+
+	* mmm-auto.el: Added some autoloads.
+
+	* Makefile.am: Added mmm-univ.el.
+
+	* configure.in, mmm-vars.el: Released 0.4.2.
+
+	* mmm-auto.el (mmm-mode-on-maybe):
+	Conditioned font-lock updating on mmm-mode.
+
+	* mmm-region.el:
+	Removed use-local-map advice; no longer necessary (thank goodness!)
+
+	* mmm-region.el, mmm-auto.el: Fixed font-lock woes (hopefully).
+
+	* mmm-class.el: Allowed dynamically specified submodes.
+
+	* mmm-utils.el, mmm-mode.el, mmm-cmds.el:
+	Fixed font-lock woes (hopefully).
+
+	* mmm.texinfo: Added Embperl.
+
+	* mmm-vars.el (mmm-global-classes):
+	Added variable controlling global classes.
+
+	* mmm-univ.el: Created file defining `universal' submode.
+
+	* mmm-sample.el: Added Embperl.
+
+	* mmm-utils.el: Added def-edebug-specs.
+
+2000-06-29  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-region.el (mmm-fontify-region-list):
+	Saved local variables before moving.
+
+	* mmm-auto.el (mmm-check-changed-buffers): Checked for live buffer.
+
+	* mmm-utils.el (mmm-valid-buffer):
+	Checked against noninteractive and hidden buffers.
+
+	* mmm-auto.el (mmm-check-changed-buffers):
+	Added check against minibuffers.
+
+	* mmm-vars.el (mmm-never-modes): Added `eshell-mode'.
+
 2000-06-28  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
 
 	* NEWS, configure.in, mmm-vars.el: Released 0.4.1.
