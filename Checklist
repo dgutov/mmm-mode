@@ -9,8 +9,9 @@
 2. Update the NEWS and TODO files and any other commentary files and
    check them into CVS with invisible comment (#).
 
-3. Update version numbers and dates in `configure.in', `mmm-vars.el',
-   and `version.texi'.  Check them in with comment "Released x.x.x".
+3. Update version numbers and dates in `mmm-mode.el', `configure.in',
+   `mmm-vars.el', and `version.texi' (the latter by running `make').
+   Check them in with comment "Released x.x.x".
 
 4. Update the Changelog file with `vc-update-change-log' (`C-x v a')
    and check it into CVS with invisible comment (#).
@@ -18,4 +19,11 @@
 5. Make a CVS snapshot (`C-x v s') of the MMM Mode directory.  This is
    the point at which a release becomes official.
 
-6. Run `make dist' and upload the tarball.
+6. Run `make dist' and upload the tarball.  Upload both to SourceForge
+   and to the Emacs Lisp Archive.
+
+                             Adding Files
+
+To add a file to the distribution, edit `Makefile.am' and add it to
+lisp_LISP (if an .el file) or EXTRA_DIST (otherwise).  If necessary,
+add autoloads for functions or submode classes to `mmm-auto.el'.
