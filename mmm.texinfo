@@ -1246,8 +1246,15 @@ In addition, some users have reported that the CPerl indentation
 sometimes does not work. This problem has not yet been tracked down,
 however, and more data about when it happens would be helpful.
 
-Michael Alan Dorman has reported problems using PSGML with Mason.  He
-suggests adding these lines to @file{.emacs} to turn it off.
+Some people have reported problems using PSGML with Mason.  Adding the
+following line to a @file{.emacs} file should suffice to turn PSGML off
+and cause emacs to use a simpler HTML mode:
+
+@lisp
+(autoload 'html-mode "sgml-mode" "HTML Mode" t)
+@end lisp
+
+Earlier versions of PSGML may require instead the following fix:
 
 @lisp
 (delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
@@ -1255,11 +1262,12 @@ suggests adding these lines to @file{.emacs} to turn it off.
 @end lisp
 
 Other users report using PSGML with Mason and MMM Mode without
-difficulty.  If you don't have problems and want to use PSGML, simply
-replace @code{html-mode} everywhere in the suggested code with
-@code{sgml-html-mode} or @code{sgml-mode}.  Similarly, if you are using
-XEmacs and want to use the alternate HTML mode @code{hm--html-mode},
-replace @code{html-mode} with that symbol.
+difficulty.  If you don't have problems and want to use PSGML, you may
+need to replace @code{html-mode} in the suggested code with
+@code{sgml-html-mode}.  (Depending on your version of PSGML, this may
+not be necessary.)  Similarly, if you are using XEmacs and want to use
+the alternate HTML mode @code{hm--html-mode}, replace @code{html-mode}
+with that symbol.
 
 One problem that crops up when using PSGML with Mason is that even
 ignoring the special tags and Perl code (which, as I've said, haven't

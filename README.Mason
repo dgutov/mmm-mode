@@ -76,18 +76,24 @@ CPERL PROBLEMS
 
 PSGML PROBLEMS
 
-  Michael Alan Dorman has reported problems using PSGML with Mason. He
-  suggests adding these lines to .emacs to turn it off.
+  Some people have reported problems using PSGML with Mason.  Adding
+  the following line to a .emacs file should suffice to turn PSGML off
+  and cause emacs to use a simpler HTML mode:
+
+  (autoload 'html-mode "sgml-mode" "HTML Mode" t)
+
+  Earlier versions of PSGML may require instead the following fix:
 
   (delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
   (delete '("\\.shtml$" . sgml-html-mode) auto-mode-alist)
 
   Other users report using PSGML with Mason and MMM Mode without
-  difficulty.  If you don't have problems and want to use PSGML,
-  simply replace `html-mode' everywhere in the suggested code with
-  `sgml-html-mode' or `sgml-mode'.  Similarly, if you are using XEmacs
-  and want to use the alternate HTML mode `hm--html-mode', replace
-  `html-mode' with that symbol.
+  difficulty.  If you don't have problems and want to use PSGML, you
+  may need to replace `html-mode' in the suggested code with
+  `sgml-html-mode'.  (Depending on your version of PSGML, this may not
+  be necessary.)  Similarly, if you are using XEmacs and want to use
+  the alternate HTML mode `hm--html-mode', replace `html-mode' with
+  that symbol.
 
   One problem that crops up when using PSGML with Mason is that even
   ignoring the special tags and Perl code (which, as I've said,
@@ -104,9 +110,13 @@ PSGML PROBLEMS
   components; try, for example, these lines at the end of a component.
 
   %# Local Variables:
-  %# sgml-parent-document: ("autohandler" nil ("body"))
+  %# sgml-parent-document: ("autohandler" "body" nil ("body"))
+  %# sgml-doctype: "/top/level/autohandler"
   %# End:
 
   This tells PSGML that the current file is a sub-document of the file
   `autohandler' and is included inside a <body> tag, thus alleviating
-  its confusion.
+  its confusion, and also instructs it where to find the doctype
+  declaration (assuming your top-level autohandler has one).  This
+  alleviates most problems for me.  I admit to not understanding PSGML
+  internals very well, so YMMV.
