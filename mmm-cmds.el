@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.11 2000/08/24 22:52:58 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.12 2000/09/05 07:22:13 mas Exp $
 
 ;;{{{ GPL
 
@@ -323,7 +323,7 @@ is a symbol naming the insertion."
          ;; This gets us a dotted list, because of the way insertion
          ;; keys are specified.
          (key (append mmm-insert-modifiers (car spec)))
-         (lastkey (nthcdr (1- (safe-length key)) key)))
+         (lastkey (nthcdr (max (1- (safe-length key)) 0) key)))
     ;; Now we make it a true list
     (if (consp key)
         (setcdr lastkey (list (cdr lastkey)))
