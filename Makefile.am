@@ -7,3 +7,9 @@ lisp_LISP = mmm-compat.el mmm-vars.el mmm-utils.el mmm-auto.el \
   mmm-sample.el mmm-mason.el
 
 info_TEXINFOS = mmm.texinfo
+
+# This is a hack IMO.  Automake should recognize lisp files as
+# "sources" and include them in the distribution, but it doesn't.
+EXTRA_DIST = $(lisp_LISP)
+
+# See also `elisp-comp' for another hack.
