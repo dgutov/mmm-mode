@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.13 2001/01/15 04:56:25 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.14 2001/02/08 23:37:53 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -278,8 +278,7 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
                          (cdr (assoc front-str match-face)))
                         (t
                          (plist-get class :face)))))
-            (unless (fboundp submode)
-              (setq submode (cdr (assq submode mmm-major-mode-preferences))))
+            (setq submode (mmm-modename->function submode))
             (mmm-make-region
              submode beg end :front front-str :back back-str
              :face face

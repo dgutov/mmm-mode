@@ -3,12 +3,7 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
-INFO FILE!!  In addition to finishing it, updating it, etc., think
-about making it less flat: turning sections into subsections, chapters
-to sections, and adding new chapters.  Also standardize punctuation to
-double spaces after sentences.
-
-Custom mode functions.
+Custom mode functions like `mason-mode'.
 
 Make Mason work a little better with PSGML.  The fix I've found works,
 but it would be nifty if MMM could do it automatically.  Maybe the

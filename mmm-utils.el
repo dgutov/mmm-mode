@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.11 2001/02/08 21:41:30 viritrilbia Exp $
+;; Version: $Id: mmm-utils.el,v 1.12 2001/02/08 23:37:53 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -32,7 +32,6 @@
 ;;; Code:
 
 (require 'cl)
-(require 'mmm-vars)
 
 ;;{{{ Valid Buffer
 
@@ -136,18 +135,6 @@ string."
                (- (point) (or bound (length regexp)))
                t)
              (match-end 0)))))
-
-;;}}}
-;;{{{ Ensure submode name
-
-(defun mmm-ensure-modename (symbol)
-  "Return SYMBOL if it is a valid submode name, else nil.
-Valid submode names are either `fboundp' or present as the `car' of an
-element in `mmm-major-mode-preferences'."
-  (if (or (fboundp symbol)
-          (assq symbol mmm-major-mode-preferences))
-      symbol
-    nil))
 
 ;;}}}
 

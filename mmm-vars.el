@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.42 2001/02/08 21:41:30 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.43 2001/02/08 23:37:53 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -309,33 +309,58 @@ unnecessary. It probably won't go away, though."
 ;;{{{ Preferred Major Modes
 
 (defcustom mmm-major-mode-preferences
-  `((perl . ,(if (fboundp 'cperl-mode) 'cperl-mode 'perl-mode))
-    (javascript . ,(if (fboundp 'javascript-mode) 'javascript-mode 'c++-mode))
-    (java . ,(if (fboundp 'jde-mode) 'jde-mode 'java-mode))
-    (css . ,(if (fboundp 'css-mode) 'css-mode 'c++-mode)))
+  '((perl cperl-mode perl-mode)
+    (javascript javascript-mode c++-mode)
+    (java jde-mode java-mode c++-mode)
+    (css css-mode c++-mode))
   "User preferences about what major modes to use.
-Each element has the form \(LANGUAGE . MODE) where LANGUAGE is the
-name of a programming language such as `perl' as a symbol, and MODE is
-the major mode to use, such as `cperl-mode' or `perl-mode'."
+Each element has the form \(LANGUAGE . MODES) where LANGUAGE is the
+name of a programming language such as `perl' as a symbol, and MODES
+is a list of possible major modes to use, such as `cperl-mode' or
+`perl-mode'.  The first element of MODES which is `fboundp' is used
+for submodes of LANGUAGE.  The last element of MODES should be a mode
+which will always be available."
   :group 'mmm
   :type '(repeat (cons symbol
-                       (restricted-sexp :match-alternatives
-                                        (commandp)))))
+                       (repeat
+                        (restricted-sexp :match-alternatives
+                                         (fboundp))))))
 
-(defun mmm-set-major-mode-preferences (language mode &optional default)
+(defun mmm-add-to-major-mode-preferences (language mode &optional default)
   "Set the preferred major mode for LANGUAGE to MODE.
-This sets the value of `mmm-major-mode-preferences'.  If there is
-already a mode specified for LANGUAGE, and DEFAULT is nil or
-unsupplied, then it is changed.  If DEFAULT is non-nil, then any
-existing mode is unchanged.  This may be used by packages to ensure
-that some mode is present, but not override any user-specified mode."
+This sets the value of `mmm-major-mode-preferences'.  If DEFAULT is
+nil or unsupplied, MODE is added at the front of the list of modes for
+LANGUAGE.  If DEFAULT is non-nil, then it is added at the end.  This
+may be used by packages to ensure that some mode is present, but not
+override any user-specified mode."
   (let ((pair (assq language mmm-major-mode-preferences)))
     (if pair
-        ;; Existing mode preference
-        (unless default
-          (setcdr pair mode))
+        ;; Existing mode preferences
+        (if default
+            (setcdr pair (cons mode (cdr pair)))
+          (setcdr pair (append (cdr pair) (list mode))))
       ;; No existing mode preference
-      (add-to-list 'mmm-major-mode-preferences (cons language mode)))))
+      (add-to-list 'mmm-major-mode-preferences (list language mode)))))
+
+(defun mmm-ensure-modename (symbol)
+  "Return SYMBOL if it is a valid submode name, else nil.
+Valid submode names are either `fboundp' or present as the `car' of an
+element in `mmm-major-mode-preferences'."
+  (if (or (fboundp symbol)
+          (assq symbol mmm-major-mode-preferences))
+      symbol
+    nil))
+
+(defun mmm-modename->function (mode)
+  "Convert MODE to a mode function, nil if impossible.
+Valid submode names are either `fboundp' or present as the `car' of an
+element in `mmm-major-mode-preferences'.  In the latter case, the
+first `fboundp' element of the `cdr' is returned, or nil if none."
+  (if (fboundp mode)
+      mode
+    (car (remove-if-not
+          #'fboundp
+          (cdr (assq mode mmm-major-mode-preferences))))))
 
 ;;}}}
 ;;{{{ Key Bindings

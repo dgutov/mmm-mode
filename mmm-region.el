@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.30 2001/02/03 01:39:28 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.31 2001/02/08 23:37:53 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -246,8 +246,7 @@ un-keyword-ified."
   ;; allowed to sit inside others.
   (when (mmm-overlays-in beg end)
     (signal 'mmm-invalid-parent nil))
-  (unless (fboundp submode)
-    (setq submode (cdr (assq submode mmm-major-mode-preferences))))
+  (setq submode (mmm-modename->function submode))
   (when submode
     (mmm-update-mode-info submode))
   ;; Conditionally sticky overlays are by default sticky. Then the

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.17 2001/02/08 21:41:30 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.18 2001/02/08 23:37:53 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -32,7 +32,7 @@
 ;;; Code:
 
 (require 'mmm-auto)
-(require 'mmm-utils)
+(require 'mmm-vars)
 
 ;;{{{ CSS embedded in HTML
 

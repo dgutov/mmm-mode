@@ -33,7 +33,7 @@
 ;;; Code:
 
 (require 'mmm-auto)
-(require 'mmm-utils)
+(require 'mmm-vars)
 
 (defun mmm-univ-get-mode (string)
   (string-match "[a-zA-Z-]+" string)
