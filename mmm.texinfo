@@ -1578,6 +1578,12 @@ matching the @code{:front} (respectively, @code{:back}) regular
 expression.  In other words, these keywords specify whether or not the
 delimiter strings are @emph{included} in the submode region.
 
+When @code{:front} and @code{:back} are regexps, the delimiter is
+normally considered to be the entire matched region.  This can be
+changed using the @code{:front-match} and @code{:back-match}
+keywords.  The values of the keywords is a number specifying the
+submatch.  This defaults to zero (specifying the whole regexp).
+
 Two more keywords which affect the placement of the region
 @code{:front-offset} and @code{:back-offset}, which both take integers
 as arguments.  The argument of @code{:front-offset} (respectively,
@@ -1612,6 +1618,8 @@ beginning of the next line), and begin the submode region there.  This
 coincides with the normal behavior of here-documents: they begin on the
 following line and go until the ending flag.
 
+If the @code{:back} should not be able to start a new submode region,
+set the @code{:end-not-begin} keyword to non-nil.
 
 @node Submode Groups, Calculated Submodes, Region Placement, Writing Classes
 @comment  node-name,  next,  previous,  up

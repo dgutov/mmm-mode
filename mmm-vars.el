@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.44 2001/02/10 06:18:16 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.45 2001/02/19 03:18:16 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -599,6 +599,11 @@ for BACK \(the search starts at the beginning of the submode region),
 save that the beginning of its match \(or the end, if INCLUDE-BACK is
 non-nil) becomes the end of the submode region, plus BACK-OFFSET.
 
+FRONT-MATCH and BACK-MATCH default to zero.  They specify which
+sub-match of the FRONT and BACK regexps to treat as the delimiter.
+This number will be passed to any calls to `match-beginning' and
+company.
+
 FRONT- and BACK-OFFSET default to 0.  In addition to numbers, they can
 also be functions to call which should move point to the correct
 position for the beginning or end of the submode region.  Common
@@ -652,6 +657,9 @@ insertion should have the symbol `_' where point \(or wrapped text)
 should go, and the symbol `@' in four different places: at the
 beginning of the front delimiter, the beginning of the submode region,
 the end of the submode region, and the end of the back delimiter.
+
+If END-NOT-BEGIN is non-nil, it specifies that a BACK delimiter cannot
+begin a new submode region.
 
 PRIVATE, if supplied and non-nil, means that this class is a private
 or internal class, usually one invoked by another class via :classes,

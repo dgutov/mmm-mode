@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.14 2001/01/14 01:26:09 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.15 2001/02/19 03:18:16 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -126,6 +126,9 @@ and interactive history."
            front-verify back-verify
            front-form back-form creation-hook
            match-submode match-face
+	   (front-match 0)
+	   (back-match 0)
+	   end-not-begin
            ;insert
            &allow-other-keys
            )
@@ -138,7 +141,9 @@ the rest of the arguments are for an actual class being applied. See
              all
              (list :start start :stop stop :beg-sticky beg-sticky
                    :end-sticky end-sticky :front-offset front-offset
-                   :back-offset back-offset)))
+                   :back-offset back-offset
+		   :front-match 0
+		   :back-match 0)))
   (cond
    ;; If we have a class list, apply them all.
    (classes
@@ -154,7 +159,7 @@ the rest of the arguments are for an actual class being applied. See
     (mmm-save-all
      (goto-char start)
      (loop for (beg end matched-front matched-back
-                    matched-submode matched-face back-to) =
+                    matched-submode matched-face back-to resume-at) =
                     (apply #'mmm-match-region :start (point) all)
            while beg
            while (or (not end) (/= beg end)) ; Sanity check
@@ -164,7 +169,7 @@ the rest of the arguments are for an actual class being applied. See
                  (apply #'mmm-make-region (or matched-submode submode)
                         beg end :front matched-front :back matched-back
                         :face (or matched-face face) all)
-                 (goto-char end))
+		 (goto-char resume-at))
              ;; If our region is invalid, go back to the end of the
              ;; front match and continue on.
              (mmm-invalid-parent (goto-char back-to)))
@@ -180,6 +185,7 @@ the rest of the arguments are for an actual class being applied. See
     (&key start stop front back front-verify back-verify
           include-front include-back front-offset back-offset
           front-form back-form save-matches match-submode match-face
+	  front-match back-match end-not-begin
           &allow-other-keys)
   "Find the first valid region between point and STOP.
 Return \(BEG END FRONT-FORM BACK-FORM SUBMODE FACE BACK-TO) specifying
@@ -188,8 +194,9 @@ and BACK \(markers, regexps, or functions).  A nil value for END means
 that MATCH-SUBMODE failed to find a valid submode.  BACK-TO is the
 point at which the search should continue if the region is invalid."
   (when (mmm-match-and-verify front start stop front-verify)
-    (let ((beg (mmm-match->point include-front front-offset))
-          (back-to (match-end 0))
+    (let ((beg (mmm-match->point include-front front-offset 
+				 front-match back-match))
+          (back-to (match-end front-match))
           (front-form (mmm-get-form front-form)))
       (let ((submode (if match-submode
                          (condition-case nil
@@ -210,16 +217,21 @@ point at which the search should continue if the region is invalid."
                    (mmm-format-matches back)
                  back)
                beg stop back-verify)
-          (let ((end (mmm-match->point (not include-back) back-offset))
-                (back-form (mmm-get-form back-form)))
-            (values beg end front-form back-form submode face back-to)))))))
+          (let* ((end (mmm-match->point (not include-back) back-offset 
+					front-match back-match))
+		 (back-form (mmm-get-form back-form))
+		 (resume-at (if end-not-begin 
+				(match-end back-match)
+			      end)))
+            (values beg end front-form back-form submode face back-to resume-at)))))))
 
-(defun mmm-match->point (beginp offset)
-  "Find a point of starting or stopping from the match data.
-If BEGINP, start at \(match-beginning 0), else \(match-end 0), and
-move OFFSET.  Handles all values for OFFSET--see `mmm-classes-alist'."
+(defun mmm-match->point (beginp offset front-match back-match)
+  "Find a point of starting or stopping from the match data.  If
+BEGINP, start at \(match-beginning FRONT-MATCH), else \(match-end
+BACK-MATCH), and move OFFSET.  Handles all values for OFFSET--see
+`mmm-classes-alist'."
   (save-excursion
-    (goto-char (if beginp (match-beginning 0) (match-end 0)))
+    (goto-char (if beginp (match-beginning front-match) (match-end back-match)))
     (dolist (spec (if (listp offset) offset (list offset)))
       (if (numberp spec)
           (forward-char (or spec 0))
