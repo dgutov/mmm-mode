@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.12 2000/06/28 01:17:49 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.13 2000/06/29 17:41:05 mas Exp $
 
 ;;{{{ GPL
 
@@ -367,12 +367,16 @@ an existing buffer."
 ;;{{{ "Never" Modes
 
 (defcustom mmm-never-modes
-  '(help-mode
+  '(
+    help-mode
     Info-mode
     dired-mode
     comint-mode
-    shell-mode)
-  "List of modes in which MMM Mode is *never* activated."
+    telnet-mode
+    shell-mode
+    eshell-mode
+    )
+  "List of modes in which MMM Mode is never activated."
   :group 'mmm
   :type '(repeat (symbol :tag "Mode")))
 
@@ -403,9 +407,13 @@ The argument FACE, if supplied, overrides `mmm-default-submode-face'
 in specifying the display face of the submode regions. It must be a
 valid display face.
 
-If CLASSES and HANDLER are not supplied, SUBMODE must be. It specifies
-the submode to use for the submode regions, as a symbol such as
-`cperl-mode' or `emacs-lisp-mode'.
+If neither CLASSES nor HANDLER are supplied, either SUBMODE or
+MATCH-SUBMODE must be.  SUBMODE specifies the submode to use for the
+submode regions, a symbol such as `cperl-mode' or `emacs-lisp-mode',
+while MATCH-SUBMODE must be a function to be called immediately after
+a match is found for FRONT, which is passed one argument, the form of
+the front delimiter \(found from FRONT-FORM, below), and return a
+symbol such as SUBMODE would be set to.
 
 FRONT and BACK are the means to find the submode regions, and can be
 either buffer positions \(number-or-markers), regular expressions, or
