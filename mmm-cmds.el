@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.14 2001/02/08 23:37:53 viritrilbia Exp $
+;; Version: $Id: mmm-cmds.el,v 1.15 2001/12/13 15:47:06 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -44,18 +44,12 @@
           (completing-read
            "Submode Class: "
            (remove-duplicates
-            (remove nil
+            (mapcar #'(lambda (spec) (list (symbol-name (car spec))))
                     (nconc
-                     (mapcar #'(lambda (spec)
-                                 (if (plist-get (cdr spec) :private)
-                                     nil
-                                   (list (symbol-name (car spec)))))
-                             mmm-classes-alist)
-                     (mapcar #'(lambda (spec)
-                                 (if (caddr spec)
-                                     nil
-                                   (list (symbol-name (car spec)))))
-                             mmm-autoloaded-classes))))
+                     (remove-if #'(lambda (spec) (plist-get (cdr spec) :private))
+                                mmm-classes-alist)
+                     (remove-if #'caddr mmm-autoloaded-classes)))
+            :test #'equal)
            nil t))))
   (unless (eq class (intern ""))
     (mmm-apply-class class)
