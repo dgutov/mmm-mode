@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.5 2000/05/10 05:28:18 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.6 2000/05/10 06:24:18 mas Exp $
 
 ;;{{{ GPL
 
@@ -130,9 +130,8 @@ Saves the name of the tag matched.")
     :front "<%doc>"
     :back "</%doc>"
     :face nil
-    :insert ((?# mason-<%doc> nil @ "<%doc>" @ "\n"
-                 _ "\n" @ "</%doc>" @)
-             (?3 mason-<%doc> ?# . nil)))
+    :insert ((?d mason-<%doc> nil @ "<%doc>" @ "\n"
+                 _ "\n" @ "</%doc>" @)))
    (mason-perl
     :submode ,mmm-mason-perl-mode
     :front ,mmm-mason-perl-tags-regexp
@@ -176,7 +175,10 @@ Saves the name of the tag matched.")
     :front "^%"
     :back "\n"
     :insert ((return mason-%-line nil (mmm-mason-start-line)
-                     @ "%" @ " " _ @ '(mmm-mason-end-line) "\n" @)))))
+                     @ "%" @ " " _ @ '(mmm-mason-end-line) "\n" @)
+             (?# mason-%#-comment nil (mmm-mason-start-line)
+                 @ "%" @ "# " _ @ '(mmm-mason-end-line) "\n" @)
+             (?3 mason-%#-comment ?# . nil)))))
 
 ;;}}}
 ;;{{{ One-line Sections
