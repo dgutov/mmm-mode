@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.9 2000/07/29 17:26:54 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.10 2000/07/29 23:00:06 mas Exp $
 
 ;;{{{ GPL
 
@@ -44,6 +44,9 @@ CLASS can be either a symbol to look up in `mmm-classes-alist' or a
 class specifier itself."
   (cond ((symbolp class)        ; A symbol must be looked up
          (or (cdr (assq class mmm-classes-alist))
+             (and (cadr (assq class mmm-autoloaded-classes))
+                  (load (cadr (assq class mmm-autoloaded-classes)))
+                  (cdr (assq class mmm-classes-alist)))
              (signal 'mmm-invalid-submode-class (list class))))
         ((listp class)          ; A list must be a class spec
          class)
