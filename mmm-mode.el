@@ -8,7 +8,7 @@
 ;; Keywords: convenience, faces, languages, tools
 ;; Version: 0.4.7
 
-;; Revision: $Id: mmm-mode.el,v 1.14 2003/03/02 20:20:26 viritrilbia Exp $
+;; Revision: $Id: mmm-mode.el,v 1.15 2003/03/03 23:09:43 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -209,8 +209,8 @@ available through M-x customize under Programming | Tools | Mmm."
 (defvar mmm-mode-menu-map (make-sparse-keymap "MMM")
   "Keymap for MMM Minor Mode menu.")
 
-(defun mmm-define-key (key binding)
-  (define-key mmm-mode-prefix-map
+(defun mmm-define-key (key binding &optional keymap)
+  (define-key (or keymap mmm-mode-prefix-map)
     (vector (append mmm-command-modifiers (list key)))
     binding))
 
