@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.15 2001/02/19 03:18:16 alanshutko Exp $
+;; Version: $Id: mmm-class.el,v 1.16 2001/04/26 22:27:36 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -129,7 +129,7 @@ and interactive history."
 	   (front-match 0)
 	   (back-match 0)
 	   end-not-begin
-           ;insert
+           ;insert private
            &allow-other-keys
            )
   "Create submode regions from START to STOP according to arguments.
@@ -162,8 +162,9 @@ the rest of the arguments are for an actual class being applied. See
                     matched-submode matched-face back-to resume-at) =
                     (apply #'mmm-match-region :start (point) all)
            while beg
-           while (or (not end) (/= beg end)) ; Sanity check
-           if end do            ; match-submode, if present, succeeded.
+           if (and end          ; match-submode, if present, succeeded.
+                   (< beg end)) ; empty overlays evaporate immediately
+           do
            (condition-case nil
                (progn
                  (apply #'mmm-make-region (or matched-submode submode)
@@ -194,7 +195,7 @@ and BACK \(markers, regexps, or functions).  A nil value for END means
 that MATCH-SUBMODE failed to find a valid submode.  BACK-TO is the
 point at which the search should continue if the region is invalid."
   (when (mmm-match-and-verify front start stop front-verify)
-    (let ((beg (mmm-match->point include-front front-offset 
+    (let ((beg (mmm-match->point include-front front-offset
 				 front-match back-match))
           (back-to (match-end front-match))
           (front-form (mmm-get-form front-form)))
