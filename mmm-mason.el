@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.4 2000/05/03 21:48:44 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.5 2000/05/10 05:28:18 mas Exp $
 
 ;;{{{ GPL
 
@@ -87,9 +87,11 @@ Usually either `perl-mode' or `cperl-mode'. The default is
 `cperl-mode' if that is available, otherwise `perl-mode'.")
 
 (defvar mmm-mason-perl-tags
-  '("perl" "init" "cleanup" "args" "once" "filter" "perl_init"
-    "perl_cleanup" "perl_args" "perl_once" "perl_filter"
-    "attr" "flags" "shared"))
+  '("perl" "init" "cleanup" "once" "filter" "shared"
+    "perl_init" "perl_cleanup" "perl_once" "perl_filter"))
+
+(defvar mmm-mason-pseudo-perl-tags
+  '("args" "perl_args" "attr" "flags"))
 
 (defvar mmm-mason-non-perl-tags
   '("doc" "perl_doc" "text" "perl_text" "def" "perl_def" "method"))
@@ -97,6 +99,11 @@ Usually either `perl-mode' or `cperl-mode'. The default is
 (defvar mmm-mason-perl-tags-regexp
   (concat "<%" (mmm-regexp-opt mmm-mason-perl-tags t) ">")
   "Matches tags beginning Mason sections containing Perl code.
+Saves the name of the tag matched.")
+
+(defvar mmm-mason-pseudo-perl-tags-regexp
+  (concat "<%" (mmm-regexp-opt mmm-mason-pseudo-perl-tags t) ">")
+  "Match tags beginning Mason sections that look like Perl but aren't.
 Saves the name of the tag matched.")
 
 (defvar mmm-mason-tag-names-regexp
@@ -132,17 +139,25 @@ Saves the name of the tag matched.")
     :back "</%~1>"
     :save-matches 1
     :insert ((?, mason-<%TAG> "Perl section: " @ "<%" str ">" @
-                    ";\n" _ "\n" @ "</%" str ">" @)
+                 ";\n" _ "\n" @ "</%" str ">" @)
              (?< mason-<%TAG> ?, . nil)
              (?p mason-<%perl> ?, . "perl")
              (?i mason-<%init> ?, . "init")
-             (?a mason-<%args> ?, . "args")
-             (?f mason-<%flags> ?, . "flags")
-             (?r mason-<%attr> ?, . "attr")
              (?c mason-<%cleanup> ?, . "cleanup")
              (?o mason-<%once> ?, . "once")
              (?l mason-<%filter> ?, . "filter")
              (?s mason-<%shared> ?, . "shared")))
+   (mason-pseudo-perl
+    :submode ,mmm-mason-perl-mode
+    :front ,mmm-mason-pseudo-perl-tags-regexp
+    :back "</%~1>"
+    :save-matches 1
+    :insert ((?. mason-pseudo-<%TAG> "Pseudo-perl section: " @ "<%" str ">" @
+                 "\n" _ "\n" @ "</%" str ">" @)
+             (?> mason-pseudo-<%TAG> ?, . nil)
+             (?a mason-<%args> ?. . "args")
+             (?f mason-<%flags> ?. . "flags")
+             (?r mason-<%attr> ?. . "attr")))
    (mason-inline
     :submode ,mmm-mason-perl-mode
     :front "<%"
