@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.12 2001/01/11 01:41:12 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.13 2001/01/11 01:41:30 mas Exp $
 
 ;;{{{ GPL
 
@@ -160,6 +160,26 @@ and MODE is a major mode function symbol.")
     :back "#\\]"
     :insert ((?# embperl-comment nil @ "[#" @ " " _ " " @ "#]" @))
     )))
+
+;;}}}
+;;{{{ ePerl
+
+(mmm-add-group
+ 'eperl
+ '((eperl-code
+    :submode perl
+    :face mmm-code-submode-face
+    :front "<:"
+    :back "_?:>"
+    :insert ((?p eperl-code nil @ "<:" @ " " _ " " @ ":>" @)
+             (?: eperl-code ?p . nil)
+             (?_ eperl-code_ nil @ "<:" @ " " _ " " @ "_:>" @)))
+   (eperl-expr
+    :submode perl
+    :face mmm-output-submode-face
+    :front "<:="
+    :back ":>"
+    :insert ((?= eperl-expr nil @ "<:=" @ " " _ " " @ ":>" @)))))
 
 ;;}}}
 ;;{{{ File Variables
