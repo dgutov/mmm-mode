@@ -1,3 +1,7 @@
 Makefile.in
 Makefile
 configure
+confdefs.h
+config.cache
+aclocal.m4
+config.status
