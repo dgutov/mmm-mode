@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
-;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.15 2001/12/13 15:47:06 viritrilbia Exp $
+;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Version: $Id: mmm-cmds.el,v 1.16 2003/03/03 23:08:22 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -45,7 +45,7 @@
            "Submode Class: "
            (remove-duplicates
             (mapcar #'(lambda (spec) (list (symbol-name (car spec))))
-                    (nconc
+                    (append
                      (remove-if #'(lambda (spec) (plist-get (cdr spec) :private))
                                 mmm-classes-alist)
                      (remove-if #'caddr mmm-autoloaded-classes)))
