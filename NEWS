@@ -4,6 +4,21 @@ See the file COPYING for copying conditions.
 
 Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
+* Changes in MMM Mode 0.5.0
+
+** Version Number Jump
+
+Versions 0.3.8 through 0.3.10 should really have been 0.4.0 through
+0.4.2, so this is version 0.5.0.
+
+** Improved Local Variable Saving
+
+Local variables can now be saved for only some major modes, as well as
+both globally, per-buffer, or per-submode region.  This facility is
+now used to save the font-lock cache state, possible improving the
+font-lock support.  See the docs for `mmm-save-local-variables'.
+
+
 * Changes in MMM Mode 0.3.8
 
 ** IMPORTANT: Default key bindings have changed.
