@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.18 2000/07/13 23:43:54 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.19 2000/07/13 23:48:04 mas Exp $
 
 ;;{{{ GPL
 
@@ -343,7 +343,8 @@ an existing buffer."
   :type 'hook)
 
 (defun mmm-run-major-mode-hook ()
-  (run-hooks 'mmm-major-mode-hook))
+  (dolist (func mmm-major-mode-hook)
+    (ignore-errors (funcall func))))
 
 ;;}}}
 ;;{{{ MMM Global Mode
