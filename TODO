@@ -3,6 +3,8 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
+Add universal mode to Info file, at least a placeholder.
+
 Font-locking isn't working in XEmacs.  `font-lock-keywords' is getting
 set to nil at the wrong time, but I can't pin it down.
 
