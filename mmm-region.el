@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.24 2000/08/23 03:53:45 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.25 2000/08/24 23:00:37 mas Exp $
 
 ;;{{{ GPL
 
@@ -238,6 +238,8 @@ determine whether the front and back of the region, respectively, are
 sticky with respect to new insertion.  CREATION-HOOK should be a
 function to run after the region is created.  All other keyword
 arguments are stored as properties of the overlay, un-keyword-ified."
+  (setq rest (append rest (list :front front :back back :beg-sticky
+                                beg-sticky :end-sticky end-sticky)))
   (mmm-mode-on)
   ;; For now, complain about overlapping regions. Most callers should
   ;; trap this and continue on. In future, submode regions will be
