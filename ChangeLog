@@ -1,3 +1,23 @@
+2000-08-02  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* configure.in, mmm-vars.el, version.texi: Released 0.4.5.
+
+	* mmm-region.el (mmm-update-mode-info):
+	Used compatibility wrapper for font-lock defaults.
+
+	* mmm-compat.el (mmm-set-font-lock-defaults):
+	Added compatibility wrapper function.
+
+2000-08-01  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* README.Mason, mmm.texinfo:
+	Added comments about `sgml-parent-document'.
+
+	* mmm-utils.el (mmm-ensure-fboundp): Created function.
+
+	* mmm-sample.el (mmm-here-doc-get-mode):
+	Extended to recognize names like TEXT_EOF.
+
 2000-07-29  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
 
 	* configure.in, mmm-vars.el, version.texi: Released 0.4.4.
@@ -20,8 +40,7 @@
 	* mmm-sample.el (here-doc): Updated to use new front-offset values.
 
 	* mmm-class.el (mmm-ify, mmm-match-region, mmm-match->point):
-	Added new values for
-	front- and back-offset.
+	Added new values for front- and back-offset.
 
 	* mmm-region.el (mmm-make-region):
 	Made sure overlays get the delimiter and sticky
