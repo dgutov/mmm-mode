@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.33 2001/05/14 21:16:54 alanshutko Exp $
+;; Version: $Id: mmm-region.el,v 1.34 2001/05/14 22:39:32 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -236,12 +236,14 @@ Signals errors."
 	t
       (if (not (eq (mmm-overlay-at beg)
 		   (mmm-overlay-at end)))
-	  (signal 'mmm-subregion-crosses-parents nil)
+	  (signal 'mmm-subregion-crosses-parents 
+                  (list (mmm-submode-at beg)
+                        (mmm-submode-at end)))
 	(if (eq submode 
 		(if ovl (overlay-get ovl 'mmm-mode)))
-	    (signal 'mmm-subregion-bad-parent)
+	    (signal 'mmm-subregion-invalid-parent
+                    (list (overlay-get ovl 'mmm-mode)))
 	  t)))))
-		
 
 (defun* mmm-make-region
     (submode beg end &rest rest &key (front "") (back "")
