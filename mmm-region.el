@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.32 2001/04/26 22:26:35 viritrilbia Exp $
+;; Version: $Id: mmm-region.el,v 1.33 2001/05/14 21:16:54 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -225,6 +225,24 @@ i.e. whether text inserted at the marker should be inside the region."
 ;;}}}
 ;;{{{ Make Submode Regions
 
+(defun mmm-valid-submode-region (submode beg end)
+  "Check if the region between BEGIN and END is valid for SUBMODE.
+Checks whether it overlaps other submode regions and whether SUBMODE
+is valid in the existing submode regions.
+Signals errors."
+  (let ((priority (length (mmm-overlays-at beg)))
+	(ovl (mmm-overlay-at beg)))
+    (if (< priority 1)
+	t
+      (if (not (eq (mmm-overlay-at beg)
+		   (mmm-overlay-at end)))
+	  (signal 'mmm-subregion-crosses-parents nil)
+	(if (eq submode 
+		(if ovl (overlay-get ovl 'mmm-mode)))
+	    (signal 'mmm-subregion-bad-parent)
+	  t)))))
+		
+
 (defun* mmm-make-region
     (submode beg end &rest rest &key (front "") (back "")
              (beg-sticky t) (end-sticky t) face creation-hook
@@ -239,14 +257,10 @@ respectively, are sticky with respect to new insertion.  CREATION-HOOK
 should be a function to run after the region is created.  All other
 keyword arguments are stored as properties of the overlay,
 un-keyword-ified."
+  (mmm-valid-submode-region submode beg end)
   (setq rest (append rest (list :front front :back back :beg-sticky
                                 beg-sticky :end-sticky end-sticky)))
   (mmm-mode-on)
-  ;; For now, complain about overlapping regions. Most callers should
-  ;; trap this and continue on. In future, submode regions will be
-  ;; allowed to sit inside others.
-  (when (mmm-overlays-in beg end)
-    (signal 'mmm-invalid-parent nil))
   (setq submode (mmm-modename->function submode))
   (when submode
     (mmm-update-mode-info submode))
@@ -256,6 +270,7 @@ un-keyword-ified."
     ;; Put our properties on the overlay
     (dolist (prop '(front back beg-sticky end-sticky))
       (overlay-put ovl prop (symbol-value prop)))
+    (overlay-put ovl 'priority (length (mmm-overlays-at beg)))
     ;; Put anything else the caller wants on the overlay
     (loop for (var val) on rest by #'cddr
           do (overlay-put ovl (intern (substring (symbol-name var) 1)) val))
