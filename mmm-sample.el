@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.9 2000/07/29 17:27:23 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.10 2000/08/01 01:54:03 mas Exp $
 
 ;;{{{ GPL
 
@@ -73,25 +73,53 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
 ;;{{{ Here-documents
 
 ;; Here we match the here-document syntax used by Perl and shell
-;; scripts.  We assume that the delimiter of the here-document is the
-;; mode name with or without `-mode', such as <<HTML or <<HTML-MODE.
-;; Hyphens may be replaced with underscores to make <<HTML_MODE and
-;; the mode name is converted to lower case.  Additional characters
-;; may be added after `MODE', such as <<HTML_MODE_EOF.
+;; scripts.  We try to be automagic about recognizing what mode the
+;; here-document should be in; to make sure that it is recognized
+;; correctly, the name of the mode, perhaps minus `-mode', in upper
+;; case, and/or with hyphens converted to underscores, should be
+;; separated from the rest of the here-document name by hyphens or
+;; underscores.
+
+(defvar mmm-here-doc-mode-alist '()
+  "Alist associating here-document name regexps to submodes.
+Normally, this variable is unnecessary, as the `here-doc' submode
+class tries to automagically recognize the right submode.  If you use
+here-document names that it doesn't recognize, however, then you can
+add elements to this alist.  Each element is \(REGEXP . MODE) where
+REGEXP is a regular expression matched against the here-document name
+and MODE is a major mode function symbol.")
 
 (defun mmm-here-doc-get-mode (string)
   (string-match "[a-zA-Z_-]+" string)
   (setq string (match-string 0 string))
-  (let* ((case-fold-search t)
-         (modestr (if (string-match "mode" string)
-                      (downcase (substring string 0 (match-end 0)))
-                    (concat (downcase string) "-mode"))))
-    (while (string-match "_" modestr)
-      (setq modestr (replace-match "-" nil nil modestr)))
-    (setq modestr (intern modestr))
-    (if (fboundp modestr)
-        modestr
-      (signal 'mmm-no-matching-submode nil))))
+  (or (mmm-ensure-fboundp
+       ;; First try the user override variable.
+       (some #'(lambda (pair)
+                (if (string-match (car pair) string) (cdr pair) nil))
+             mmm-here-doc-mode-alist))
+      (let ((words (split-string (downcase string) "[_-]+")))
+        (or (mmm-ensure-fboundp
+             ;; Try the whole name, stopping at "mode" if present.
+             (intern
+              (mapconcat #'identity
+                         (nconc (ldiff words (member "mode" words))
+                                (list "mode"))
+                         "-")))
+            ;; Try each word with -mode tacked on
+            (some #'(lambda (word)
+                      (mmm-ensure-fboundp
+                       (intern (concat word "-mode"))))
+                  words)
+            ;; Try each pair of words with -mode tacked on
+            (loop for (one two) on words
+                  if (mmm-ensure-fboundp
+                      (intern (concat one two "-mode")))
+                  return it)
+            ;; I'm unaware of any modes whose names, minus `-mode',
+            ;; are more than two words long, and if the entire mode
+            ;; name (perhaps minus `-mode') doesn't occur in the
+            ;; here-document name, we can give up.
+            (signal 'mmm-no-matching-submode nil)))))
 
 (mmm-add-classes
  '((here-doc
