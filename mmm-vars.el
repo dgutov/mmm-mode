@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.37 2001/01/13 03:16:58 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.38 2001/01/13 03:55:46 mas Exp $
 
 ;;{{{ GPL
 
@@ -306,7 +306,8 @@ unnecessary. It probably won't go away, though."
 (defcustom mmm-major-mode-preferences
   `((perl . ,(if (fboundp 'cperl-mode) 'cperl-mode 'perl-mode))
     (javascript . ,(if (fboundp 'javascript-mode) 'javascript-mode 'c++-mode))
-    (java . ,(if (fboundp 'jde-mode) 'jde-mode 'java-mode)))
+    (java . ,(if (fboundp 'jde-mode) 'jde-mode 'java-mode))
+    (css . ,(if (fboundp 'css-mode) 'css-mode 'c++-mode)))
   "User preferences about what major modes to use.
 Each element has the form \(LANGUAGE . MODE) where LANGUAGE is the
 name of a programming language such as `perl' as a symbol, and MODE is

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.13 2001/01/11 01:41:30 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.14 2001/01/13 03:55:46 mas Exp $
 
 ;;{{{ GPL
 
@@ -39,7 +39,7 @@
 ;; than a simple regexp.
 (mmm-add-classes
  '((embedded-css
-    :submode css-mode
+    :submode css
     :face mmm-declaration-submode-face
     :front "<style[^>]*>"
     :back "</style>")))
