@@ -108,7 +108,7 @@ Supplied Submode Classes
 
 * Mason::                       Mason syntax for server-side Perl in HTML.
 * Eval-Elisp::                  Emacs Lisp in @code{eval} file variables.
-* HTML Here-documents::         HTML in Perl here-documents.
+* Here-documents::              Code in shell and Perl Here-documents.
 * Javascript::                  Javascript embedded in HTML.
 * Embedded CSS::                CSS Styles embedded in HTML.
 * HTML in PL/SQL::              HTML output by PL/SQL @code{htp.p} methods.
@@ -1198,19 +1198,19 @@ XEmacs and want to use the alternate HTML mode @code{hm--html-mode},
 replace @code{html-mode} with that symbol.
 
 
-@node Eval-Elisp, HTML Here-documents, Mason, Top
+@node Eval-Elisp, Here-documents, Mason, Top
 @comment  node-name,  next,  previous,  up
 @chapter Eval-Elisp: Elisp in a Local Variables List
 
 This submode class is not yet ported to the new syntax.
 
 
-@node HTML Here-documents, Javascript, Eval-Elisp, Top
+@node Here-documents, Javascript, Eval-Elisp, Top
 @comment  node-name,  next,  previous,  up
-@chapter HTML in ``Here-documents''
+@chapter Here-documents
 
 
-@node Javascript, Embedded CSS, HTML Here-documents, Top
+@node Javascript, Embedded CSS, Here-documents, Top
 @comment  node-name,  next,  previous,  up
 @chapter Javascript in HTML
 
