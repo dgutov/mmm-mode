@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mason.el,v 1.6 2000/05/10 06:24:18 mas Exp $
+;; Version: $Id: mmm-mason.el,v 1.7 2000/05/10 08:08:15 mas Exp $
 
 ;;{{{ GPL
 
@@ -176,9 +176,9 @@ Saves the name of the tag matched.")
     :back "\n"
     :insert ((return mason-%-line nil (mmm-mason-start-line)
                      @ "%" @ " " _ @ '(mmm-mason-end-line) "\n" @)
-             (?# mason-%#-comment nil (mmm-mason-start-line)
+             (?# mason-%-comment nil (mmm-mason-start-line)
                  @ "%" @ "# " _ @ '(mmm-mason-end-line) "\n" @)
-             (?3 mason-%#-comment ?# . nil)))))
+             (?3 mason-%-comment ?# . nil)))))
 
 ;;}}}
 ;;{{{ One-line Sections
