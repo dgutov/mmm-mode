@@ -104,20 +104,17 @@ point out errors, but only with your init code and a backtrace.
 
 * Will MMM Mode work with (Emacs 19 / XEmacs 20 / XEmacs 21 / etc...)?
 
-MMM Mode is designed for FSF Emacs 20 and works best there, but it can
-work in other emacsen, although problems may arise.  For instance, the
-font-lock support in XEmacs 20 is known to be broken and well-nigh
-unfixable; consider upgrading.  Even XEmacs 21 has more problems with
-font-lock: for example, often apostrophes in a different submode
-region can cause code to be incorrectly font-locked as a string.
+MMM Mode was designed for FSF Emacs 20 and 21 and works best there.
+But don't let that stop you from trying it under other variants of
+emacs.  If you encounter problems, feel free to ask the mailing list,
+but success is not guaranteed.
 
-While not free of problems under Emacs 20, MMM Mode does tend to work
-best there, but don't let that stop you from trying it under other
-emacsen.  If you encounter problems, feel free to ask the mailing
-list, but success is not guaranteed.
-
-MMM Mode will support Emacs 21 as soon as possible.  It appears to
-work relatively well already, but extensive testing has not been done.
+For example, the font-lock support in XEmacs 20 is known to be broken
+and well-nigh unfixable; consider upgrading.  XEmacs 21 also has
+problems with font-lock: for example, often apostrophes in a different
+submode region can cause code to be incorrectly font-locked as a
+string.  I have given up trying to support Emacs 19; you should
+upgrade to Emacs 20 or 21.
 
 
 * XEmacs says `Symbol's function definition is void: make-indirect-buffer'.
