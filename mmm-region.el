@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.9 2000/06/27 00:35:02 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.10 2000/06/27 02:47:32 mas Exp $
 
 ;;{{{ GPL
 
@@ -57,15 +57,16 @@ i.e. whether text inserted at the marker should be inside the region."
 
 (defun* mmm-make-region
     (submode beg end &rest rest &key (front "") (back "")
-             (beg-sticky t) (end-sticky t) face
+             (beg-sticky t) (end-sticky t) face creation-hook
              &allow-other-keys)
   "Make a submode region from BEG to END of SUBMODE in FACE.
-FACE defaults to `mmm-default-submode-face'. FRONT and BACK are
+FACE defaults to `mmm-default-submode-face'.  FRONT and BACK are
 regexps or functions to match the correct delimiters--see
-`mmm-match-front' and `mmm-match-back'. BEG-STICKY and END-STICKY
+`mmm-match-front' and `mmm-match-back'.  BEG-STICKY and END-STICKY
 determine whether the front and back of the region, respectively, are
-sticky with respect to new insertion. All other keyword arguments are
-stored as properties of the overlay, un-keyword-ified."
+sticky with respect to new insertion.  CREATION-HOOK should be a
+function to run after the region is created.  All other keyword
+arguments are stored as properties of the overlay, un-keyword-ified."
   (mmm-mode-on)
   ;; For now, complain about overlapping regions. Most callers should
   ;; trap this and continue on. In future, submode regions will be
@@ -98,7 +99,10 @@ stored as properties of the overlay, un-keyword-ified."
     (when submode
       (save-excursion
         (goto-char (overlay-start ovl))
-        (mmm-run-submode-hook submode)))
+        (mmm-run-submode-hook submode)
+        (when creation-hook
+          (funcall creation-hook))
+        (mmm-save-changed-local-variables ovl submode)))
     (mmm-update-current-submode)
     ovl))
 
@@ -335,6 +339,7 @@ which is set here as well.  See `mmm-save-local-variables'."
         (setq global-vars (mmm-get-locals 'global)
               buffer-vars (mmm-get-locals 'buffer)
               region-vars (mmm-get-locals 'region))
+        (put mode 'mmm-mode-name mode-name)
         (set-buffer-modified-p nil)
         (kill-buffer (current-buffer)))
       (put mode 'mmm-local-variables global-vars)
@@ -402,10 +407,9 @@ different keymaps, syntax tables, local variables, etc. for submodes."
         (setq mode-name
               (mmm-format-string
                mmm-submode-mode-line-format
-               `(("~M" . ,(mmm-get-saved-local major-mode 'mode-name))
-                 ("~m" . ,(mmm-get-saved-local mmm-current-submode
-                                               'mode-name)))))
-      (setq mode-name (mmm-get-saved-local major-mode 'mode-name)))
+               `(("~M" . ,(get major-mode 'mmm-mode-name))
+                 ("~m" . ,(get mmm-current-submode 'mmm-mode-name)))))
+      (setq mode-name (get major-mode 'mmm-mode-name)))
     (force-mode-line-update)))
 
 (defun mmm-add-hooks ()
