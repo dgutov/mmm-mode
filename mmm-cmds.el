@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-cmds.el,v 1.17 2003/03/09 17:04:03 viritrilbia Exp $
+;; Version: $Id: mmm-cmds.el,v 1.18 2003/03/25 21:48:33 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -267,7 +267,8 @@ or a symbol such as tab, return, etc. Note that if there are no
 MODIFIERS, the dotted list becomes simply BASIC-KEY."
   (multiple-value-bind (class skel str) (mmm-get-insertion-spec key)
     (when skel
-      (let ((after-change-functions nil))
+      (let ((after-change-functions nil)
+            (old-undo buffer-undo-list) undo)
         ;; XEmacs' skeleton doesn't manage positions by itself, so we
         ;; have to do it.
         (if mmm-xemacs (setq skeleton-positions nil))
@@ -325,7 +326,15 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
 ;;;             :end-sticky (plist-get class :end-sticky)
              :beg-sticky t :end-sticky t
              :creation-hook (plist-get class :creation-hook))
-            (mmm-enable-font-lock submode)))))))
+            (mmm-enable-font-lock submode)))
+        ;; Now get rid of intermediate undo boundaries, so that the entire
+        ;; insertion can be undone as one action.  This should really be
+        ;; skeleton's job, but it doesn't do it.
+        (setq undo buffer-undo-list)
+        (while (not (eq (cdr undo) old-undo))
+          (when (eq (cadr undo) nil)
+            (setcdr undo (cddr undo)))
+          (setq undo (cdr undo)))))))
 
 (defun mmm-get-insertion-spec (key &optional classlist)
   "Get the insertion info for KEY from all classes in CLASSLIST.
