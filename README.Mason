@@ -88,3 +88,25 @@ PSGML PROBLEMS
   `sgml-html-mode' or `sgml-mode'.  Similarly, if you are using XEmacs
   and want to use the alternate HTML mode `hm--html-mode', replace
   `html-mode' with that symbol.
+
+  One problem that crops up when using PSGML with Mason is that even
+  ignoring the special tags and Perl code (which, as I've said,
+  haven't caused me any problems), Mason components often are not a
+  complete SGML document.  For instance, my autohandlers often say
+
+  <body>
+    <% $m->call_next %>
+  </body>
+
+  in which case the actual components contain no doctype declaration,
+  <html>, <head>, or <body>, confusing PSGML.  One solution I've found
+  is to use the variable `sgml-parent-document' in such incomplete
+  components; try, for example, these lines at the end of a component.
+
+  %# Local Variables:
+  %# sgml-parent-document: ("autohandler" nil ("body"))
+  %# End:
+
+  This tells PSGML that the current file is a sub-document of the file
+  `autohandler' and is included inside a <body> tag, thus alleviating
+  its confusion.

@@ -108,10 +108,9 @@ Supplied Submode Classes
 
 * Mason::                       Mason syntax for server-side Perl in HTML.
 * Eval-Elisp::                  Emacs Lisp in @code{eval} file variables.
-* Here-documents::              Code in shell and Perl Here-documents.
+* Here-documents::              Code in shell and Perl here-documents.
 * Javascript::                  Javascript embedded in HTML.
 * Embedded CSS::                CSS Styles embedded in HTML.
-* HTML in PL/SQL::              HTML output by PL/SQL @code{htp.p} methods.
 * Embperl::                     Another syntax for Perl in HTML.
 
 Indices
@@ -128,20 +127,6 @@ Writing Submode Classes
 
 The MMM Minor Mode
 
-* Enabling MMM Mode::           Turning MMM Mode on and off.
-* MMM Mode Keys::               Default key bindings in MMM Mode.
-
-How MMM Mode selects submode classes
-
-* File Classes::                Classes for a single file.
-* Mode-Ext Classes::            Classes for a given mode or extension.
-* Global Classes::              Classes for all MMM Mode buffers.
-
-MMM Global Mode
-
-* Major Mode Hook::             Using MMM's Major Mode Hook
-
-@end detailmenu
 @end menu
 
 @node Overview, Basic Concepts, Top, Top
@@ -1194,12 +1179,37 @@ replace @code{html-mode} everywhere in the suggested code with
 XEmacs and want to use the alternate HTML mode @code{hm--html-mode},
 replace @code{html-mode} with that symbol.
 
+One problem that crops up when using PSGML with Mason is that even
+ignoring the special tags and Perl code (which, as I've said, haven't
+caused me any problems), Mason components often are not a complete SGML
+document.  For instance, my autohandlers often say
+
+@example
+<body>
+  <% $m->call_next %>
+</body>
+@end example
+
+in which case the actual components contain no doctype declaration,
+@code{<html>}, @code{<head>}, or @code{<body>}, confusing PSGML.  One
+solution I've found is to use the variable @code{sgml-parent-document}
+in such incomplete components; try, for example, these lines at the end
+of a component.
+
+@example
+%# Local Variables:
+%# sgml-parent-document: ("autohandler" nil ("body"))
+%# End:
+@end example
+
+This tells PSGML that the current file is a sub-document of the file
+@file{autohandler} and is included inside a @code{<body>} tag, thus
+alleviating its confusion.
+
 
 @node Eval-Elisp, Here-documents, Mason, Top
 @comment  node-name,  next,  previous,  up
 @chapter Eval-Elisp: Elisp in a Local Variables List
-
-This submode class is not yet ported to the new syntax.
 
 
 @node Here-documents, Javascript, Eval-Elisp, Top
@@ -1212,22 +1222,15 @@ This submode class is not yet ported to the new syntax.
 @chapter Javascript in HTML
 
 
-@node Embedded CSS, HTML in PL/SQL, Javascript, Top
+@node Embedded CSS, Embperl, Javascript, Top
 @comment  node-name,  next,  previous,  up
 @chapter CSS embedded in HTML
 
 
-@node HTML in PL/SQL, Embperl, Embedded CSS, Top
-@comment  node-name,  next,  previous,  up
-@chapter HTML in PL/SQL @code{htp.p} Methods
-
-This submode class is not yet ported to the new syntax.
-
-@node Embperl, Concept Index, HTML in PL/SQL, Top
+@node Embperl, Concept Index, Embedded CSS, Top
 @comment  node-name,  next,  previous,  up
 @chapter Embperl: More Perl in HTML
 
-Not yet described.
 
 @node Concept Index, Function Index, Embperl, Top
 @comment  node-name,  next,  previous,  up
