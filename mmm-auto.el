@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.4 2000/05/18 18:27:07 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.5 2000/05/24 09:13:00 mas Exp $
 
 ;;{{{ GPL
 
@@ -121,6 +121,11 @@ Otherwise, return nil."
       (and (> (length name) 5)
            (string= (substring name -5) "-mode")
            (intern (format "%s-hook" name))))))
+
+;; Some modes that derive from text-mode, such as mh-letter-mode and
+;; AucTeX latex-mode, aren't well-behaved.  They do generally run
+;; text-mode-hook, though, so we can pre-initialize that.
+(add-hook 'text-mode-hook 'mmm-run-major-mode-hook)
 
 ;;}}}
 ;;{{{ MMM Global Mode
