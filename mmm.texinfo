@@ -85,12 +85,12 @@ This is edition @value{EDITION} of the MMM Mode Manual, last updated
 @end ifinfo
 
 @menu
-* Overview::                    
-* Basics::                      
-* Customizing::                 
-* Supplied Classes::            
-* Writing Classes::             
-* Indices::                     
+* Overview::                    An overview and introduction to MMM Mode.
+* Basics::                      The basics of how to use it.
+* Customizing::                 Customizing how it works to your needs.
+* Supplied Classes::            The supplied submode classes.
+* Writing Classes::             Writing your own submode classes.
+* Indices::                     Just that.
 
 @detailmenu
  --- The Detailed Node Listing ---
@@ -150,16 +150,16 @@ Supplied Submode Classes
 
 Writing Submode Classes
 
-* Basic Classes::               
-* Paired Delimiters::           
-* Region Placement::            
-* Submode Groups::              
-* Calculated Submodes::         
-* Calculated Faces::            
-* Insertion Commands::          
-* Other Hooks::                 
-* Delimiter Forms::             
-* Misc Keywords::               
+* Basic Classes::               Writing a simple submode class.
+* Paired Delimiters::           Matching paired delimiters.
+* Region Placement::            Placing the region more accurately.
+* Submode Groups::              Grouping several classes together.
+* Calculated Submodes::         Deciding the submode at run-time.
+* Calculated Faces::            Deciding the display face at run-time.
+* Insertion Commands::          Inserting regions automatically.
+* Other Hooks::                 Running code at arbitrary points.
+* Delimiter Forms::             Storing the form of the delimiters.
+* Misc Keywords::               Other miscellaneous options.
 
 Indices
 
@@ -204,11 +204,10 @@ Lisp code to be evaluated. @xref{File Variables, , , emacs, The Emacs
 Manual}. It may be easier to edit this code in Emacs Lisp mode than in
 whatever mode is used for the rest of the file.
 
-
 @menu
-* Basic Concepts::              
-* Installation::                
-* Quick Start::                 
+* Basic Concepts::              A simple explanation of how it works.
+* Installation::                How to install MMM Mode.
+* Quick Start::                 Getting started using MMM Mode quickly.
 @end menu
 
 @node Basic Concepts, Installation, Overview, Overview
@@ -396,14 +395,16 @@ see the documentation for the variable `mmm-classes-alist'.
 @comment  node-name,  next,  previous,  up
 @chapter MMM Mode Basics
 
+This chapter explains the most important parts of how to use MMM Mode.
+
 @menu
-* MMM Minor Mode::              
-* Submode Classes::             
-* Selecting Classes::           
-* Insertion::                   
-* Re-parsing::                  
-* Interactive::                 
-* Global Mode::                 
+* MMM Minor Mode::              The Emacs minor mode that manages it all.
+* Submode Classes::             What they are and how to use them.
+* Selecting Classes::           How MMM Mode knows what classes to use.
+* Insertion::                   Inserting new submode regions automatically.
+* Re-parsing::                  Re-scanning for submode regions.
+* Interactive::                 Adding submode regions manually.
+* Global Mode::                 Turning MMM Mode on automatically.
 @end menu
 
 @node MMM Minor Mode, Submode Classes, Basics, Basics
@@ -886,16 +887,17 @@ buffers:
 @comment  node-name,  next,  previous,  up
 @chapter Customizing MMM Mode
 
-
+This chapter explains how to customize the appearance and functioning of
+MMM Mode however you want.
 
 @menu
-* Region Coloring::             
-* Preferred Modes::             
-* Mode Line::                   
-* Key Bindings::                
-* Local Variables::             
-* Changing Classes::            
-* Hooks::                       
+* Region Coloring::             Changing or removing background colors.
+* Preferred Modes::             Choosing which major modes to use.
+* Mode Line::                   What is displayed in the mode line.
+* Key Bindings::                Customizing the MMM Mode key bindings.
+* Local Variables::             What local variables are saved for submodes.
+* Changing Classes::            Changing the supplied submode classes.
+* Hooks::                       How to make MMM Mode run your code.
 @end menu
 
 @node Region Coloring, Preferred Modes, Customizing, Customizing
@@ -1188,17 +1190,19 @@ set for supplied submode classes with @code{mmm-set-class-parameter};
 @comment  node-name,  next,  previous,  up
 @chapter Supplied Submode Classes
 
+This chapter describes the submode classes that are supplied with MMM
+Mode.
 
 @menu
-* Mason::                       
-* File Variables::              
-* Here-documents::              
-* Javascript::                  
-* Embedded CSS::                
-* Embperl::                     
-* ePerl::                       
-* JSP::                         
-* RPM::                         
+* Mason::                       Mason server-side Perl in HTML.
+* File Variables::              Elisp code in File Variables.
+* Here-documents::              Code in shell and Perl here-documents.
+* Javascript::                  Javascript embedded in HTML.
+* Embedded CSS::                CSS Styles embedded in HTML.
+* Embperl::                     Another syntax for Perl in HTML.
+* ePerl::                       A general Perl-embedding syntax.
+* JSP::                         Java code embedded in HTML.
+* RPM::                         Shell scripts in RPM Spec Files.
 @end menu
 
 @node Mason, File Variables, Supplied Classes, Supplied Classes
@@ -1447,16 +1451,16 @@ describes how to write a submode class, from the basic to the advanced,
 with examples.
 
 @menu
-* Basic Classes::               
-* Paired Delimiters::           
-* Region Placement::            
-* Submode Groups::              
-* Calculated Submodes::         
-* Calculated Faces::            
-* Insertion Commands::          
-* Other Hooks::                 
-* Delimiter Forms::             
-* Misc Keywords::               
+* Basic Classes::               Writing a simple submode class.
+* Paired Delimiters::           Matching paired delimiters.
+* Region Placement::            Placing the region more accurately.
+* Submode Groups::              Grouping several classes together.
+* Calculated Submodes::         Deciding the submode at run-time.
+* Calculated Faces::            Deciding the display face at run-time.
+* Insertion Commands::          Inserting regions automatically.
+* Other Hooks::                 Running code at arbitrary points.
+* Delimiter Forms::             Storing the form of the delimiters.
+* Misc Keywords::               Other miscellaneous options.
 @end menu
 
 @node Basic Classes, Paired Delimiters, Writing Classes, Writing Classes
@@ -1857,9 +1861,9 @@ variable @code{case-fold-search}.
 @chapter Indices
 
 @menu
-* Concept Index::               
-* Function Index::              
-* Keystroke Index::             
+* Concept Index::               Index of MMM Mode Concepts.
+* Function Index::              Index of functions and variables.
+* Keystroke Index::             Index of key bindings in MMM Mode.
 @end menu
 
 @node Concept Index, Function Index, Indices, Indices
