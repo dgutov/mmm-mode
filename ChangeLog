@@ -1,3 +1,33 @@
+2003-03-09  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-vars.el (mmm-set-mode-line): Added support for "buffer mode"
+	display name.
+
+	* mmm-cmds.el (mmm-insert-by-key): Match and calculate names, and
+	store front and back positions for delimiter overlays.
+
+	* mmm-mason.el: Added match-name parameter.
+
+	* mmm-sample.el: Added delimiter-mode and match-name parameters.
+
+	* mmm-region.el: Restructured current-overlay functions.
+	(mmm-make-region, mmm-make-overlay, mmm-get-face): Create
+	delimiter overlays with modes and faces, add display-name and name
+	parameters, and handle evaporation intelligently.
+	(mmm-front-start, mmm-back-end, etc.): Use delimiter overlays.
+	(mmm-update-current-submode): Delete overlays whose front
+	delimiter has evaporated.
+
+	* mmm-class.el (mmm-ify, mmm-match-region): Added matching for
+	region names.
+
+	* mmm-vars.el (mmm-delimiter-mode, mmm-delimiter-face): Added.
+
+2003-03-08  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-region.el (mmm-clear-overlays): Fixed bug so turning mmm
+	mode off now restores primary mode correctly.
+
 2003-03-03  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
 
 	* mmm-noweb.el (mmm-noweb-bind-keys): Implemented a "local to
@@ -46,6 +76,12 @@
 	* Makefile.am: Add mmm-cweb.el, mmm-php.el and mmm-noweb.el
 
 	* mmm-noweb.el: Add support for noweb.
+
+	* mmm-class.el (mmm-ify, mmm-make-region): Add support for setting
+	the NAME property on regions.
+
+	* mmm-cmds.el (mmm-insert-by-key): Add support for setting the
+	NAME property on inserts.
 
 2002-11-11  Alan Shutko  <ats@acm.org>
 

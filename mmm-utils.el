@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
-;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.13 2003/03/02 20:26:33 viritrilbia Exp $
+;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Version: $Id: mmm-utils.el,v 1.14 2003/03/09 17:04:04 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -81,22 +81,24 @@ substituted for the corresponding REGEXP wherever it matches."
           (setq string (replace-match (cdr pair) t t string))))))
   string)
 
-(defun mmm-format-matches (string)
+(defun mmm-format-matches (string &optional on-string)
   "Format STRING by matches from the current match data.
 Strings like ~N are replaced by the Nth subexpression from the last
-global match.  Does nothing if STRING is not a string."
+global match.  Does nothing if STRING is not a string.
+
+ON-STRING, if supplied, means to use the match data from a
+`string-match' on that string, rather than the global match data."
   (when (stringp string)
     (let ((old-data (match-data))
           subexp)
       (save-match-data
         (while (string-match "~\\([0-9]\\)" string)
           (setq subexp (string-to-int (match-string-no-properties 1 string))
-                string
-                (replace-match
-                 (save-match-data
-                   (set-match-data old-data)
-                   (match-string-no-properties subexp))
-                 t t string))))))
+                string (replace-match
+			(save-match-data
+			  (set-match-data old-data)
+			  (match-string-no-properties subexp on-string))
+			t t string))))))
   string)
 
 ;;}}}

@@ -2,8 +2,8 @@
 
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
-;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.52 2003/03/03 20:27:02 viritrilbia Exp $
+;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Version: $Id: mmm-vars.el,v 1.53 2003/03/09 17:04:04 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -282,12 +282,16 @@ with font-lock."
 (defcustom mmm-submode-decoration-level 1
   "*Amount of coloring to use in submode regions.
 Should be either 0, 1, or 2, representing None, Low, and High amounts
-of coloring.  None means to use no coloring at all.  Low means to use
-a single face \(`mmm-default-submode-face') for all submode regions,
-\(except for \"non-submode\" regions).  High means to use different
-faces for different types of submode regions, such as initialization
-code, expressions that are output, declarations, and so on.  The
-default face is still used for regions that do not specify a face."
+of coloring respectively.
+* None (0) means to use no coloring at all.
+* Low (1) means to use `mmm-default-submode-face' for all submode
+  regions \(except for \"non-submode\" regions, i.e. those that are of
+  the primary mode) and `mmm-delimiter-face' for region delimiters.
+* High (2) means to use different faces for different types of submode
+  regions and delimiters, such as initialization code, expressions that
+  are output, declarations, and so on, as specified by the submode
+  class.  The default faces are still used for regions that do not
+  specify a face."
   :group 'mmm-faces
   :type '(choice (const :tag "None" 0)
                  (const :tag "Low" 1)
@@ -326,6 +330,10 @@ default face is still used for regions that do not specify a face."
 Also used at decoration level 2 for submodes not specifying a type."
   :group 'mmm-faces)
 
+(defface mmm-delimiter-face nil
+  "Face used to mark submode delimiters."
+  :group 'mmm-faces)
+
 ;;}}}
 ;;{{{ Mode Line Format
 
@@ -352,25 +360,35 @@ variable."
   :type 'string)
 
 (defvar mmm-primary-mode-display-name nil
-  "If non-nil, displayed in the mode line next to the major mode name
-\(or whatever that has been replaced by) when outside all submode
-regions, i.e. in a primary mode region.")
+  "If non-nil, displayed as the primary mode name in the mode line.
+See also `mmm-buffer-mode-display-name'.")
 (make-variable-buffer-local 'mmm-primary-mode-display-name)
+
+(defvar mmm-buffer-mode-display-name nil
+  "If non-nil, displayed in the mode line instead of the primary mode
+name, which is then shown next to it as if it were a submode when in a
+primary mode region, i.e. outside all submode regions.")
+(make-variable-buffer-local 'mmm-buffer-mode-display-name)
 
 (defun mmm-set-mode-line ()
   "Set the mode line display correctly for the current submode,
-according to `mmm-submode-mode-line-format."
-  (let ((primary (get mmm-primary-mode 'mmm-mode-name))
-	(submode (if mmm-current-overlay
-		     (or (overlay-get mmm-current-overlay 'display-name)
-			 (get mmm-current-submode 'mmm-mode-name))
-		   mmm-primary-mode-display-name)))
-    (if submode
+according to `mmm-submode-mode-line-format'."
+  (let ((primary (or mmm-primary-mode-display-name
+		     (get mmm-primary-mode 'mmm-mode-name)))
+	(submode (and mmm-current-overlay
+		      (or (overlay-get mmm-current-overlay 'display-name)
+			  (get mmm-current-submode 'mmm-mode-name)))))
+    (if mmm-buffer-mode-display-name
 	(setq mode-name
 	      (mmm-format-string mmm-submode-mode-line-format
-				 `(("~M" . ,primary)
-				   ("~m" . ,submode))))
-      (setq mode-name primary)))
+				 `(("~M" . ,mmm-buffer-mode-display-name)
+				   ("~m" . ,(or submode primary)))))
+      (if submode
+	  (setq mode-name
+		(mmm-format-string mmm-submode-mode-line-format
+				   `(("~M" . ,primary)
+				     ("~m" . ,submode))))
+	(setq mode-name primary))))
   (force-mode-line-update))
 
 ;;}}}
@@ -470,6 +488,16 @@ first `fboundp' element of the `cdr' is returned, or nil if none."
     (car (remove-if-not
           #'fboundp
           (cdr (assq mode mmm-major-mode-preferences))))))
+
+;;}}}
+;;{{{ Delimiter Regions
+
+(defcustom mmm-delimiter-mode 'fundamental-mode
+  "Major mode used by default for delimiter regions.
+Classes are encouraged to override this by providing a delimiter-mode
+parameter-- see `mmm-classes-alist'."
+  :group 'mmm
+  :type 'function)
 
 ;;}}}
 ;;{{{ Key Bindings
@@ -672,7 +700,10 @@ Do not set this variable directly; use the function `mmm-mode'.")
 ;;}}}
 ;;{{{ Classes Alist
 
-;; :parent could be an all-class argument.  Same with :keymap.
+;; Notes:
+;; 1. :parent could be an all-class argument.  Same with :keymap.
+;; 2. :match-submode really does have to be distinct from :submode,
+;; because 'functionp' isn't enough to distinguish which is meant.
 (defvar mmm-classes-alist nil
   "Alist containing all defined mmm submode classes.
 A submode class is a named recipe for parsing a document into submode
@@ -703,8 +734,8 @@ are `mmm-*-submode-face' where * is one of `init', `cleanup',
 flexible alternative is the argument MATCH-FACE.  MATCH-FACE can be a
 function, which is called with one argument, the form of the front
 delimiter \(found from FRONT-FORM, below), and should return the face
-to use.  It can also be an alist, each element of the form \(DELIM
-. FACE).
+to use.  It can also be an alist, with each element of the form
+\(DELIM . FACE).
 
 If neither CLASSES nor HANDLER are supplied, either SUBMODE or
 MATCH-SUBMODE must be.  SUBMODE specifies the submode to use for the
@@ -724,14 +755,19 @@ named classes. \(Unnamed classes are created by interactive commands
 in `mmm-interactive-history').
 
 If FRONT is a regexp, then that regexp is searched for, and the end of
-its match \(or the beginning, if INCLUDE-FRONT is non-nil), plus
-FRONT-OFFSET, becomes the beginning of the submode region.  If FRONT
-is a function, that function is called instead, and must act somewhat
-like a search, in that it should start at point, take one argument as
-a search bound, and set the match data.  A similar pattern is followed
-for BACK \(the search starts at the beginning of the submode region),
-save that the beginning of its match \(or the end, if INCLUDE-BACK is
-non-nil) becomes the end of the submode region, plus BACK-OFFSET.
+its FRONT-MATCH'th match \(or the beginning thereof, if INCLUDE-FRONT
+is non-nil), plus FRONT-OFFSET, becomes the beginning of the submode
+region.  If FRONT is a function, that function is called instead, and
+must act somewhat like a search, in that it should start at point,
+take one argument as a search bound, and set the match data.  A
+similar pattern is followed for BACK \(the search starts at the
+beginning of the submode region), save that the beginning of its
+BACK-MATCH'th match \(or the end, if INCLUDE-BACK is non-nil) becomes
+the end of the submode region, plus BACK-OFFSET.
+
+If SAVE-MATCHES is non-nil, then BACK, if it is a regexp, is formatted
+by replacing strings of the form \"~N\" by the corresponding value of
+\(match-string n) after matching FRONT.
 
 FRONT-MATCH and BACK-MATCH default to zero.  They specify which
 sub-match of the FRONT and BACK regexps to treat as the delimiter.
@@ -750,9 +786,19 @@ FRONT-VERIFY and BACK-VERIFY, if supplied, must be functions that
 inspect the match data to see if a match found by FRONT or BACK
 respectively is valid.
 
-If SAVE-MATCHES is non-nil, BACK, if it is a regexp, is formatted by
-replacing strings of the form \"~N\" by the corresponding value of
-\(match-string n) after matching FRONT.
+FRONT-DELIM \(resp. BACK-DELIM), if supplied, can take values like
+those of FRONT-OFFSET \(resp. BACK-OFFSET), specifying the offset from
+the start \(resp. end) of the match for FRONT \(resp. BACK) to use as
+the starting \(resp. ending) point for the front \(resp. back)
+delimiter.  If nil, it means not to make a region for the respective
+delimiter at all.
+
+DELIMITER-MODE, if supplied, specifies what submode to use for the
+delimiter regions, if any.  If `nil', the primary mode is used.  If
+not supplied, `mmm-delimiter-mode' is used.
+
+FRONT-FACE and BACK-FACE specify faces to use for displaying the
+delimiter regions, under high decoration.
 
 FRONT-FORM and BACK-FORM, if given, must supply a regexp used to match
 the *actual* delimiter.  If they are strings, they are used as-is.  If
@@ -794,6 +840,20 @@ the end of the submode region, and the end of the back delimiter.
 
 If END-NOT-BEGIN is non-nil, it specifies that a BACK delimiter cannot
 begin a new submode region.
+
+MATCH-NAME, if supplied, specifies how to determine the \"name\" for
+each submode region.  It must be a string or a function.  If it is a
+function, it is passed the value of FRONT-FORM and must return the
+name to use.  If it is a string, it is used as-is unless SAVE-NAME has
+a non-nil value, in which case, the string is interpreted the same as
+BACK when SAVE-MATCHES is non-nil.  If MATCH-NAME is not specified,
+the regions are unnamed.  Regions with the same name are considered
+part of the same chunk of code, and formatted as such, while unnamed
+regions are not grouped with any others.
+
+As a special optimization for insertion, if SKEL-NAME is non-nil, the
+insertion code will use the user-prompted string value as the region
+name, instead of going through the normal matching procedure.
 
 PRIVATE, if supplied and non-nil, means that this class is a private
 or internal class, usually one invoked by another class via :classes,

@@ -8,7 +8,7 @@
 ;; Keywords: convenience, faces, languages, tools
 ;; Version: 0.4.7
 
-;; Revision: $Id: mmm-mode.el,v 1.15 2003/03/03 23:09:43 viritrilbia Exp $
+;; Revision: $Id: mmm-mode.el,v 1.16 2003/03/09 17:04:03 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -172,7 +172,6 @@ available through M-x customize under Programming | Tools | Mmm."
         ;; turned on. Should we delete all previously made submode
         ;; regions when we find an invalid one?
         (message "%s" (error-message-string err))))
-     (mmm-update-current-submode)
      (run-hooks 'mmm-mode-hook)
      (mmm-run-major-hook))))
 
@@ -195,7 +194,11 @@ available through M-x customize under Programming | Tools | Mmm."
           (get mmm-primary-mode 'mmm-beginning-of-syntax-function))
     (mmm-update-font-lock-buffer)
     (mmm-refontify-maybe)
-    (setq mmm-mode nil)))
+    (setq mmm-mode nil)
+    ;; Restore the mode line
+    (setq mmm-primary-mode-display-name nil
+	  mmm-buffer-mode-display-name nil)
+    (mmm-set-mode-line)))
 
 ;;}}}
 ;;{{{ Mode Keymap

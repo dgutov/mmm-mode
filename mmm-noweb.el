@@ -72,13 +72,13 @@ If the next 100 characters of the buffer contain a string of the form
 return the value of `mmm-noweb-code-mode'."
   ;; Look for -*- mode -*- in the first two lines.
   ;; 120 chars = 40 chars for #! + 80 chars for following line...
-  (if (re-search-forward "-\\*-\\s +\\(\\w+\\)\\s +-\\*-" (+ (point) 120) t)
+  (if (re-search-forward "-\\*-\\s +\\(\\S-+\\)\\s +-\\*-" (+ (point) 120) t)
       (let* ((string (match-string-no-properties 1))
 	     (modestr (intern (if (string-match "mode\\'" string)
 				  string
 				(concat string "-mode")))))
 	(or (mmm-ensure-modename modestr)
-	    (signal 'mmm-no-matching-submode nil)))
+	    mmm-noweb-code-mode))
     mmm-noweb-code-mode))
 
 (defun mmm-noweb-quote (form)
@@ -116,7 +116,7 @@ return the value of `mmm-noweb-code-mode'."
     :match-submode mmm-noweb-chunk
     :case-fold-search nil
     :front "^<<\\(.*\\)>>="
-    :name-match "~1"
+    :match-name "~1"
     :save-name 1
     :front-offset (end-of-line 1)
     :back "^@\\( \\|$\\|\\( %def .*$\\)\\)"
@@ -128,7 +128,7 @@ return the value of `mmm-noweb-code-mode'."
     :match-submode mmm-noweb-quote
     :face mmm-special-submode-face
     :front "\\[\\["
-    :name-match mmm-noweb-quote-name
+;    :name-match mmm-noweb-quote-name
     :back "\\]\\]"
     :insert ((?q noweb-quote nil @ "[[" @ _ @ "]]" @))
     )

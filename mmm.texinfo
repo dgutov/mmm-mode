@@ -158,8 +158,9 @@ Writing Submode Classes
 * Calculated Submodes::         Deciding the submode at run-time.
 * Calculated Faces::            Deciding the display face at run-time.
 * Insertion Commands::          Inserting regions automatically.
+* Region Names::                Naming regions for syntax grouping.
 * Other Hooks::                 Running code at arbitrary points.
-* Delimiter Forms::             Storing the form of the delimiters.
+* Delimiters::                  Controlling delimiter overlays.
 * Misc Keywords::               Other miscellaneous options.
 
 Indices
@@ -185,25 +186,46 @@ major mode is a customization of Emacs for editing a certain type of
 text, such as code for a specific programming language. @xref{Major
 Modes, , , emacs, The Emacs Manual}, for details.
 
-MMM Mode is a general extension to Emacs which has many uses. Currently,
-its most common usage is to edit Mason components. Mason is a
-``Perl-based web site development and delivery engine'' which executes
-Perl code embedded in HTML and other types of documents. For more
-information, see @uref{http://www.masonhq.com}. MMM Mode comes with a
-submode class (@pxref{Submode Classes}) for editing Mason components
-(@pxref{Mason}).
+MMM Mode is a general extension to Emacs which is useful whenever one
+file contains text in two or more programming languages, or that
+should be in two or more different modes.  For example:
 
-More generally, however, MMM Mode is useful whenever one file contains
-text in two or more programming languages, or that should be in two or
-more different modes. For example, CGI scripts written in any language,
-such as Perl or PL/SQL, may want to output verbatim HTML, and the writer
-of such scripts may want to use Emacs' html-mode to edit this HTML code.
+@itemize @bullet
+@item
+CGI scripts written in any language, from Perl to PL/SQL, may want to
+output verbatim HTML, and the writer of such scripts may want to use
+Emacs' html-mode or sgml-mode to edit this HTML code, while remaining
+in the appropriate programming language mode for the rest of the
+file.  @xref{Here-documents}, for example.
+
+@item
+There are now many ``content delivery systems'' which turn the CGI
+script idea around and simply add extra commands to an HTML file,
+often in some programming language, which are interpreted on the
+server.  @xref{Mason}, @xref{Embperl}, @xref{ePerl}, @xref{JSP}.
+
+@item
 HTML itself can also contain embedded languages such as Javascript and
-CSS styles, for which Emacs has different major modes. Emacs also allows
-files of any type to contain `local variables', which can include Emacs
-Lisp code to be evaluated. @xref{File Variables, , , emacs, The Emacs
-Manual}. It may be easier to edit this code in Emacs Lisp mode than in
-whatever mode is used for the rest of the file.
+CSS styles, for which Emacs has different major modes.
+@xref{Javascript}, and @xref{Embedded CSS}, for example.
+
+@item
+The idea of ``literate programming'' requires the same file to contain
+documentation (written as text, html, latex, etc.) and code (in an
+appropriate programming language).  @xref{Noweb}, for example.
+
+@item
+Emacs allows files of any type to contain `local variables', which can
+include Emacs Lisp code to be evaluated. @xref{File Variables, , ,
+emacs, The Emacs Manual}. It may be easier to edit this code in Emacs
+Lisp mode than in whatever mode is used for the rest of the file.
+@xref{File Variables}.
+
+@item
+There are many more possible uses for MMM Mode.  RPM spec files can
+contain shell scripts (@pxref{RPM}).  Email or newsgroup messages may
+contain sample code.  And so on.  We encourage you to experiment.
+@end itemize
 
 @menu
 * Basic Concepts::              A simple explanation of how it works.
@@ -1446,7 +1468,7 @@ Suggested setup code:
 Thanks to Marcus Harnisch <Marcus.Harnisch@@gmx.net> for contributing
 this submode class.
 
-@node Noweb, , RPM, Supplied Classes
+@node Noweb,  , RPM, Supplied Classes
 @comment  node-name,  next,  previous,  up
 @section Noweb literate programming
 
@@ -1553,8 +1575,9 @@ with examples.
 * Calculated Submodes::         Deciding the submode at run-time.
 * Calculated Faces::            Deciding the display face at run-time.
 * Insertion Commands::          Inserting regions automatically.
+* Region Names::                Naming regions for syntax grouping.
 * Other Hooks::                 Running code at arbitrary points.
-* Delimiter Forms::             Storing the form of the delimiters.
+* Delimiters::                  Controlling delimiter overlays.
 * Misc Keywords::               Other miscellaneous options.
 @end menu
 
@@ -1779,7 +1802,7 @@ It is invoked immediately after a match is found for @code{:front}, and
 is passed one argument: a string representing the front delimiter.
 Normally this string is simply whatever was matched by @code{:front},
 but this can be changed with the keyword @code{:front-form}
-(@pxref{Delimiter Forms}).  The function should then return a symbol
+(@pxref{Delimiters}).  The function should then return a symbol
 that would be a valid argument to @code{:submode}: either the name of a
 mode, or that of a language to look up a preferred mode.  If it detects
 an invalid match---for example, the user has specified a mode which is
@@ -1841,7 +1864,7 @@ highlighted as simple executed code, and so on.  Note that
 for different faces to be displayed.
 
 
-@node Insertion Commands, Other Hooks, Calculated Faces, Writing Classes
+@node Insertion Commands, Region Names, Calculated Faces, Writing Classes
 @comment  node-name,  next,  previous,  up
 @section Specifying Insertion Commands
 
@@ -1903,7 +1926,34 @@ fourth (dotted) element (@code{"+"}) as the `str' variable; the user is
 not prompted.
 
 
-@node Other Hooks, Delimiter Forms, Insertion Commands, Writing Classes
+@node Region Names, Other Hooks, Insertion Commands, Writing Classes
+@comment  node-name,  next,  previous,  up
+@section Giving Names to Submode Regions for Grouping
+
+Submode regions can be given ``names'' which are used for grouping.
+Names are always strings and are compared as strings.  Regions with
+the same name are considered part of the same chunk of code.  This is
+used by the syntax and fontification functions.  Unnamed regions are
+not grouped with any others.
+
+By default, regions are nameless, but with the @code{:match-name}
+keyword argument a name can be supplied.  This argument must be a
+string or a function.  If it is a function, it is passed a string
+representing the front delimiter found, and must return the name to
+use.  If it is a string, it is used as-is for the name, unless
+@code{:save-name} has a non-nil value, in which case expressions such
+as @samp{~1} are substituted with the corresponding matched
+subexpression from @code{:front}.  This is the same as how
+@code{:back} is interpreted when @code{:save-matches} is non-nil.
+
+As a special optimization for region insertion (@pxref{Insertion
+Commands}), the argument @code{:skel-name} can be set to a non-nil
+value, in which case the insertion code will use the user-prompted
+string value as the region name, instead of going through the normal
+matching procedure.
+
+
+@node Other Hooks, Delimiters, Region Names, Writing Classes
 @comment  node-name,  next,  previous,  up
 @section Other Hooks into the Scanning Process
 
@@ -1942,16 +1992,66 @@ write a handler function, I suggest looking at the source for
 @code{mmm-ify} to get an idea of what must be done.
 
 
-@node Delimiter Forms, Misc Keywords, Other Hooks, Writing Classes
+@node Delimiters, Misc Keywords, Other Hooks, Writing Classes
 @comment  node-name,  next,  previous,  up
-@section Controlling the Form of the Delimiters
+@section Controlling the Delimiter Regions and Forms
 
-On each submode region overlay, MMM Mode stores the ``form'' of the
-front and back delimiters, which are regular expressions that match the
-delimiters.  At present these are not used for much, but in the future
-they may be used to help with automatic updating of regions as you type.
-Normally, the form stored is the result of evaluating the expression
-@code{(regexp-quote (match-string 0))} after each match is found.
+MMM also makes overlays for the delimiter regions, to keep track of
+their position and form.  Normally, the front delimiter overlay starts
+at the beginning of the match for @code{:front} and ends at the
+beginning of the submode region overlay, while the back delimiter
+overlay starts at the end of the submode region overlay and ends at
+the end of the match for @code{:back}.  You can supply offsets from
+these positions using the keyword arguments @code{:front-delim} and
+@code{:back-delim}, which take values of the same sort as
+@code{:front-offset} and @code{:back-offset}.
+
+In addition, the delimiter regions can be in a major mode of their
+own.  There are usually only two meaningful modes to use: the primary
+mode or a non-mode like fundamental-mode.  These correspond to the
+following two situations:
+
+@itemize
+@item
+If the delimiter syntax which specifies the submode regions is
+something @emph{added to} the syntax of the primary mode by a
+pre-interpreter, then the delimiter regions should be in a non-mode.
+This is the case, for example, with all server-side HTML script
+extensions, such as @xref{Mason}, @xref{Embperl}, and @xref{ePerl}.
+It is also the case for literate programming such as @xref{Noweb}.
+This is the default behavior.  The non-mode used is controlled by the
+variable @code{mmm-delimiter-mode}, which defaults to
+fundamental-mode.
+
+@item
+If, on the other hand, the delimiter syntax and inclusion of different
+modes is an @emph{intrinsic part} of the primary mode, then the
+delimiter regions should remain in the primary mode.  This is the
+case, for example, with @xref{Embedded CSS}, and @xref{Javascript},
+since the @code{<style>} and @code{<script>} tags are perfectly valid
+HTML.  In this case, you should give the keyword parameter
+@code{:delimiter-mode} with a value of @code{nil}, meaning to use the
+primary mode.
+@end itemize
+
+The keyword parameter @code{:delimiter-mode} can be given any major
+mode as an argument, but the above two situations should cover the
+vast majority of cases.
+
+The delimiter regions can also be highlighted, if you wish.  The
+keyword parameters @code{:front-face} and @code{:back-face} may be
+faces specifying how to highlight these regions under high
+decoration.  Under low decoration, the value of the variable
+@code{mmm-delimiter-face} is used (by default, nothing), and of course
+under no decoration there is no coloring.
+
+Finally, for each submode region overlay, MMM Mode stores the ``form''
+of the front and back delimiters, which are regular expressions that
+match the delimiters.  At present these are not used for much, but in
+the future they may be used to help with automatic updating of regions
+as you type.  Normally, the form stored is the result of evaluating
+the expression @code{(regexp-quote (match-string 0))} after each match
+is found.
 
 You can customize this with the keyword argument @code{:front-form}
 (respectively, @code{:back-form}).  If it is a string, it is used
@@ -1968,7 +2068,7 @@ adjust the overlay; if nil it means to match the delimiter and return
 the result in the match data.
 
 
-@node Misc Keywords,  , Delimiter Forms, Writing Classes
+@node Misc Keywords,  , Delimiters, Writing Classes
 @comment  node-name,  next,  previous,  up
 @section Miscellaneous Other Keyword Arguments
 

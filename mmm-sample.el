@@ -1,9 +1,9 @@
 ;;; mmm-sample.el --- Sample MMM submode classes
 
-;; Copyright (C) 2000 by Michael Abraham Shulman
+;; Copyright (C) 2003 by Michael Abraham Shulman
 
-;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.24 2003/03/02 20:24:37 viritrilbia Exp $
+;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Version: $Id: mmm-sample.el,v 1.25 2003/03/09 17:04:04 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -42,6 +42,7 @@
  '((embedded-css
     :submode css
     :face mmm-declaration-submode-face
+    :delimiter-mode nil
     :front "<style[^>]*>"
     :back "</style>")))
 
@@ -56,7 +57,8 @@
  '((js-tag
     :submode javascript
     :face mmm-code-submode-face
-    :front "<script\[^>\]*\\(language=\"javascript\"\\|\\(type=\"text/javascript\"\\)\[^>\]*>"
+    :delimiter-mode nil
+    :front "<script\[^>\]*\\(language=\"javascript\"\\|type=\"text/javascript\"\\)\[^>\]*>"
     :back"</script>"
     :insert ((?j js-tag nil @ "<script language=\"JavaScript\">"
                  @ "\n" _ "\n" @ "</script>" @))
@@ -64,6 +66,7 @@
    (js-inline
     :submode javascript
     :face mmm-code-submode-face
+    :delimiter-mode nil
     :front "on\\w+=\""
     :back "\"")))
 
@@ -72,7 +75,7 @@
 
 ;; Here we match the here-document syntax used by Perl and shell
 ;; scripts.  We try to be automagic about recognizing what mode the
-;; here-document should be in; to make sure that it is recognized
+;; here-document should be in.  To make sure that it is recognized
 ;; correctly, the name of the mode, perhaps minus `-mode', in upper
 ;; case, and/or with hyphens converted to underscores, should be
 ;; separated from the rest of the here-document name by hyphens or
@@ -129,6 +132,7 @@ and MODE is a major mode function symbol.")
     :front-offset (end-of-line 1)
     :back "^~1$"
     :save-matches 1
+    :delimiter-mode nil
     :match-submode mmm-here-doc-get-mode
     :insert ((?d here-doc "Here-document Name: " @ "<<" str _ "\n"
                  @ "\n" @ str "\n" @))
@@ -144,6 +148,7 @@ and MODE is a major mode function symbol.")
     :front "\\[\\([-\\+!\\*\\$]\\)"
     :back "~1\\]"
     :save-matches 1
+    :match-name "embperl"
     :match-face (("[+" . mmm-output-submode-face)
                  ("[-" . mmm-code-submode-face)
                  ("[!" . mmm-init-submode-face)
@@ -176,6 +181,7 @@ and MODE is a major mode function symbol.")
     :face mmm-code-submode-face
     :front "<:"
     :back "_?:>"
+    :match-name "eperl"
     :insert ((?p eperl-code nil @ "<:" @ " " _ " " @ ":>" @)
              (?: eperl-code ?p . nil)
              (?_ eperl-code_ nil @ "<:" @ " " _ " " @ "_:>" @)))
@@ -229,6 +235,7 @@ and MODE is a major mode function symbol.")
     :front-verify mmm-file-variables-verify
     :back mmm-file-variables-find-back
     :submode emacs-lisp-mode
+    :delimiter-mode nil
     )))
 
 ;;}}}
@@ -249,6 +256,7 @@ and MODE is a major mode function symbol.")
                  ("<%"  . mmm-code-submode-face))
     :front "<%[!=]?"
     :back "%>"
+    :match-name "jsp"
     :insert ((?% jsp-code nil @ "<%" @ " " _ " " @ "%>" @)
              (?! jsp-declaration nil @ "<%!" @ " " _ " " @ "%>" @)
              (?= jsp-expression nil @ "<%=" @ " " _ " " @ "%>" @))
@@ -271,6 +279,7 @@ and MODE is a major mode function symbol.")
  '((sgml-dtd
     :submode dtd-mode
     :face mmm-declaration-submode-face
+    :delimiter-mode nil
     :front "<! *doctype[^>[]*\\["
     :back "]>")))
 
@@ -280,6 +289,7 @@ and MODE is a major mode function symbol.")
 (mmm-add-classes
  '((httpd-conf-perl
     :submode perl
+    :delimiter-mode nil
     :front "<Perl>"
     :back "</Perl>")))
 
