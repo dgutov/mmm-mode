@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.8 2000/06/29 18:02:03 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.9 2000/06/29 18:23:41 mas Exp $
 
 ;;{{{ GPL
 
@@ -106,11 +106,10 @@ everything in `mmm-major-mode-hook' will be run."
 (defun mmm-check-changed-buffers ()
   "Run major mode hook for the buffers in `mmm-changed-buffers-list'."
   (remove-hook 'post-command-hook 'mmm-check-changed-buffers)
-  (mapc #'mmm-run-major-mode-hook
-        (remove-if #'(lambda (buffer)
-                       (window-minibuffer-p
-                        (get-buffer-window buffer)))
-                   mmm-changed-buffers-list))
+  (dolist (buffer mmm-changed-buffers-list)
+    (and (not (window-minibuffer-p (get-buffer-window buffer)))
+         (buffer-live-p buffer)
+         (mmm-run-major-mode-hook buffer)))
   (setq mmm-changed-buffers-list '()))
 
 (defun mmm-mode-on-maybe ()
