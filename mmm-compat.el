@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-compat.el,v 1.6 2000/08/02 23:24:13 mas Exp $
+;; Version: $Id: mmm-compat.el,v 1.7 2000/08/02 23:47:12 mas Exp $
 
 ;;{{{ GPL
 
@@ -175,7 +175,7 @@ Emacs 19 and 20 only provide font-lock with a window system in use.")
 ;;}}}
 ;;{{{ Font Lock Defaults (XEmacs)
 
-(defun mmm-set-font-lock-defaults ()
+(defmacro mmm-set-font-lock-defaults ()
   "Set font-lock defaults without trying to turn font-lock on.
 In XEmacs, `font-lock-set-defaults' calls `font-lock-set-defaults-1'
 to do the real work but then `turn-on-font-lock', which in turn calls
@@ -183,8 +183,8 @@ to do the real work but then `turn-on-font-lock', which in turn calls
 buffer \(name begins with a space).  So in XEmacs, we just call
 `font-lock-set-defaults-1' directly."
   (if mmm-xemacs
-      (font-lock-set-defaults-1)
-    (font-lock-set-defaults)))
+      `(font-lock-set-defaults-1)
+    `(font-lock-set-defaults)))
 
 ;;}}}
 
