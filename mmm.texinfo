@@ -4,6 +4,7 @@
 @settitle MMM Mode Manual
 @c %**end of header
 @syncodeindex vr fn
+@set MASON_VERSION 0.88
 
 @include version.texi
 
