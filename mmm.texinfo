@@ -4,9 +4,17 @@
 @settitle MMM Mode Manual
 @c %**end of header
 @syncodeindex vr fn
-@set MASON_VERSION 0.88
+@set MASON_VERSION 0.89
 
 @include version.texi
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* MMM: (mmm).          MMM, a major mode for multiple modes in buffer.
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
 
 @ifinfo
 This is edition @value{EDITION} of the MMM Mode Manual, last updated
@@ -854,14 +862,18 @@ highlight, if present, overrides any font-lock background coloring).
 The highlight is done with the face @code{mmm-default-submode-face}
 (@pxref{Faces, , emacs, The Emacs Manual}) which can be customized,
 either through the Emacs ``customize'' interface or using direct Lisp
-commands.  To turn the highlight off, add the following line to your
-@file{.emacs} file:
+commands.  To turn the highlight off, add one of the following lines to
+your @file{.emacs} file.  The first is for GNU Emacs, the second for
+XEmacs.
 
 @lisp
 (set-face-background 'mmm-default-submode-face nil)
+(set-face-background 'mmm-default-submode-face [])
 @end lisp
 
-To set the highlight color, a similar syntax can be used:
+To set the highlight color, a similar syntax can be used.  For GNU
+Emacs, the syntax is as follows.  For XEmacs, a color object is
+required.
 
 @lisp
 (set-face-background 'mmm-default-submode-face "blue")
