@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.39 2001/01/14 01:26:53 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.40 2001/01/15 00:35:34 mas Exp $
 
 ;;{{{ GPL
 
@@ -311,7 +311,26 @@ unnecessary. It probably won't go away, though."
   "User preferences about what major modes to use.
 Each element has the form \(LANGUAGE . MODE) where LANGUAGE is the
 name of a programming language such as `perl' as a symbol, and MODE is
-the major mode to use, such as `cperl-mode' or `perl-mode'.")
+the major mode to use, such as `cperl-mode' or `perl-mode'."
+  :group 'mmm
+  :type '(repeat (cons symbol
+                       (restricted-sexp :match-alternatives
+                                        (commandp)))))
+
+(defun mmm-set-major-mode-preferences (language mode &optional default)
+  "Set the preferred major mode for LANGUAGE to MODE.
+This sets the value of `mmm-major-mode-preferences'.  If there is
+already a mode specified for LANGUAGE, and DEFAULT is nil or
+unsupplied, then it is changed.  If DEFAULT is non-nil, then any
+existing mode is unchanged.  This may be used by packages to ensure
+that some mode is present, but not override any user-specified mode."
+  (let ((pair (assq language mmm-major-mode-preferences)))
+    (if pair
+        ;; Existing mode preference
+        (unless default
+          (setcdr pair mode))
+      ;; No existing mode preference
+      (add-to-list 'mmm-major-mode-preferences (cons language mode)))))
 
 ;;}}}
 ;;{{{ Key Bindings
