@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.4 2000/06/08 18:27:05 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.5 2000/06/13 20:01:50 mas Exp $
 
 ;;{{{ GPL
 
@@ -155,7 +155,7 @@ both MODE and EXT are nil, CLASS is activated in all buffers. If CLASS
 is the symbol t, MMM Mode is turned on in all buffers matching MODE
 and EXT, but no classes are activated.
 
-See `mmm-add-find-file-hook' and `mmm-global-mode'."
+See `mmm-global-mode'."
   :group 'mmm
   :type '(repeat (list (symbol :tag "Major Mode")
                        (string :tag "Filename Regexp")
@@ -294,11 +294,12 @@ an existing buffer."
 
 (defcustom mmm-global-mode nil
   "*Specify in which buffers to turn on MMM Mode automatically.
-* If nil, MMM Mode is never enabled automatically.
-* If t, MMM Mode is enabled automatically in all buffers.
-* If any other symbol, MMM mode is enabled only in those buffers that
+
+- If nil, MMM Mode is never enabled automatically.
+- If t, MMM Mode is enabled automatically in all buffers.
+- If any other symbol, MMM mode is enabled only in those buffers that
   have submode classes associated with them. See `mmm-classes' and
-  `mmm-mode-ext-classes' for more information."
+  `mmm-mode-ext-classes-alist' for more information."
   :group 'mmm
   :type '(choice (const :tag "Always" t)
                  (const :tag "Never" nil)
