@@ -1,6 +1,6 @@
 
-                        MMM Mode Version 0.3.8
-                        ======================
+                          MMM Mode for Emacs
+                          ==================
 
 OVERVIEW
 
@@ -62,7 +62,7 @@ UPDATES
 
 REPORTING BUGS
 
-  Please report bugs to mmm-bugs@kurukshetra.cjb.net.  Comments,
+  Please report bugs to mmm-mode@kurukshetra.cjb.net.  Comments,
   questions, and suggestions are also welcome.
 
 CONTACT INFO
@@ -73,4 +73,4 @@ CONTACT INFO
   announcements of new releases, and might one day turn into an actual
   mailing list for discussion of features.
 
-  Thanks for trying MMM Mode!
+  Thanks for using MMM Mode!
