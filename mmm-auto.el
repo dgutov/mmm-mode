@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.11 2000/06/30 03:26:48 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.12 2000/06/30 20:54:58 mas Exp $
 
 ;;{{{ GPL
 
@@ -67,6 +67,8 @@
 ;; To shut up the byte compiler.
 (eval-and-compile
   (autoload 'mmm-mode-on "mmm-mode" "Turn on MMM Mode. See `mmm-mode'.")
+  (autoload 'mmm-mode-off "mmm-mode" "Turn off MMM Mode. See `mmm-mode'.")
+  (autoload 'mmm-update-font-lock-buffer "mmm-region")
   (autoload 'mmm-mode "mmm-mode"
     "Minor mode to allow multiple major modes in one buffer.
 Without ARG, toggle MMM Mode. With ARG, turn MMM Mode on iff ARG is
