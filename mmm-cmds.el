@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.7 2000/06/30 02:41:36 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.8 2000/07/11 02:28:17 mas Exp $
 
 ;;{{{ GPL
 
@@ -254,8 +254,9 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
             (mmm-make-region
              submode beg end :front front-str :back back-str
              :face (plist-get class :face)
-             :beg-sticky (plist-get class :beg-sticky)
-             :end-sticky (plist-get class :end-sticky)
+;;;             :beg-sticky (plist-get class :beg-sticky)
+;;;             :end-sticky (plist-get class :end-sticky)
+             :beg-sticky t :end-sticky t
              :creation-hook (plist-get class :creation-hook))
             (mmm-enable-font-lock submode)))))))
 
