@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.6 2000/06/30 02:42:05 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.7 2000/08/01 01:54:18 mas Exp $
 
 ;;{{{ GPL
 
@@ -131,6 +131,13 @@ string."
                (- (point) (or bound (length regexp)))
                t)
              (match-end 0)))))
+
+;;}}}
+;;{{{ Ensure fboundp
+
+(defun mmm-ensure-fboundp (symbol)
+  "Return SYMBOL if it is `fboundp', else nil."
+  (if (fboundp symbol) symbol nil))
 
 ;;}}}
 
