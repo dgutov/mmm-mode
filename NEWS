@@ -18,6 +18,20 @@ both globally, per-buffer, or per-submode region.  This facility is
 now used to save the font-lock cache state, possible improving the
 font-lock support.  See the docs for `mmm-save-local-variables'.
 
+** Get and Set Class Parameters
+
+The functions `mmm-[get,set]-class-parameters' do just that.  The
+latter modifies the definition of a submode class, affecting all
+subsequent applications of that class.
+
+** New Implementation for MMM Global Mode
+
+The implementation of MMM Global Mode has been changed from the
+"stack-walk" method to the "post-command-hook" method used by
+global-font-lock-mode.  This is arguably cleaner, but more
+importantly, waits until after all local variables and text are loaded
+before trying to enabling MMM Mode.
+
 
 * Changes in MMM Mode 0.3.8
 

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-auto.el,v 1.6 2000/06/27 00:35:02 mas Exp $
+;; Version: $Id: mmm-auto.el,v 1.7 2000/06/27 19:22:56 mas Exp $
 
 ;;{{{ GPL
 
@@ -32,42 +32,28 @@
 
 ;;{{{ Comments on MMM Global Mode
 
-;; This is a kludge partially borrowed from `global-font-lock-mode'.
-;; The idea is the same: we have a function (here `mmm-mode-on-maybe')
-;; that we want to be run whenever a major mode starts. Unfortunately,
-;; there is no hook (like, say `major-mode-hook') that all major modes
-;; run when they are finished. They just run their own, specific hook.
-;; So what we're going to do is find a way to insinuate our function
-;; into *all* those hooks. (This is a bit different from what global
-;; font-lock mode does--it uses `post-command-hook').
+;; This is a kludge borrowed from `global-font-lock-mode'.  The idea
+;; is the same: we have a function (here `mmm-mode-on-maybe') that we
+;; want to be run whenever a major mode starts.  Unfortunately, there
+;; is no hook (like, say `major-mode-hook') that all major modes run
+;; when they are finished.  `post-command-hook', however, is run after
+;; *every* command, so we do our work in there.  (Actually, using
+;; `post-command-hook' is even better than being run by major mode
+;; functions, since it is run after all local variables and text are
+;; loaded, which may not be true in certain cases for the other.)
 
 ;; In order to do this magic, we rely on the fact that there *is* a
 ;; hook that all major modes run when *beginning* their work. They
-;; must call `kill-all-local-variables', which in turn runs
-;; `change-major-mode-hook'. So we add a function to *that* hook which
-;; inspects the call stack to find the mode function which is calling
-;; it (mode functions are recognizable by ending in "-mode"), and add
-;; our function to that mode's hook.
+;; call `kill-all-local-variables' (unless they are broken), which in
+;; turn runs `change-major-mode-hook'.  So we add a function to *that*
+;; hook which saves the current buffer and temporarily adds a function
+;; to `post-command-hook' which processes that buffer.
 
-;; Actually, in the interests of generality, what it adds to that
-;; mode's hook is the function `mmm-run-major-mode-hook', which in
-;; turn runs the hook `mmm-major-mode-hook'. Our desired function
+;; Actually, in the interests of generality, what that function does
+;; is run the hook `mmm-major-mode-hook'. Our desired function
 ;; `mmm-mode-on-maybe' is then added to that hook. This way, if the
 ;; user wants to run something else on every major mode, they can just
 ;; add it to `mmm-major-mode-hook' and take advantage of this hack.
-
-;; In out-of-the box Emacs, almost all major modes will be four frames
-;; back. The frames are:
-;; 1. mmm-major-mode-change
-;; 2. run-hooks(change-major-mode-hook)
-;; 3. kill-all-local-variables
-;; 4. DESIRED-MAJOR-mode
-;; When gnuserv is loaded, it adds an extra layer (a function called
-;; `server-kill-all-local-variables'), making five. I can imagine
-;; other packages doing the same thing, so for safety's sake, if we
-;; don't find a function whose name ends in `-mode', we keep looking
-;; until we run out of frames. I'm 99% sure that there will always be
-;; at least four frames, though.
 
 ;;}}}
 
@@ -99,39 +85,29 @@ positive and off otherwise." t))
 (autoload 'mmm-insert-region "mmm-cmds" "" t)
 
 ;;}}}
-;;{{{ Automatic Hook Adding
+;;{{{ MMM Global Mode
+
+(defvar mmm-changed-buffers-list ()
+  "Buffers that need to be checked for running the major mode hook.")
 
 (defun mmm-major-mode-change ()
-  "Add mode hooks to turn MMM Mode on where appropriate.
-Actually adds `mmm-run-major-mode-hook' to all major mode hooks."
+  "Add this buffer to `mmm-changed-buffers-list' for checking.
+When the current command is over, MMM Mode will be turned on in this
+buffer depending on the value of `mmm-global-mode'.  Actually,
+everything in `mmm-major-mode-hook' will be run."
   (and (boundp 'mmm-mode)
        mmm-mode
        (mmm-mode-off))
-  (unless (window-minibuffer-p (selected-window))
-    (loop for lookback from 4
-          for frame = (backtrace-frame lookback)
-          while frame
-          if (mmm-get-mode-hook (cadr frame))
-          do (add-hook it 'mmm-run-major-mode-hook)
-          and return t)))
+  (add-to-list 'mmm-changed-buffers-list (current-buffer))
+  (add-hook 'post-command-hook 'mmm-check-changed-buffers))
+
 (add-hook 'change-major-mode-hook 'mmm-major-mode-change)
 
-(defun mmm-get-mode-hook (function)
-  "If FUNCTION is a mode function, get its hook variable.
-Otherwise, return nil."
-  (when (symbolp function)
-    (let ((name (symbol-name function)))
-      (and (> (length name) 5)
-           (string= (substring name -5) "-mode")
-           (intern (format "%s-hook" name))))))
-
-;; Some modes that derive from text-mode, such as mh-letter-mode and
-;; AucTeX latex-mode, aren't well-behaved.  They do generally run
-;; text-mode-hook, though, so we can pre-initialize that.
-(add-hook 'text-mode-hook 'mmm-run-major-mode-hook)
-
-;;}}}
-;;{{{ MMM Global Mode
+(defun mmm-check-changed-buffers ()
+  "Run major mode hook for the buffers in `mmm-changed-buffers-list'."
+  (remove-hook 'post-command-hook 'mmm-check-changed-buffers)
+  (mapc #'mmm-run-major-mode-hook mmm-changed-buffers-list)
+  (setq mmm-changed-buffers-list '()))
 
 (defun mmm-mode-on-maybe ()
   "Conditionally turn on MMM Mode.
@@ -141,18 +117,13 @@ to apply, or always if `global-mmm-mode' is t."
         ((not mmm-global-mode))
         ((mmm-get-all-classes) (mmm-mode-on))))
 
-;; Add our function to our hook.
 (add-hook 'mmm-major-mode-hook 'mmm-mode-on-maybe)
 
-;; File Local variables don't get set by the time the major mode is
-;; starting up, apparently. So we need to add the hook here too.
-(add-hook 'find-file-hooks 'mmm-mode-on-maybe)
-
 (defalias 'mmm-add-find-file-hooks 'mmm-add-find-file-hook)
-
 (defun mmm-add-find-file-hook ()
   "Equivalent to \(setq mmm-global-mode 'maybe).
 This function is deprecated and may be removed in future."
+  (message "Warning: `mmm-add-find-file-hook' is deprecated.")
   (setq mmm-global-mode 'maybe))
 
 ;;}}}

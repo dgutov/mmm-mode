@@ -3,38 +3,30 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
-Allow setting of region-creation hooks et. al. by submode class.  Make
-sure to run `mmm-save-changed-local-variables' afterwards, in case
-they set some things.
-
-Saving local map by buffer, along with post-command-hook (for after
-`vm-mail' done), should fix the vm-mail problem w/o advice.  (Could
-also try to get VM to create its own mode instead of piggybacking on
-mail-mode.)
-
-Use the post-command-hook way instead of stack-walk, to catch
-default-major-mode buffers which don't get re-set by normal-mode after
-the contents are available.
-
 Add a flag to specify with more detail where submode regions start and
 stop with respect to the matches.  Perhaps a flag that takes a
 function as argument, with several supplied functions to choose from.
 `next-newline' and `previous-newline' are possible ones, as are
 beginning, end, and current default.  They should be passed the
-submode class and inspect the match data.
+submode class and inspect the match data.  Maybe they return info in
+the match data as well.
 
 Add `mmm-global-classes' variable, specifying submode classes that
-apply to all buffers in which MMM Mode is on.  Doesn't trigger 'maybe,
-I guess.  Not buffer-local by default, but can be turned off file
-locally.  Supply a class which lets you delimit regions and specify
-the mode, e.g. %[cperl]% ... %[/cperl]%.  For this, need a class
-parameter which specifies the submode dynamically rather than
-statically, say :find-submode?
-
-`mmm-set-class-parameter' and same for `*-get-*'.
+apply to all buffers in which MMM Mode is on.  Not buffer-local by
+default, but can be turned off file locally.  Supply a class which
+lets you delimit regions and specify the mode, e.g. %[cperl]%
+... %[/cperl]%.  For this, need a class parameter which specifies the
+submode dynamically rather than statically, say :find-submode?
+If mmm-global-mode is 'maybe, it would be nice to detect whether a
+buffer contains such strings to conditionally turn MMM on.
 
 Improve font-locking somehow.  Maybe narrow the region before
 fontifying, maybe trap or advise `parse-partial-sexp' (and friends?).
+
+The local-variables improvements can probably be used to set minor
+modes locally to submode regions.  This could replace tmmofl,
+especially if we search for regions other than by regexps, say by
+syntax properties.
 
 Inserting one-line perl sections isn't sticky.  Other sections are
 getting un-stickified too easily, and re-parsing current region

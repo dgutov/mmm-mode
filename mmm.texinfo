@@ -757,7 +757,7 @@ matching buffers, but supply no submode classes to be applied.
 @end defopt
 
 @menu
-* Major Mode Hook::                                Using MMM's Major Mode Hook
+* Major Mode Hook::             Using MMM's Major Mode Hook
 @end menu
 
 
@@ -773,51 +773,32 @@ know how MMM Global Mode is implemented, and perhaps use the same
 technique. In fact, MMM Mode exports a hook variable that you can use
 easily, without understanding any of the details---see below.
 
-If we only wanted to enable MMM Mode in buffers visiting files, it would
-be sufficient to use @code{find-file-hooks}, which is run whenever a
-file is visited. Earlier version on MMM Mode did exactly this, and the
-current version also uses this hook; see below.
-
 In order to enable itself in @emph{all} buffers, however, MMM Mode has
-to hook itself into all major modes. It would be nice if there were a
-variable such as @code{major-mode-hook} that all major mode functions
-ran at the end, along with their specific hook. Unfortunately, such a
-variable does not exist (as of FSF Emacs 20.5), so we have to do some
-hacking.
-
-Global Font Lock Mode from the standard Emacs distribution (@pxref{Font
-Lock, , , emacs, The Emacs Manual}) has a similar problem, and solves it
-by adding a function to @code{change-major-mode-hook}, which is run by
+to hook itself into all major modes.  Global Font Lock Mode from the
+standard Emacs distribution (@pxref{Font Lock, , , emacs, The Emacs
+Manual}) has a similar problem, and solves it by adding a function to
+@code{change-major-mode-hook}, which is run by
 @code{kill-all-local-variables}, which is run in turn by all major mode
-functions at the @emph{beginning}. This function stores a list of which
-buffers need fontification. It then adds a different function to
+functions at the @emph{beginning}.  This function stores a list of which
+buffers need fontification.  It then adds a different function to
 @code{post-command-hook}, which checks if the current buffer needs
-fontification, and if so performs it. While this works, I think it is
-kind of kludgy.
-
-MMM Mode also adds a function to @code{change-major-mode-hook}, but what
-this function (@code{mmm-major-mode-change}) does is to look back
-through the call stack until it finds a mode function (recognizable
-because its name ends in @samp{-mode}) which is calling it, add
-@samp{-hook} to that function's name to get the conventional major mode
-hook name, then add a function to that hook. I think this is cleaner.
+fontification, and if so performs it.  MMM Global Mode uses the same
+technique.
 
 In the interests of generality, and for your use, the function that MMM
-Mode adds to the major mode hooks (@code{mmm-run-major-mode-hook}) is
-not specific to MMM Mode, but rather runs the hook variable
-@code{mmm-major-mode-hook}, which by default contains a function which
-possibly turns MMM Mode on, depending on the value of
-@code{mmm-global-mode}. Thus, to run another function in all major
-modes, all you need to do is add it to this hook. For example, the
-following line in an initialization file will turn on Auto Fill Mode
-(@pxref{Auto Fill, , , emacs, The Emacs Manual}) in all buffers:
+Mode runs in @code{post-command-hook} (@code{mmm-run-major-mode-hook})
+is not specific to MMM Mode, but rather runs the hook variable
+@code{mmm-major-mode-hook}, which by default contains a function
+(@code{mmm-mode-on-maybe}) which possibly turns MMM Mode on, depending
+on the value of @code{mmm-global-mode}.  Thus, to run another function
+in all major modes, all you need to do is add it to this hook.  For
+example, the following line in an initialization file will turn on Auto
+Fill Mode (@pxref{Auto Fill, , , emacs, The Emacs Manual}) in all
+buffers:
 
 @lisp
 (add-hook 'mmm-major-mode-hook 'turn-on-auto-fill)
 @end lisp
-
-Perhaps in some future version of Emacs, a major mode hook will become
-standard, but until then, we've got to live with hacks.
 
 
 @node Submode Faces, Mode Line, Global Mode, Top

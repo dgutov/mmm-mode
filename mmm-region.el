@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.11 2000/06/27 03:25:20 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.12 2000/06/27 19:22:56 mas Exp $
 
 ;;{{{ GPL
 
@@ -58,7 +58,7 @@ i.e. whether text inserted at the marker should be inside the region."
 (defun* mmm-make-region
     (submode beg end &rest rest &key (front "") (back "")
              (beg-sticky t) (end-sticky t) face creation-hook
-             ;&allow-other-keys
+             &allow-other-keys
              )
   "Make a submode region from BEG to END of SUBMODE in FACE.
 FACE defaults to `mmm-default-submode-face'.  FRONT and BACK are
@@ -99,6 +99,7 @@ arguments are stored as properties of the overlay, un-keyword-ified."
               ))
     (save-excursion
       (goto-char (overlay-start ovl))
+      (mmm-set-current-submode submode)
       (mmm-set-local-variables submode)
       (mmm-run-submode-hook submode)
       (when creation-hook
@@ -106,7 +107,7 @@ arguments are stored as properties of the overlay, un-keyword-ified."
       (mmm-save-changed-local-variables ovl submode))
     (setq mmm-previous-submode submode
           mmm-previous-overlay ovl)
-    (mmm-update-current-submode)
+    (mmm-update-submode-region)
     ovl))
 
 ;;}}}
@@ -483,18 +484,6 @@ Looks up both global, buffer, and region saves."
             (if ovl
                 (overlay-get ovl 'mmm-local-variables)
               mmm-region-saved-locals-for-dominant))))
-
-; (defun mmm-set-for-region (var value)
-;   "Set the variable VAR to VALUE in the current submode region only.
-; VAR must be in `mmm-save-local-variables' with a type of region."
-;   (unless (eq (cadr (assq var mmm-save-local-variables)) 'region)
-;     (error "Variable %s must have type `region' in `mmm-save-local-variables'."
-;            var))
-;   (make-local-variable var)     ; Sanity check
-;   (set var value)
-;   (setcar (cdr (assq var (overlay-get (mmm-overlay-at (point))
-;                                       'mmm-local-variables)))
-;           value))
 
 (defun mmm-save-changed-local-variables (ovl mode)
   "Save by-buffer and by-region variables for OVL and MODE.
