@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.26 2000/08/02 23:39:30 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.27 2000/08/17 00:52:46 mas Exp $
 
 ;;{{{ GPL
 
@@ -383,6 +383,7 @@ an existing buffer."
     telnet-mode
     shell-mode
     eshell-mode
+    forms-mode
     )
   "List of modes in which MMM Mode is never activated."
   :group 'mmm
