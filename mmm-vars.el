@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.41 2001/02/03 01:39:28 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.42 2001/02/08 21:41:30 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -45,6 +45,7 @@
   (defvar mmm-mode-ext-classes-alist)
   (defvar mmm-mode-prefix-key)
   (defvar mmm-global-mode)
+  (defvar mmm-primary-mode)
   (defvar mmm-classes-alist))
 
 ;;}}}

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.10 2001/01/15 00:57:19 mas Exp $
+;; Version: $Id: mmm-utils.el,v 1.11 2001/02/08 21:41:30 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -32,6 +32,7 @@
 ;;; Code:
 
 (require 'cl)
+(require 'mmm-vars)
 
 ;;{{{ Valid Buffer
 
@@ -137,7 +138,7 @@ string."
              (match-end 0)))))
 
 ;;}}}
-;;{{{ Ensure fboundp
+;;{{{ Ensure submode name
 
 (defun mmm-ensure-modename (symbol)
   "Return SYMBOL if it is a valid submode name, else nil.
