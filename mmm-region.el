@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.25 2000/08/24 23:00:37 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.26 2000/08/29 09:28:02 mas Exp $
 
 ;;{{{ GPL
 
@@ -328,7 +328,7 @@ which is set here as well.  See `mmm-save-local-variables'."
           ;; Now make a new temporary buffer.
           (set-buffer (mmm-make-temp-buffer (current-buffer)
                                             mmm-temp-buffer-name))
-          (if mmm-set-buffer-file-name-p
+          (if (memq mode mmm-set-file-name-for-modes)
               (setq buffer-file-name filename)))
         (funcall mode)
         (when (featurep 'font-lock)
