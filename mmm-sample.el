@@ -3,7 +3,7 @@
 ;; Copyright (C) 2003 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-sample.el,v 1.26 2003/03/25 21:49:24 viritrilbia Exp $
+;; Version: $Id: mmm-sample.el,v 1.27 2003/04/28 15:16:15 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -310,7 +310,7 @@ and MODE is a major mode function symbol.")
     :submode php-mode
     :face mmm-output-submode-face
     :front "<\\?php *echo "
-    :back "\\?"
+    :back "\\?>"
     :include-front t
     :front-offset 5
     :insert ((?e php-echo nil @ "<?php" @ " echo " _ " " @ "?>" @))
