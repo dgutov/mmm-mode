@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-cmds.el,v 1.12 2000/09/05 07:22:13 mas Exp $
+;; Version: $Id: mmm-cmds.el,v 1.13 2001/01/15 04:56:25 mas Exp $
 
 ;;{{{ GPL
 
@@ -268,10 +268,21 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
                  (submode
                   (if match-submode
                       (mmm-save-all (funcall match-submode front-str))
-                    (plist-get class :submode))))
+                    (plist-get class :submode)))
+                 (match-face (plist-get class :match-face))
+                 (face
+                  (cond ((functionp match-face)
+                         (mmm-save-all
+                          (funcall match-face front-str)))
+                        (match-face
+                         (cdr (assoc front-str match-face)))
+                        (t
+                         (plist-get class :face)))))
+            (unless (fboundp submode)
+              (setq submode (cdr (assq submode mmm-major-mode-preferences))))
             (mmm-make-region
              submode beg end :front front-str :back back-str
-             :face (plist-get class :face)
+             :face face
 ;;;             :beg-sticky (plist-get class :beg-sticky)
 ;;;             :end-sticky (plist-get class :end-sticky)
              :beg-sticky t :end-sticky t
