@@ -1,3 +1,57 @@
+2000-06-27  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-auto.el, mmm-region.el, mmm-vars.el, mmm.texinfo:
+	Changed mmm-global-mode to use post-command-hook method rather than
+	stack-walk method.
+
+	* mmm-region.el:
+	Fixed bug saving variables when creating regions; need to set them first.
+
+	* mmm-region.el: Added creation-hook, fixed mode-name problem.
+
+	* mmm-class.el: Added mmm-[get,set]-class-parameters and creation-hook.
+
+	* mmm-auto.el, mmm-region.el, mmm-vars.el:
+	Fixed bug where font-lock-mode was set to `t' globally, causing
+	global-font-lock-mode to turn it off.
+
+2000-06-26  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-region.el:
+	Rewrote local variable functions, added new ones, changed updating,
+	fontification, and region creation functions to handle this.
+
+	* mmm-mode.el:
+	Added setting and clearing local variables with mode on and off.
+
+	* mmm-vars.el (mmm-save-local-variables):
+	Added extra parameters for saving type and
+	modes, and updated documentation.
+	Created several variables to save buffer- and region- locals.
+	(mmm-temp-buffer-name): Created variable and changed references.
+
+2000-06-23  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm-vars.el (mmm-save-local-variable):
+	Added comment-line-start-skip for Fortran.
+
+2000-06-13  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* mmm.texinfo: Added comment about (require 'mmm-mason).
+
+2000-06-08  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
+
+	* configure.in, mmm-vars.el: Released 0.3.10
+
+	* mmm-region.el (mmm-overlays-in):
+	Added checks for point-min and point-max for XEmacs.
+	(use-local-map): Added the advice back in.
+
+	* configure.in, mmm-vars.el: Released 0.3.9.
+
+	* mmm-region.el (use-local-map):
+	Conditioned advice definition on not XEmacs.
+
 2000-06-08  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
 
 	* mmm-region.el (mmm-overlays-in):
