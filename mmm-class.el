@@ -1,9 +1,9 @@
 ;;; mmm-class.el --- MMM submode class variables and functions
 
-;; Copyright (C) 2000 by Michael Abraham Shulman
+;; Copyright (C) 2000, 2004 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-class.el,v 1.18 2003/03/09 17:04:03 viritrilbia Exp $
+;; Version: $Id: mmm-class.el,v 1.19 2004/06/11 00:31:07 alanshutko Exp $
 
 ;;{{{ GPL
 
@@ -130,7 +130,7 @@ and interactive history."
            (end-sticky (not (number-or-marker-p back)))
            include-front include-back
            (front-offset 0) (back-offset 0)
-	   (front-delim 0) (back-delim 0)
+	   (front-delim nil) (back-delim nil)
 	   (delimiter-mode mmm-delimiter-mode)
 	   front-face back-face
            front-verify back-verify

@@ -1,3 +1,9 @@
+2004-06-10  Alan Shutko  <ats@acm.org>
+
+	* mmm-class.el (mmm-ify): Change defaults for front-delim and
+	back-delim to nil.  0 was breaking the no-delimiter case in
+	mmm-match-region.
+
 2004-06-02  Alan Shutko  <ats@acm.org>
 
 	* mmm-sample.el (html-js): Support JS version in language attribute.
