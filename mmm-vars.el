@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.43 2001/02/08 23:37:53 viritrilbia Exp $
+;; Version: $Id: mmm-vars.el,v 1.44 2001/02/10 06:18:16 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -90,6 +90,9 @@
 ;;}}}
 ;;{{{ Save Local Variables
 
+(defvar mmm-c-derived-modes
+  '(c-mode c++-mode objc-mode pike-mode java-mode jde-mode javascript-mode))
+
 (defvar mmm-save-local-variables 
   `(;; Don't use `function' (#') here!!  We're already inside `quote'!
     major-mode
@@ -117,21 +120,16 @@
     (c-basic-offset
      buffer (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
     ;; These are necessary for C syntax parsing
-    (c-class-key
-     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
-    (c-extra-toplevel-key
-     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
-    (c-inexpr-class-key
-     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
-    (c-conditional-key
-     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+    (c-class-key nil ,mmm-c-derived-modes)
+    (c-extra-toplevel-key nil ,mmm-c-derived-modes)
+    (c-inexpr-class-key nil ,mmm-c-derived-modes)
+    (c-conditional-key nil ,mmm-c-derived-modes)
     ;; User indentation style control
     (((lambda () c-indentation-style) . c-set-style)
-     nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))
+     nil ,mmm-c-derived-modes)
     ;; XEmacs makes this a local variable
     ,@(when mmm-xemacs
-        '((c-offsets-alist
-           nil (c-mode c++-mode objc-mode pike-mode java-mode jde-mode))))
+        '((c-offsets-alist nil ,mmm-c-derived-modes)))
     ;; Skeleton insertion
     skeleton-transformation
     ;; Abbrev mode
