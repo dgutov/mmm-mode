@@ -3,7 +3,7 @@
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.4 2000/05/18 18:29:37 mas Exp $
+;; Version: $Id: mmm-mode.el,v 1.5 2000/06/26 22:20:48 mas Exp $
 ;; Keywords: convenience faces languages tools
 
 ;;{{{ GPL
@@ -85,7 +85,7 @@
 
 (require 'cl)
 ;; If we don't load font-lock now, but it is loaded later, the
-;; necessary mmm-font-lock- properties may not be there.
+;; necessary mmm-font-lock-* properties may not be there.
 (require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-utils)
@@ -283,10 +283,10 @@ with the variables `mmm-default-submode-face', `mmm-mode-string', and
 `mmm-submode-mode-line-format', which see for further information.
 
 The variable `mmm-save-local-variables' controls what buffer-local
-variables are saved for submodes. This is how comments are handled,
-for instance. You can add variable names to this list. Often something
-that seems like a problem with MMM Mode can be solved by simply saving
-an extra variable.
+variables are saved for submodes.  This is how comments are handled,
+for instance.  You can add variable names to this list--see its
+documentation for details.  Often something that seems like a problem
+with MMM Mode can be solved by simply saving an extra variable.
 
 When entering MMM Mode, the hook `mmm-mode-hook' is run. A hook named
 <major-mode>-mmm-hook is also run, if it exists. For example,
@@ -313,12 +313,19 @@ Programming | Tools | Mmm, except the major mode and submode hooks
   "Turn on MMM Mode. See `mmm-mode'."
   (interactive)
   ;; This function is called from mode hooks, so we need to make sure
-  ;; we're not in a temporary buffer. We don't need to worry about
+  ;; we're not in a temporary buffer.  We don't need to worry about
   ;; recursively ending up in ourself, however, since by that time the
   ;; variable `mmm-mode' will already be set.
   (mmm-valid-buffer
    (unless mmm-mode
      (mmm-update-mode-info major-mode)
+     (setq mmm-region-saved-locals-for-dominant
+           (list* (list 'font-lock-cache-state nil)
+                  (list 'font-lock-cache-position (make-marker))
+                  (copy-tree (cdr (assq major-mode mmm-region-saved-locals-defaults)))))
+     ;; Without the next line, the (make-marker) above gets replaced
+     ;; with the starting value of nil, and all comes to naught.
+     (mmm-set-local-variables major-mode)
      (mmm-add-hooks)
      (mmm-fixup-skeleton)
      (when (featurep 'font-lock)
@@ -335,6 +342,7 @@ Programming | Tools | Mmm, except the major mode and submode hooks
         ;; turned on. Should we delete all previously made submode
         ;; regions when we find an invalid one?
         (message "%s" (error-message-string err))))
+     (mmm-update-current-submode)
      (run-hooks 'mmm-mode-hook)
      (mmm-run-major-hook))))
 
@@ -349,13 +357,11 @@ Programming | Tools | Mmm, except the major mode and submode hooks
     (mmm-clear-overlays)
     (mmm-clear-history)
     (mmm-clear-mode-ext-classes)
+    (mmm-clear-local-variables)
     (mmm-update-submode-region)
-    (when (boundp 'font-lock-mode)
-      (setq font-lock-fontify-region-function
-            (get major-mode 'mmm-fontify-region-function)
-            font-lock-beginning-of-syntax-function
-            (get major-mode 'mmm-beginning-of-syntax-function))
-      (if font-lock-mode (font-lock-fontify-buffer)))
+    (and (featurep 'font-lock)
+         font-lock-mode
+         (font-lock-fontify-buffer))
     (setq mmm-mode nil)))
 
 (add-to-list 'minor-mode-alist (list 'mmm-mode mmm-mode-string))
