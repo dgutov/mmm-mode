@@ -1,0 +1,18 @@
+-*-text-*-
+                 Checklist for New MMM Mode Releases
+
+0. Test all new code, under all Emacsen if possible.  Check that the
+   package builds and installs.
+
+1. Check everything into CVS.
+
+2. Update the NEWS and TODO files and any other commentary files and
+   check them into CVS with invisible comment (#).
+
+3. Update the version number in `configure.in' and `mmm-vars.el' and
+   check them into CVS with comment "Released x.x.x".
+
+4. Update the Changelog file with `vc-update-change-log' (`C-x v a')
+   and check it into CVS with invisible comment (#).
+
+5. Run `make dist' and upload the tarball.
