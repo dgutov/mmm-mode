@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.27 2001/01/08 01:43:21 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.28 2001/01/11 00:56:08 mas Exp $
 
 ;;{{{ GPL
 
@@ -231,13 +231,13 @@ i.e. whether text inserted at the marker should be inside the region."
              &allow-other-keys
              )
   "Make a submode region from BEG to END of SUBMODE in FACE.
-FACE defaults to `mmm-default-submode-face'.  FRONT and BACK are
-regexps or functions to match the correct delimiters--see
-`mmm-match-front' and `mmm-match-back'.  BEG-STICKY and END-STICKY
-determine whether the front and back of the region, respectively, are
-sticky with respect to new insertion.  CREATION-HOOK should be a
-function to run after the region is created.  All other keyword
-arguments are stored as properties of the overlay, un-keyword-ified."
+FRONT and BACK are regexps or functions to match the correct
+delimiters--see `mmm-match-front' and `mmm-match-back'.  BEG-STICKY
+and END-STICKY determine whether the front and back of the region,
+respectively, are sticky with respect to new insertion.  CREATION-HOOK
+should be a function to run after the region is created.  All other
+keyword arguments are stored as properties of the overlay,
+un-keyword-ified."
   (setq rest (append rest (list :front front :back back :beg-sticky
                                 beg-sticky :end-sticky end-sticky)))
   (mmm-mode-on)
@@ -267,7 +267,7 @@ arguments are stored as properties of the overlay, un-keyword-ified."
                        (copy-tree (cdr (assq submode mmm-region-saved-locals-defaults)))))
               ;; These have special meaning to Emacs
               (,mmm-evaporate-property t)
-              (face ,(or face (if submode 'mmm-default-submode-face)))
+              (face ,(mmm-get-face face submode))
               ))
     (save-excursion
       (goto-char (overlay-start ovl))
@@ -281,6 +281,15 @@ arguments are stored as properties of the overlay, un-keyword-ified."
           mmm-previous-overlay ovl)
     (mmm-update-submode-region)
     ovl))
+
+(defun mmm-get-face (face submode)
+  (case mmm-submode-decoration-level
+    ((0) nil)
+    ((1) (when submode
+           'mmm-default-submode-face))
+    ((2) (or face
+             (when submode
+               'mmm-default-submode-face)))))
 
 ;;}}}
 ;;{{{ Clear Overlays

@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.33 2001/01/09 01:20:24 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.34 2001/01/11 00:56:08 mas Exp $
 
 ;;{{{ GPL
 
@@ -171,19 +171,60 @@ are saved as overlay properties.")
 (make-variable-buffer-local 'mmm-region-saved-locals-for-dominant)
 
 ;;}}}
-;;{{{ Default Submode Face
+;;{{{ Submode Faces
 
-(defface mmm-default-submode-face 
-  '(
-    (t (:background "gray85"))
-    )
-  "Face used to indicate submode overlays by default.
-This can be overridden for specific submodes created by any method;
-see the documentation for that method. It is recommended that only the
-background color be set for this face, in order not to mess with
-font-lock too much."
+(defgroup mmm-faces nil
+  "Faces and coloring for submode regions.
+In general, only background colors should be set, to avoid interfering
+with font-lock."
   :group 'mmm)
 
+(defcustom mmm-submode-decoration-level 1
+  "*Amount of coloring to use in submode regions.
+Should be either 0, 1, or 2, representing None, Low, and High amounts
+of coloring.  None means to use no coloring at all.  Low means to use
+a single face \(`mmm-default-submode-face') for all submode regions,
+\(except for \"non-submode\" regions).  High means to use different
+faces for different types of submode regions, such as initialization
+code, expressions that are output, declarations, and so on.  The
+default face is still used for regions that do not specify a face."
+  :group 'mmm-faces
+  :type '(choice (const :tag "None" 0)
+                 (const :tag "Low" 1)
+                 (const :tag "High" 2)))
+
+(defface mmm-init-submode-face '((t (:background "Pink")))
+  "Face used for submodes containing initialization code."
+  :group 'mmm-faces)
+
+(defface mmm-cleanup-submode-face '((t (:background "Wheat")))
+  "Face used for submodes containing cleanup code."
+  :group 'mmm-faces)
+
+(defface mmm-declaration-submode-face '((t (:background "Aquamarine")))
+  "Face used for submodes containing declarations."
+  :group 'mmm-faces)
+
+(defface mmm-comment-submode-face '((t (:background "SkyBlue")))
+  "Face used for submodes containing comments and documentation."
+  :group 'mmm-faces)
+
+(defface mmm-output-submode-face '((t (:background "Plum")))
+  "Face used for submodes containing expression that are output."
+  :group 'mmm-faces)
+
+(defface mmm-special-submode-face '((t (:background "MediumSpringGreen")))
+  "Face used for special submodes not fitting any other category."
+  :group 'mmm-faces)
+
+(defface mmm-code-submode-face '((t (:background "LightGray")))
+  "Face used for submodes containing ordinary code."
+  :group 'mmm-faces)
+
+(defface mmm-default-submode-face '((t (:background "gray85")))
+  "Face used for all submodes at decoration level 1.
+Also used at decoration level 2 for submodes not specifying a type."
+  :group 'mmm-faces)
 
 ;;}}}
 ;;{{{ Mode Line Format
@@ -436,9 +477,15 @@ must be a function, and all the arguments are passed to it as
 keywords, and it must do everything. See `mmm-ify' for what sorts of
 things it must do. This back-door interface should be cleaned up.
 
-The argument FACE, if supplied, overrides `mmm-default-submode-face'
-in specifying the display face of the submode regions. It must be a
-valid display face.
+The argument FACE, if supplied, specifies the display face of the
+submode regions under decoration level 2.  It must be a valid face.
+The standard faces used for submode regions are `mmm-*-submode-face'
+where * is one of `init', `cleanup', `declaration', `comment',
+`output', `special', or `code'.  A more flexible alternative is the
+argument MATCH-FACE.  MATCH-FACE can be a function, which is called
+with one argument, the form of the front delimiter \(found from
+FRONT-FORM, below), and should return the face to use.  It can also be
+an alist, each element of the form \(DELIM . FACE).
 
 If neither CLASSES nor HANDLER are supplied, either SUBMODE or
 MATCH-SUBMODE must be.  SUBMODE specifies the submode to use for the
