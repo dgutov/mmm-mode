@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.21 2001/07/05 02:04:35 uid30977 Exp $
+;; Version: $Id: mmm-sample.el,v 1.22 2001/07/05 03:03:42 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -235,7 +235,14 @@ and MODE is a major mode function symbol.")
 ;;{{{ JSP Pages
 
 (mmm-add-group 'jsp
- `((jsp-code
+ `((jsp-comment
+    :submode text-mode
+    :face mmm-comment-submode-face
+    :front "<%--"
+    :back "--%>"
+    :insert ((?- jsp-comment nil @ "<%--" @ " " _ " " @ "--%>" @))
+    )
+   (jsp-code
     :submode java
     :match-face (("<%!" . mmm-declaration-submode-face)
                  ("<%=" . mmm-output-submode-face)
