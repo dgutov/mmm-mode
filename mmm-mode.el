@@ -6,9 +6,9 @@
 ;; Package: mmm-mode
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
 ;; Keywords: convenience, faces, languages, tools
-;; Version: 0.4.6
+;; Version: 0.4.7
 
-;; Revision: $Id: mmm-mode.el,v 1.11 2001/02/03 01:39:28 mas Exp $
+;; Revision: $Id: mmm-mode.el,v 1.12 2001/02/23 22:44:28 viritrilbia Exp $
 
 ;;{{{ GPL
 
