@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-region.el,v 1.21 2000/07/29 17:25:14 mas Exp $
+;; Version: $Id: mmm-region.el,v 1.22 2000/08/02 23:24:59 mas Exp $
 
 ;;{{{ GPL
 
@@ -342,7 +342,7 @@ which is set here as well.  See `mmm-save-local-variables'."
             (put mode 'mmm-font-lock-mode t))
           ;; Get the font-lock variables
           (when mmm-font-lock-available-p
-            (font-lock-set-defaults))
+            (mmm-set-font-lock-defaults))
           ;; These can't be in the local variables list, because we
           ;; replace their actual values, but we want to use their
           ;; original values elsewhere.
