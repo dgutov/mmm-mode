@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-utils.el,v 1.12 2001/02/08 23:37:53 viritrilbia Exp $
+;; Version: $Id: mmm-utils.el,v 1.13 2003/03/02 20:26:33 viritrilbia Exp $
 
 ;;{{{ GPL
 
@@ -90,12 +90,12 @@ global match.  Does nothing if STRING is not a string."
           subexp)
       (save-match-data
         (while (string-match "~\\([0-9]\\)" string)
-          (setq subexp (string-to-int (match-string 1 string))
+          (setq subexp (string-to-int (match-string-no-properties 1 string))
                 string
                 (replace-match
                  (save-match-data
                    (set-match-data old-data)
-                   (match-string subexp))
+                   (match-string-no-properties subexp))
                  t t string))))))
   string)
 
@@ -105,7 +105,7 @@ global match.  Does nothing if STRING is not a string."
 (defmacro mmm-save-keyword (param)
   "If the value of PARAM as a variable is non-nil, return the list
 \(:PARAM (symbol-value PARAM)), otherwise NIL. Best used only when it
-is important that nil valuess disappear."
+is important that nil values disappear."
   `(if (and (boundp ',param) ,param)
        (list (intern (concat ":" (symbol-name ',param))) ,param)
      nil))
@@ -115,7 +115,7 @@ is important that nil valuess disappear."
 \(let \(\(a 1) \(c 2)) \(mmm-save-keywords a b c))  ==>  \(:a 1 :c 2)
 Use of this macro can make code more readable when there are a lot of
 PARAMS, but less readable when there are only a few. Also best used
-only when it is important that nil valuess disappear."
+only when it is important that nil values disappear."
   `(append ,@(mapcar #'(lambda (param)
                          (macroexpand `(mmm-save-keyword ,param)))
                      params)))
@@ -135,6 +135,19 @@ string."
                (- (point) (or bound (length regexp)))
                t)
              (match-end 0)))))
+
+;;}}}
+;;{{{ Markers
+
+;; Mostly for remembering interactively made regions
+(defun mmm-make-marker (pos beg-p sticky-p)
+  "Make, and return, a marker at POS that is or isn't sticky.
+BEG-P represents whether the marker delimits the beginning of a
+region \(or the end of it). STICKY-P is whether it should be sticky,
+i.e. whether text inserted at the marker should be inside the region."
+  (let ((mkr (set-marker (make-marker) pos)))
+    (set-marker-insertion-type mkr (if beg-p (not sticky-p) sticky-p))
+    mkr))
 
 ;;}}}
 
