@@ -112,6 +112,7 @@ Supplied Submode Classes
 * Javascript::                  Javascript embedded in HTML.
 * Embedded CSS::                CSS Styles embedded in HTML.
 * Embperl::                     Another syntax for Perl in HTML.
+* RPM::                         Shell scripts in RPM Spec Files.
 
 Indices
 
@@ -1241,12 +1242,17 @@ alleviating its confusion.
 @chapter CSS embedded in HTML
 
 
-@node Embperl, Concept Index, Embedded CSS, Top
+@node Embperl, RPM, Embedded CSS, Top
 @comment  node-name,  next,  previous,  up
 @chapter Embperl: More Perl in HTML
 
 
-@node Concept Index, Function Index, Embperl, Top
+@node RPM, Concept Index, Embperl, Top
+@comment  node-name,  next,  previous,  up
+@chapter RPM Spec Files
+
+
+@node Concept Index, Function Index, RPM, Top
 @comment  node-name,  next,  previous,  up
 @chapter Concept Index
 
