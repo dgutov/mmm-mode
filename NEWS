@@ -4,12 +4,7 @@ See the file COPYING for copying conditions.
 
 Please send MMM Mode bug reports to mas@kurukshetra.cjb.net
 
-* Changes in MMM Mode 0.5.0
-
-** Version Number Jump
-
-Versions 0.3.8 through 0.3.10 should really have been 0.4.0 through
-0.4.2, so this is version 0.5.0.
+* Changes in MMM Mode 0.4.0
 
 ** Improved Local Variable Saving
 
@@ -31,6 +26,12 @@ The implementation of MMM Global Mode has been changed from the
 global-font-lock-mode.  This is arguably cleaner, but more
 importantly, waits until after all local variables and text are loaded
 before trying to enabling MMM Mode.
+
+
+* MMM Mode 0.3.10 is a bug-fix release with no user-visible changes
+
+
+* MMM Mode 0.3.9 is a bug-fix release with no user-visible changes
 
 
 * Changes in MMM Mode 0.3.8
