@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-vars.el,v 1.17 2000/07/12 06:10:28 mas Exp $
+;; Version: $Id: mmm-vars.el,v 1.18 2000/07/13 23:43:54 mas Exp $
 
 ;;{{{ GPL
 
@@ -79,7 +79,7 @@
 ;;}}}
 ;;{{{ Save Local Variables
 
-(defcustom mmm-save-local-variables 
+(defvar mmm-save-local-variables 
   '(;; Don't use `function' (#') here!!  We're already inside `quote'!
     comment-start 
     comment-end
@@ -133,9 +133,7 @@ in some buffer may produce unpredictable results.
 Globally saved variables are saved in the mmm-local-variables property
 of the mode symbol.  Buffer saved variables are saved in the alist
 `mmm-buffer-saved-locals'.  Region saved variables are saved in the
-mmm-local-variables property of the overlay."
-  :group 'mmm
-  :type '(repeat (symbol :tag "Variable")))
+mmm-local-variables property of the overlay.")
 
 (defvar mmm-buffer-saved-locals ()
   "Stores saved local variables for this buffer, by mode.
