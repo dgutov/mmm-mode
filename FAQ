@@ -14,7 +14,7 @@ the name of the mailing list.
 
 Put the following line in your Emacs initialization file:
 
-  (setq 'mmm-submode-decoration-level 0)
+  (setq mmm-submode-decoration-level 0)
 
 You may want to try using MMM Mode for a while with the background
 highlight, however, or merely changing it to a different color.  There
