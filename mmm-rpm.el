@@ -2,6 +2,9 @@
 
 ;; Copyright (C) 2000 by Marcus Harnisch <Marcus.Harnisch@gmx.net>
 
+;; Author:  Marcus Harnisch <Marcus.Harnisch@gmx.net>
+;; Version: $Id: mmm-rpm.el,v 1.2 2000/08/21 23:25:52 mas Exp $
+
 ;;{{{ GPL
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -59,7 +62,8 @@
   (concat "\\'\\|^%" (mmm-regexp-opt mmm-rpm-sh-end-tags t) "\\b.*$")
   "Regexp matching RPM tags that end a shell-script section in a spec file")
 
-(mmm-add-classes
+(mmm-add-group
+ 'rpm
  `((rpm-sh
     :submode sh-mode
     ;; match tags that starts sh-script region
