@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.5 2000/07/21 00:17:21 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.6 2000/07/21 00:54:35 mas Exp $
 
 ;;{{{ GPL
 
@@ -88,16 +88,16 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
                     (concat (downcase string) "-mode"))))
     (while (string-match "_" modestr)
       (setq modestr (replace-match "-" nil nil modestr)))
-    (and modestr (intern modestr))))
+    (setq modestr (intern modestr))
+    (if (fboundp modestr)
+        modestr
+      (signal 'mmm-no-matching-submode nil))))
 
 (mmm-add-classes
  `((here-doc
     :front "<<\\([a-zA-Z0-9_-]+\\).*\n"
     :back "^~1$"
     :save-matches 1
-    :front-verify ,#'(lambda ()
-                       (fboundp
-                        (mmm-here-doc-get-mode (match-string 0))))
     :match-submode mmm-here-doc-get-mode
     :insert ((?d here-doc "Here-document Name: " @ "<<" str _ "\n"
                  @ "\n" @ str "\n" @))
