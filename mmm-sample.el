@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-sample.el,v 1.6 2000/07/21 00:54:35 mas Exp $
+;; Version: $Id: mmm-sample.el,v 1.7 2000/07/23 05:33:24 mas Exp $
 
 ;;{{{ GPL
 
@@ -94,7 +94,7 @@ otherwise `c++-mode'.  Some people prefer `c++-mode' regardless.")
       (signal 'mmm-no-matching-submode nil))))
 
 (mmm-add-classes
- `((here-doc
+ '((here-doc
     :front "<<\\([a-zA-Z0-9_-]+\\).*\n"
     :back "^~1$"
     :save-matches 1
@@ -136,37 +136,44 @@ Usually either `perl-mode' or `cperl-mode'. The default is
     )))
 
 ;;}}}
+;;{{{ File Variables
+
+;; This submode class puts file local variable values, specified with
+;; a `Local Variables:' line as in (emacs)File Variables, into Emacs
+;; Lisp Mode.  It is a good candidate to put in `mmm-global-classes'.
+
+(defun mmm-file-variables-verify ()
+  (let ((bounds
+         (save-excursion
+           (save-match-data
+             (goto-char (point-max))
+             (backward-page)
+             (search-forward "Local Variables:")
+             (cons (point)
+                   (progn (search-forward "End:")
+                          (beginning-of-line)
+                          (point)))))))
+    (and (> (match-beginning 0) (car bounds))
+         (< (match-end 0) (cdr bounds)))))
+
+(defun mmm-file-variables-find-back (bound)
+  (forward-sexp)
+  (if (> (point) bound)
+      nil
+    (looking-at "")
+    t))
+
+(mmm-add-classes
+ '((file-variables
+    :front "^[a-zA-Z-*]+: "
+    :front-verify mmm-file-variables-verify
+    :back mmm-file-variables-find-back
+    :submode emacs-lisp-mode
+    )))
+
+;;}}}
 
 ;; NOT YET UPDATED
-;;{{{ ELisp in File Variables;-COM-
-;-COM-
-;-COM-;; This example is more complicated. It uses a function rather than a
-;-COM-;; regexp to find the regions. The idea is that the sexp after an
-;-COM-;; 'eval:' file variable should be in Emacs Lisp Mode, since it's
-;-COM-;; getting executed as Emacs Lisp.
-;-COM-
-;-COM-(defun* mmm-elisp-in-file-vars (start end)
-;-COM-  (save-match-data
-;-COM-    (goto-char (point-max))
-;-COM-    (backward-page)
-;-COM-    ;; Fool the compiler so it doesn't think this is a local
-;-COM-    ;; variables list.
-;-COM-    (when (search-forward "Local\ Variables:" end t)
-;-COM-      (goto-char (max (point) start))
-;-COM-      (mmm-find-evals (min (or (save-excursion (search-forward "End:" nil t))
-;-COM-                               (return-from mmm-elisp-in-file-vars))
-;-COM-                           end)))))
-;-COM-
-;-COM-(defun mmm-find-evals (bound)
-;-COM-  (if (search-forward "eval: " bound t)
-;-COM-      (cons (cons (prog1 (point) (forward-sexp)) (point))
-;-COM-            (mmm-find-evals bound))
-;-COM-    nil))
-;-COM-
-;-COM-(add-to-list 'mmm-classes-alist
-;-COM-  '(eval-elisp (:function emacs-lisp-mode mmm-elisp-in-file-vars)))
-;-COM-
-;;}}}
 ;;{{{ HTML in PL/SQL;-COM-
 ;-COM-
 ;-COM-;; This one is the most complex example. In PL/SQL, HTML is generally
