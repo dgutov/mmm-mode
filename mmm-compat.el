@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-compat.el,v 1.1 2000/04/27 10:34:37 mas Exp $
+;; Version: $Id: mmm-compat.el,v 1.2 2000/07/11 02:27:41 mas Exp $
 
 ;;{{{ GPL
 
@@ -47,7 +47,7 @@
 ;; We shouldn't have to do any more than these, since CL automatically
 ;; defines all keywords used for function arguments.
 (defvar mmm-keywords-used
-  '(:group :regexp :region :function :insert)
+  '(:group :regexp :region :function :insert :classes)
   "List of extra keywords used by MMM Mode.")
 
 (dolist (keyword mmm-keywords-used)
