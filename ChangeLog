@@ -1,3 +1,88 @@
+2000-07-29  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* configure.in, mmm-vars.el, version.texi: Released 0.4.4.
+
+	* mmm-class.el (mmm-get-class-spec):
+	Implemented autoloaded submode classes.
+
+	* mmm-vars.el (mmm-add-group): Made subclasses of a group private.
+
+	* mmm-auto.el: Added autoloading of submode classes.
+
+	* mmm-cmds.el (mmm-ify-by-class):
+	Added completion on autoloaded classes.  Excluded
+	private classes from completion.
+
+	* mmm-vars.el (mmm-classes-alist):
+	Updated docstring for new offset values and
+	include- flags.
+
+	* mmm-sample.el (here-doc): Updated to use new front-offset values.
+
+	* mmm-class.el (mmm-ify, mmm-match-region, mmm-match->point):
+	Added new values for
+	front- and back-offset.
+
+	* mmm-region.el (mmm-make-region):
+	Made sure overlays get the delimiter and sticky
+	properties even if they aren't passed explicitly.
+
+2000-07-26  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* configure.in: Changed output name from `mmm' to `mmm-mode'.
+
+2000-07-24  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-sample.el: Updated file-variables class to handle prefixes.
+
+2000-07-23  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-sample.el: Wrote File Variables submode class for the new syntax.
+
+2000-07-21  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-cmds.el (mmm-ify-by-class):
+	Added completion on all defined classes.
+
+	* mmm-sample.el (mmm-here-doc-get-mode):
+	Signaled non-fboundp here-document names.
+
+	* mmm-univ.el (mmm-univ-get-mode): Signaled error on non-fboundp modes.
+
+	* mmm-class.el (mmm-match-region, mmm-ify):
+	Caught errors from :match-submode.
+
+	* mmm-vars.el: Added `mmm-no-matching-submode' error signal.
+
+	* mmm-sample.el:
+	Allowed here-documents in any mode with :match-submode.
+	Added insertion syntax to here-docs, javascript, and embperl.
+
+2000-07-14  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm.texinfo, version.texi:
+	Added MASON_VERSION variable to keep track of that.
+
+	* mmm.texinfo: Wrote about changing key bindings and local variables.
+	Copied info from documentation of `mmm-classes-alist'.
+
+2000-07-13  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-vars.el (mmm-run-major-mode-hook):
+	Added `ignore-errors' around each call.
+
+	* mmm-vars.el (mmm-save-local-variables):
+	Changed `defcustom' to `defvar'.
+
+	* mmm.texinfo:
+	Wrote about global classes, highlight, mode line, and hooks.
+
+	* mmm-univ.el: Limited matches to letter/dash strings that are fboundp.
+
+2000-07-12  Michael Abraham Shulman  <viritrilbia@users.sourceforge.net>
+
+	* README.Mason: Added comment about `mmm-global-mode'.
+
 2000-07-12  Michael Abraham Shulman  <mas@kurukshetra.cjb.net>
 
 	* configure.in, mmm-vars.el: Released 0.4.3.

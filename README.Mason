@@ -12,10 +12,8 @@ INSTALLATION AND LOADING
 
   For general installation and information, see the README file and
   the texinfo documentation.  The submode class for Mason components
-  is called `mason' and must be loaded from `mmm-mason.el' before it
-  can be used; the easiest way to put the following line in .emacs:
-
-  (require 'mmm-mason)
+  is called `mason' and is automatically loaded from `mmm-mason.el'
+  the first time it is used.
 
 MODES AND EXTENSIONS
 

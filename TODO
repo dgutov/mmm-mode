@@ -3,29 +3,18 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
-CPerl indentation is messed up sometimes.  Why?
-
 Font-locking isn't working in XEmacs.  `font-lock-keywords' is getting
 set to nil at the wrong time, but I can't pin it down.
 
-Let :[front,back]-offset take a function as argument, with several
-supplied functions to choose from, such as `next-newline' and
-`previous-newline' are possible ones, as are beginning, end, and
-current default.  They should be passed the submode class and inspect
-the match data.  Maybe they return info in the match data as well.
-
-Improve font-locking somehow.  Maybe narrow the region before
-fontifying, maybe trap or advise `parse-partial-sexp' (and friends?).
-This may no longer be necessary; waiting advised.
+If font-locking needs help, try narrowing the region before
+fontifying, or even advising `parse-partial-sexp' and friends.
 
 The local-variables improvements can probably be used to set minor
 modes locally to submode regions.  This could replace tmmofl,
 especially if we search for regions other than by regexps, say by
 syntax properties.
 
-Inserting one-line perl sections isn't sticky.  Other sections are
-getting un-stickified too easily, and re-parsing current region
-doesn't work as it should.
+Improve re-parsing current region to use inclusion/offsets/etc.
 
 Trap paragraph motion commands to stop at submode boundaries?
 
@@ -58,7 +47,8 @@ Allowing nested submode regions.  A submode class can specify its
 by first scanning for the function calls as a major-mode submode
 region, then requiring that parent type for the HTML mode class.
 Similarly, eval-elisp could have one class to find the Local Variables
-list, then another within it.
+list, then another within it.  Nested submodes should alternate with a
+different highlight color, `mmm-secondary-submode-face'.
 
 Ought %text in Mason to be a non-submode, since any Mason tags inside
 it will probably be /edited/ as Perl (being, say, code examples)? Only

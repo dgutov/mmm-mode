@@ -1074,7 +1074,7 @@ the front delimiter (found from FRONT-FORM, below), and return a
 symbol such as SUBMODE would be set to.
 
 FRONT and BACK are the means to find the submode regions, and can be
-either buffer positions \(number-or-markers), regular expressions, or
+either buffer positions (number-or-markers), regular expressions, or
 functions. If they are absolute buffer positions, only one submode
 region is created, from FRONT to BACK. This is generally not used in
 named classes. (Unnamed classes are created by interactive commands in
@@ -1087,7 +1087,9 @@ must act somewhat like a search, in that it should start at point,
 take one argument as a search bound, and set the match data. A similar
 pattern is followed for BACK, save that the end of the submode region
 becomes the beginning of its match, plus BACK-OFFSET. FRONT- and
-BACK-OFFSET default to 0.
+BACK-OFFSET default to 0 and can also be functions or lists.
+
+INCLUDE-FRONT and INCLUDE-BACK.
 
 FRONT-VERIFY and BACK-VERIFY, if supplied, must be functions that
 inspect the match data to see if a match found by FRONT or BACK
@@ -1136,6 +1138,7 @@ places: at the beginning of the front delimiter, the beginning of the
 submode region, the end of the submode region, and the end of the back
 delimiter.
 
+PRIVATE
 
 @node Mason, Eval-Elisp, Writing Classes, Top
 @comment  node-name,  next,  previous,  up
@@ -1143,18 +1146,12 @@ delimiter.
 
 Mason is a syntax to embed Perl code in HTML and other documents.  See
 @uref{http://www.masonhq.com} for more information.  The submode class
-for Mason components is called `mason' and must be loaded from
-`mmm-mason.el' before it can be used; the easiest way to put the
-following line in .emacs:
-
-@lisp
-(require 'mmm-mason)
-@end lisp
-
-The current Mason class is intended to correctly recognize all syntax
-valid in Mason @value{MASON_VERSION}.  There are insertion keys for most
-of the available syntax; use @code{mmm-insertion-help} (@kbd{C-c % h} by
-default) with Mason on to get a list.
+for Mason components is called `mason' and is loaded on demand from
+`mmm-mason.el'.  The current Mason class is intended to correctly
+recognize all syntax valid in Mason @value{MASON_VERSION}.  There are
+insertion keys for most of the available syntax; use
+@code{mmm-insertion-help} (@kbd{C-c % h} by default) with Mason on to
+get a list.
 
 If you want to have mason submodes automatically in all Mason files, you
 can use automatic mode and filename associations; the details depend on
