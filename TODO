@@ -3,6 +3,9 @@ Hey Emacs, this is a -*-text-*- file!
                        To Do List for MMM Mode
                        =======================
 
+Font-locking isn't working in XEmacs.  `font-lock-keywords' is getting
+set to nil at the wrong time, but I can't pin it down.
+
 Let :[front,back]-offset take a function as argument, with several
 supplied functions to choose from, such as `next-newline' and
 `previous-newline' are possible ones, as are beginning, end, and
