@@ -1,3 +1,45 @@
+2003-03-02  Michael A. Shulman  <viritrilbia@users.sourceforge.net>
+
+	* mmm-mode.el (mmm-mode): Removed ancient docstring, which had
+	references to long-deprecated and removed functions.  The info
+	file is now the official user reference.
+
+	* mmm-region.el (mmm-update-submode-region): Run hooks specified
+	by the region being entered, or the dominant if not.
+
+	* mmm-vars.el (mmm-primary-mode-entry-hook): Added variable.
+
+	* mmm-vars.el (mmm-subregion-invalid-placement): Renamed from
+	mmm-subregion-crosses-parents.
+	(mmm-primary-mode-display-name): Added variable.
+	(mmm-set-mode-line): Added function to allow display of specified
+	names outside regions.
+
+	* mmm-region.el (mmm-valid-submode-region): Corrected algorithm,
+	improved documentation, renamed error.
+
+2003-02-05  Joe Kelsey  <joe@zircon.seattle.wa.us>
+	
+	* mmm-vars.el (mmm-add-to-group): New function mmm-add-to-group
+	adds new private classes to an existing group.
+
+	* mmm.texinfo (Noweb): Add documentation about noweb mode.
+
+	* mmm-auto.el (mmm-autoloaded-classes): Add noweb to
+	autoloaded classes.
+
+	* mmm-noweb.el: Modified chunk naming to give noweb-chunks
+	different names so that they will be indented independently.
+
+	* mmm-sample.el: Make html-js look for language= or type=
+	attributes because you may have other script types.
+	
+2003-01-30  Joe Kelsey  <joe@zircon.seattle.wa.us>
+
+	* Makefile.am: Add mmm-cweb.el, mmm-php.el and mmm-noweb.el
+
+	* mmm-noweb.el: Add support for noweb.
+
 2002-11-11  Alan Shutko  <ats@acm.org>
 
 	* .cvsignore: Add semantic.cache.
