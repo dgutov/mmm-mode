@@ -2,9 +2,13 @@
 
 ;; Copyright (C) 1999 by Michael Abraham Shulman
 
+;; Emacs Lisp Archive Entry
+;; Package: mmm-mode
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-mode.el,v 1.8 2000/07/11 21:57:50 mas Exp $
-;; Keywords: convenience faces languages tools
+;; Keywords: convenience, faces, languages, tools
+;; Version: 0.4.6
+
+;; Revision: $Id: mmm-mode.el,v 1.9 2000/09/12 02:53:35 mas Exp $
 
 ;;{{{ GPL
 
