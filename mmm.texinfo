@@ -4,17 +4,14 @@
 @settitle MMM Mode Manual
 @c %**end of header
 @syncodeindex vr fn
-@set MASON_VERSION 0.89
+@set MASON_VERSION 0.896
+
+@dircategory GNU Emacs Lisp
+@direntry
+* MMM-Mode: (mmm).                 Multiple Major Modes for Emacs
+@end direntry
 
 @include version.texi
-
-@ifinfo
-@format
-START-INFO-DIR-ENTRY
-* MMM: (mmm).          MMM, a major mode for multiple modes in buffer.
-END-INFO-DIR-ENTRY
-@end format
-@end ifinfo
 
 @ifinfo
 This is edition @value{EDITION} of the MMM Mode Manual, last updated
@@ -105,32 +102,33 @@ MMM Mode Basics
 
 Customizing MMM Mode
 
-* Submode Faces::               How submode regions are highlighted.
+* Region Coloring::             Changing or removing background colors.
+* Preferred Modes::             Choosing which major modes to use.
 * Mode Line::                   What is displayed in the mode line.
 * Key Bindings::                Customizing the MMM Mode key bindings.
 * Local Variables::             What local variables are saved for submodes.
 * Changing Classes::            Changing the supplied submode classes.
 * Hooks::                       How to make MMM Mode run your code.
-* Writing Classes::             Writing your own submode classes.
 
 Supplied Submode Classes
 
-* Mason::                       Mason syntax for server-side Perl in HTML.
+* Mason::                       Mason server-side Perl in HTML.
 * File Variables::              Elisp code in File Variables.
 * Here-documents::              Code in shell and Perl here-documents.
 * Javascript::                  Javascript embedded in HTML.
 * Embedded CSS::                CSS Styles embedded in HTML.
 * Embperl::                     Another syntax for Perl in HTML.
+* ePerl::                       A general Perl-embedding syntax.
+* JSP::                         Java code embedded in HTML.
 * RPM::                         Shell scripts in RPM Spec Files.
+
+Writing Submode Classes
 
 Indices
 
 * Concept Index::               Index of MMM Mode Concepts.
-* Function Index::              Index of functions and variables of MMM Mode.
+* Function Index::              Index of functions and variables.
 * Keystroke Index::             Index of key bindings in MMM Mode.
-
-Writing Submode Classes
-@c Put stuff here
 
 @detailmenu
  --- The Detailed Node Listing ---
@@ -153,7 +151,7 @@ MMM Global Mode
 @end detailmenu
 @end menu
 
-@node Overview, Basic Concepts, Top, Top
+@node Overview, Indices, Top, Top
 @comment  node-name,  next,  previous,  up
 @chapter Overview of MMM Mode
 @cindex overview of mmm-mode
@@ -188,9 +186,9 @@ Manual}. It may be easier to edit this code in Emacs Lisp mode than in
 whatever mode is used for the rest of the file.
 
 
-@node Basic Concepts, Installation, Overview, Top
+@node Basic Concepts, Installation, Overview, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Basic Concepts
+@section Basic Concepts
 @cindex dominant major mode
 @cindex major mode, dominant
 @cindex default major mode
@@ -230,8 +228,8 @@ The syntax table and indentation are those of the submode.
 Font-lock (@pxref{Font Lock, , , emacs, The Emacs Manual}) fontifies
 correctly for the submode.
 @item
-The submode regions are highlighted by a background color
-(@pxref{Submode Faces}), by default a light gray.
+The submode regions are highlighted by a background color; see
+@ref{Region Coloring}.
 
 @end enumerate
 
@@ -252,9 +250,9 @@ MMM Mode will find and create submode regions automatically based on a
 buffer's file extension, dominant mode, or local variables.
 
 
-@node Installation, Quick Start, Basic Concepts, Top
+@node Installation, Quick Start, Basic Concepts, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Installing MMM Mode
+@section Installing MMM Mode
 
 MMM Mode has a standard installation process.  See the file INSTALL for
 generic information on this process.  To summarize, unpack the archive,
@@ -312,9 +310,9 @@ in your initialization file.  @xref{Global Mode}, for more detailed
 information.
 
 
-@node Quick Start, MMM Minor Mode, Installation, Top
+@node Quick Start, MMM Minor Mode, Installation, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Getting Started Quickly
+@section Getting Started Quickly
 
 Perhaps the simplest way to create submode regions is to do it
 interactively by specifying a region. First you must turn MMM Mode
@@ -369,9 +367,9 @@ see the documentation for the variable `mmm-classes-alist'.
 
 @c @xref{Writing Classes}, for more information.
 
-@node MMM Minor Mode, Submode Classes, Quick Start, Top
+@node MMM Minor Mode, Submode Classes, Quick Start, Overview
 @comment  node-name,  next,  previous,  up
-@chapter The MMM Minor Mode
+@section The MMM Minor Mode
 @cindex mode, mmm minor
 @cindex minor mode, mmm
 @cindex mmm minor mode
@@ -392,7 +390,7 @@ Line}).
 
 @node Enabling MMM Mode, MMM Mode Keys, MMM Minor Mode, MMM Minor Mode
 @comment  node-name,  next,  previous,  up
-@section Enabling MMM Mode
+@subsection Enabling MMM Mode
 @cindex mmm mode, turning on
 @cindex mmm mode, turning off
 @cindex turning on mmm mode
@@ -433,7 +431,7 @@ Do not set this variable directly; use one of the above functions.
 
 @node MMM Mode Keys,  , Enabling MMM Mode, MMM Minor Mode
 @comment  node-name,  next,  previous,  up
-@section Key Bindings in MMM Mode
+@subsection Key Bindings in MMM Mode
 @cindex mmm mode key bindings
 @cindex key bindings in mmm mode
 @findex mmm-insertion-help
@@ -478,9 +476,9 @@ the mode prefix (@kbd{C-c %}) and the command and insertion modifiers.
 You can customize them, however; @ref{Key Bindings}.
 
 
-@node Submode Classes, Selecting Classes, MMM Minor Mode, Top
+@node Submode Classes, Selecting Classes, MMM Minor Mode, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Understanding Submode Classes
+@section Understanding Submode Classes
 @cindex submode classes
 @cindex classes, submode
 
@@ -509,9 +507,9 @@ to that class, and also remembers the class for later, so that new
 submode regions can be inserted and scanned for later.
 
 
-@node Selecting Classes, Insertion, Submode Classes, Top
+@node Selecting Classes, Insertion, Submode Classes, Overview
 @comment  node-name,  next,  previous,  up
-@chapter How MMM Mode selects submode classes
+@section How MMM Mode selects submode classes
 
 Submode classes that apply to a buffer come from three sources:
 mode/extension-associated classes, file-local classes, and interactive
@@ -530,7 +528,7 @@ in a later chapter.
 
 @node File Classes, Mode-Ext Classes, Selecting Classes, Selecting Classes
 @comment  node-name,  next,  previous,  up
-@section File-Local Submode Classes
+@subsection File-Local Submode Classes
 
 @defvar mmm-classes
 This variable is always buffer-local when set. Its value should be
@@ -548,7 +546,7 @@ also be done with a local variables list at the end of the file.
 
 @node Mode-Ext Classes, Global Classes, File Classes, Selecting Classes
 @comment  node-name,  next,  previous,  up
-@section Submode Classes Associated with Modes and Extensions
+@subsection Submode Classes Associated with Modes and Extensions
 
 @defopt mmm-mode-ext-classes-alist
 This global variable associates certain submode classes with major modes
@@ -586,7 +584,7 @@ backward compatibility.
 
 @node Global Classes,  , Mode-Ext Classes, Selecting Classes
 @comment  node-name,  next,  previous,  up
-@section Globally Applied Classes and the Universal Class
+@subsection Globally Applied Classes and the Universal Class
 
 In addition to file-local and mode-ext-associated submode classes, MMM
 Mode also allows you to specify that certain submode classes apply to
@@ -616,9 +614,9 @@ is most useful when @code{mmm-global-mode} is set to @code{t};
 @ref{Global Mode}.
 
 
-@node Insertion, Re-parsing, Selecting Classes, Top
+@node Insertion, Re-parsing, Selecting Classes, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Inserting new submode regions
+@section Inserting new submode regions
 
 So much for noticing submode regions already present when you open a
 file. When editing a file with MMM Mode on, you will often want to add a
@@ -666,9 +664,9 @@ command @kbd{C-c % h} (@code{mmm-insertion-help} to view the available
 insertion keys.
 
 
-@node Re-parsing, Interactive, Insertion, Top
+@node Re-parsing, Interactive, Insertion, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Re-Parsing Submode Regions
+@section Re-Parsing Submode Regions
 @cindex re-parsing submode regions
 @cindex parsing submode regions
 @cindex submode regions, re-parsing
@@ -685,9 +683,9 @@ insertion keys.
 Describe @code{mmm-parse-buffer}, @code{mmm-parse-region},
 @code{mmm-parse-block}, and @code{mmm-clear-current-region}.
 
-@node Interactive, Global Mode, Re-parsing, Top
+@node Interactive, Global Mode, Re-parsing, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Interactive MMM-ification Functions
+@section Interactive MMM-ification Functions
 @cindex interactive mmm-ification
 @cindex mmm-ification, interactive
 @cindex mmm-ification by region
@@ -759,9 +757,9 @@ you may want to re-parse the buffer with @kbd{C-c % C-b}
 @end deffn
 
 
-@node Global Mode, Submode Faces, Interactive, Top
+@node Global Mode, Region Coloring, Interactive, Overview
 @comment  node-name,  next,  previous,  up
-@chapter MMM Global Mode
+@section MMM Global Mode
 @cindex mode, mmm global
 @cindex global mmm mode
 @cindex mmm global mode
@@ -808,7 +806,7 @@ matching buffers, but supply no submode classes to be applied.
 
 @node Major Mode Hook,  , Global Mode, Global Mode
 @comment  node-name,  next,  previous,  up
-@section The Major Mode Hook
+@subsection The Major Mode Hook
 @cindex hook, major mode
 @cindex major mode hook
 @vindex mmm-major-mode-hook
@@ -846,48 +844,129 @@ buffers:
 @end lisp
 
 
-@node Submode Faces, Mode Line, Global Mode, Top
+@node Region Coloring, Preferred Modes, Global Mode, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Customizing Submode Faces
+@section Customizing Region Coloring
 @cindex faces, submode
 @cindex submode faces
 @cindex customizing submode faces
 @cindex default submode face
 
-By default, MMM Mode highlights all submode regions with a light gray
-background color.  You can change the color of the highlight, or turn it
-off entirely.  You might want to do this if you don't like how it looks,
-or if you want to use background colors for font-lock (the submode
-highlight, if present, overrides any font-lock background coloring).
-The highlight is done with the face @code{mmm-default-submode-face}
-(@pxref{Faces, , emacs, The Emacs Manual}) which can be customized,
+By default, MMM Mode highlights all submode regions with a background
+color.  There are three levels of this decoration, controlled by the
+following variable:
+
+@defopt mmm-submode-decoration-level
+This variable controls the level of coloring of submode regions.  It
+should be one of the integers 0, 1, or 2, representing (respectively)
+none, low, and high coloring.
+@end defopt
+
+No coloring means exactly that.  Submode regions have the same
+background as the rest of the text.  This produces the minimal
+interference with font-lock coloration.  In particular, if you want to
+use background colors for font-lock, this may be a good idea, because
+the submode highlight, if present, overrides any font-lock background
+coloring.
+
+Low coloring uses the same background color for all submode regions.
+This color is specified with the face @code{mmm-default-submode-face}
+(@pxref{Faces, , , emacs, The Emacs Manual}) which can be customized,
 either through the Emacs ``customize'' interface or using direct Lisp
-commands.  To turn the highlight off, add one of the following lines to
-your @file{.emacs} file.  The first is for GNU Emacs, the second for
-XEmacs.
+commands such as @code{set-face-background}.  Of course, other aspects
+of the face can also be set, such as the foreground color, bold,
+underline, etc.  These are more likely to conflict with font-lock,
+however, so only a background color is recommended.
 
-@lisp
-(set-face-background 'mmm-default-submode-face nil)
-(set-face-background 'mmm-default-submode-face [])
-@end lisp
+High coloring uses multiple background colors, depending on the function
+of the submode region.  The recognized functions and their meanings are
+as follows:
 
-To set the highlight color, a similar syntax can be used.  For GNU
-Emacs, the syntax is as follows.  For XEmacs, a color object is
-required.
+@table @samp
+@item init
+Code that is executed at the beginning of (something), as initialization
+of some sort.
 
-@lisp
-(set-face-background 'mmm-default-submode-face "blue")
-@end lisp
+@item cleanup
+Code that is executed at the end of (something), as some sort of clean
+up facility.
 
-Of course, other aspects of the face can also be set, such as the
-foreground color, bold, underline, etc.  These are more likely to
-conflict with font-lock, however, so only a background color is
-recommended.
+@item declaration
+Code that provides declarations of some sort, perhaps global or local
+arguments, variables, or methods.
+
+@item comment
+Text that is not executed as code, but instead serves to document the
+code around it.  Submode regions of this function often use a mode such
+as Text Mode rather than a programming language mode.
+
+@item output
+An expression that is evaluated and its value interpolated into the
+output produced.
+
+@item code
+Executed code not falling under any other category.
+
+@item special
+Submode regions not falling under any other category, such as component
+calls.
+
+@end table
+
+The different background colors are provided by the faces
+@code{mmm-@var{function}-submode-face}, which can be customized in the
+same way as @code{mmm-default-submode-face}.
 
 
-@node Mode Line, Key Bindings, Submode Faces, Top
+@node Preferred Modes, Mode Line, Region Coloring, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Customizing the Mode Line Display
+@section Preferred Major Modes
+
+Certain of the supplied submode classes know only the language that
+certain sections are written in, but not what major mode you prefer to
+use to edit such code.  For example, many people prefer CPerl mode over
+Perl mode; you may have a special mode for Javascript or just use C++
+mode.  This variable allows you to tell submodes such as Mason
+(@pxref{Mason}) and Embedded Javascript (@pxref{Javascript}) what major
+mode to use for the submodes:
+
+@defopt mmm-major-mode-preferences
+The elements of this list are cons cells of the form
+@code{(@var{language} . @var{mode})}.  @var{language} should be a symbol
+such as @code{perl}, @code{javascript}, or @code{java}, while @var{mode}
+should be the name of a major mode such as @code{perl-mode},
+@code{cperl-mode}, @code{javascript-mode}, or @code{c++-mode}.
+
+You probably won't have to set this variable at all; MMM tries to make
+intelligent guesses about what modes you prefer.  For example, if a
+function called @code{javascript-mode} exists, it is chosen, otherwise
+@code{c++-mode} is used.  Similarly for @code{jde-mode} and
+@code{java-mode}.
+@end defopt
+
+If you do need to change the defaults, you may find the following
+function convenient.
+
+@defun mmm-set-major-mode-preferences @var{language} @var{mode} &optional @var{default}
+Set the preferred major mode for LANGUAGE to MODE.  If there is already
+a mode specified for LANGUAGE, and DEFAULT is nil or unsupplied, then it
+is changed.  If DEFAULT is non-nil, then any existing mode is unchanged.
+This is used by packages to ensure that some mode is present, but not
+override any user-specified mode.  If you are not writing a submode
+class, you should ignore the third argument.
+@end defun
+
+Thus, for example, to use @code{my-java-mode} for Java code, you would
+use the following line:
+
+@lisp
+(mmm-set-major-mode-preferences 'java 'my-java-mode)
+@end lisp
+
+
+@node Mode Line, Key Bindings, Preferred Modes, Overview
+@comment  node-name,  next,  previous,  up
+@section Customizing the Mode Line Display
 
 By default, when in a submode region, MMM Mode changes the section of
 the mode line (@pxref{Mode Line, , , emacs, The Emacs Manual}) that
@@ -918,9 +997,9 @@ eliminate the indicator entirely, set this variable to the empty string.
 @end defopt
 
 
-@node Key Bindings, Local Variables, Mode Line, Top
+@node Key Bindings, Local Variables, Mode Line, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Customizing the MMM Mode Key Bindings
+@section Customizing the MMM Mode Key Bindings
 
 The default MMM Mode key bindings are explained in @ref{MMM Mode Keys},
 and in @ref{Insertion}.  There are a couple of ways to customize these
@@ -954,9 +1033,9 @@ you, feel free to use it.  Other modifiers, such as Hyper and Super, are
 not universally available, but are valid when present.
 
 
-@node Local Variables, Changing Classes, Key Bindings, Top
+@node Local Variables, Changing Classes, Key Bindings, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Changing Saved Local Variables
+@section Changing Saved Local Variables
 
 A lot of the functionality of MMM Mode---that which makes the major mode
 appear to change---is implemented by saving and restoring the values of
@@ -989,9 +1068,9 @@ table (@pxref{Syntax, , , emacs, The Emacs Manual}) and mode keymaps
 (@pxref{Keymaps, , , emacs, The Emacs Manual}).
 
 
-@node Changing Classes, Hooks, Local Variables, Top
+@node Changing Classes, Hooks, Local Variables, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Changing the Supplied Submode Classes
+@section Changing the Supplied Submode Classes
 
 If you need to use MMM with a syntax for which a submode class is not
 supplied, and you have some facility with Emacs Lisp, you can write your
@@ -1013,9 +1092,9 @@ Get the value of the keyword parameter @var{param} for the submode class
 
 
 
-@node Hooks, Writing Classes, Changing Classes, Top
+@node Hooks, Mason, Changing Classes, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Hooks Provided by MMM Mode
+@section Hooks Provided by MMM Mode
 
 MMM Mode defines several hook variables (@pxref{Hooks, , , emacs, The
 Emacs Manual}) which are run at different times.  The most often used is
@@ -1051,111 +1130,9 @@ set for supplied submode classes with @code{mmm-set-class-parameter};
 @ref{Changing Classes}.
 
 
-@node Writing Classes, Mason, Hooks, Top
+@node Mason, File Variables, Hooks, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Writing Your Own Submode Classes
-
-This is copied from the documentation of @code{mmm-classes-alist} and
-serves as a good summary.  An introduction/tutorial would be nice,
-however.  This should probably have a number of subsections.
-
-Each element of @code{mmm-classes-alist} looks like (CLASS . ARGS) where
-CLASS is a symbol representing the submode class and ARGS is a list of
-keyword arguments, called a "class specifier". There are a large number
-of accepted keyword arguments.
-
-The argument CLASSES, if supplied, must be a list of other submode
-classes (or class specifiers), representing other classes to call.
-FACE, if supplied, overrides FACE arguments to these classes, but all
-other arguments to this class are ignored.
-
-The argument HANDLER, if supplied, overrides any other processing. It
-must be a function, and all the arguments are passed to it as
-keywords, and it must do everything. See `mmm-ify' for what sorts of
-things it must do. This back-door interface should be cleaned up.
-
-The argument FACE, if supplied, overrides `mmm-default-submode-face'
-in specifying the display face of the submode regions. It must be a
-valid display face.
-
-If neither CLASSES nor HANDLER are supplied, either SUBMODE or
-MATCH-SUBMODE must be.  SUBMODE specifies the submode to use for the
-submode regions, a symbol such as `cperl-mode' or `emacs-lisp-mode',
-while MATCH-SUBMODE must be a function to be called immediately after
-a match is found for FRONT, which is passed one argument, the form of
-the front delimiter (found from FRONT-FORM, below), and return a
-symbol such as SUBMODE would be set to.
-
-FRONT and BACK are the means to find the submode regions, and can be
-either buffer positions (number-or-markers), regular expressions, or
-functions. If they are absolute buffer positions, only one submode
-region is created, from FRONT to BACK. This is generally not used in
-named classes. (Unnamed classes are created by interactive commands in
-@code{mmm-interactive-history}).
-
-If FRONT is a regexp, then that regexp is searched for, and the end of
-its match, plus FRONT-OFFSET, becomes the beginning of the submode
-region. If FRONT is a function, that function is called instead, and
-must act somewhat like a search, in that it should start at point,
-take one argument as a search bound, and set the match data. A similar
-pattern is followed for BACK, save that the end of the submode region
-becomes the beginning of its match, plus BACK-OFFSET. FRONT- and
-BACK-OFFSET default to 0 and can also be functions or lists.
-
-INCLUDE-FRONT and INCLUDE-BACK.
-
-FRONT-VERIFY and BACK-VERIFY, if supplied, must be functions that
-inspect the match data to see if a match found by FRONT or BACK
-respectively is valid.
-
-If SAVE-MATCHES is supplied, it must be a number, and means to format
-BACK, if it is a regexp, by replacing strings of the form @samp{~N} by
-the corresponding value of @code{(match-string n)} after matching FRONT,
-where N is between 0 and SAVE-MATCHES.
-
-@var{front-form} and @var{back-form}, if given, must supply a regexp
-used to match the @emph{actual} delimiter.  If they are strings, they
-are used as-is.  If they are functions, they are called and must inspect
-the match data.  If they are lists, their @code{car} is the delimiter.
-The default for both is @code{(regexp-quote (match-string 0))}.
-
-The last case---them being a list---is usually used to set the delimiter
-to a function.  Such a function must take 1-2 arguments, the first being
-the overlay in question, and the second meaning to insert the delimiter
-and adjust the overlay rather than just matching the delimiter.  See
-@code{mmm-match-front}, @code{mmm-match-back}, and
-@code{mmm-end-current-region}.
-
-@var{case-fold-search}, if specified, controls whether the search is
-case-insensitive. See `case-fold-search'. It defaults to `t'.
-
-CREATION-HOOK, if specified, should be a function which is run
-whenever a submode region is created, with point at the beginning of
-the new region.  One use for it is to set region-saved local variables
-(see `mmm-save-local-variables').
-
-INSERT specifies the keypress insertion spec for such submode regions.
-INSERT's value should be list of elements of the form (KEY NAME .
-SPEC). Each KEY should be either a character, a function key symbol, or
-a dotted list (MOD . KEY) where MOD is a symbol for a modifier key. The
-use of any other modifier than meta is discouraged, as
-`mmm-insert-modifiers' defaults to (control), and other modifiers are
-not very portable. Each NAME should be a symbol representing the
-insertion for that key. Each SPEC can be either a skeleton, suitable for
-passing to `skeleton-insert' to create a submode region, or a dotted
-pair (OTHER-KEY . ARG) meaning to use the skeleton defined for OTHER-KEY
-but pass it the argument ARG as the `str' variable, possible replacing a
-prompt string. Skeletons for insertion should have the symbol `_' where
-point (or wrapped text) should go, and the symbol `@' in four different
-places: at the beginning of the front delimiter, the beginning of the
-submode region, the end of the submode region, and the end of the back
-delimiter.
-
-PRIVATE
-
-@node Mason, File Variables, Writing Classes, Top
-@comment  node-name,  next,  previous,  up
-@chapter Mason: Perl in HTML
+@section Mason: Perl in HTML
 
 Mason is a syntax to embed Perl code in HTML and other documents.  See
 @uref{http://www.masonhq.com} for more information.  The submode class
@@ -1175,12 +1152,14 @@ will probably want to associate that extension with your HTML Mode as
 well; @ref{Choosing Modes, , , emacs, The Emacs Manual}.  This also goes
 for ``special'' Mason files such as autohandlers and dhandlers.
 
-There are also certain problems with CPerl mode in submode regions.
-(Not to say that the original perl-mode would do any better---it hasn't
-been much tried.)  First of all, the first line of a Perl section is
-usually indented as if it were a continuation line.  A fix for this is
-to start with a semicolon on the first line.  The insertion key commands
-do this whenever the Mason syntax allows it.
+The Perl mode used is controlled by the user: @xref{Preferred Modes}.
+The default is to use CPerl mode, if present.  Unfortunately, there are
+also certain problems with CPerl mode in submode regions.  (Not to say
+that the original perl-mode would do any better---it hasn't been much
+tried.)  First of all, the first line of a Perl section is usually
+indented as if it were a continuation line.  A fix for this is to start
+with a semicolon on the first line.  The insertion key commands do this
+whenever the Mason syntax allows it.
 
 @example
 <%perl>;
@@ -1226,7 +1205,8 @@ of a component.
 
 @example
 %# Local Variables:
-%# sgml-parent-document: ("autohandler" nil ("body"))
+%# sgml-parent-document: ("autohandler" "body" nil ("body"))
+%# sgml-doctype: "/top/level/autohandler"
 %# End:
 @end example
 
@@ -1235,9 +1215,9 @@ This tells PSGML that the current file is a sub-document of the file
 alleviating its confusion.
 
 
-@node File Variables, Here-documents, Mason, Top
+@node File Variables, Here-documents, Mason, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Elisp in a Local Variables List
+@section Elisp in a Local Variables List
 
 Emacs allows the author of a file to specify major and minor modes to be
 used while editing that file, as well as specifying values for other
@@ -1250,9 +1230,9 @@ this, and is suitable for turning on in a given file with
 @code{mmm-classes}, or in all files with @code{mmm-global-classes}.
 
 
-@node Here-documents, Javascript, File Variables, Top
+@node Here-documents, Javascript, File Variables, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Here-documents
+@section Here-documents
 
 One of the long-time standard syntaxes for outputting large amounts of
 code (or text, or HTML, or whatever) from a script (notably shell
@@ -1288,24 +1268,84 @@ would do otherwise.
 @end defopt
 
 
-@node Javascript, Embedded CSS, Here-documents, Top
+@node Javascript, Embedded CSS, Here-documents, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Javascript in HTML
+@section Javascript in HTML
+
+The submode class @code{html-js} allows for embedding Javascript code in
+HTML documents.  It recognizes both this syntax:
+
+@example
+<script language="Javascript">
+function foo(...) @{
+   ...
+@}
+</script>
+@end example
+
+and this syntax:
+
+@example
+<input type="button" onClick="validate();">
+@end example
+
+The mode used for Javascript regions is controlled by the user;
+@xref{Preferred Modes}.
 
 
-@node Embedded CSS, Embperl, Javascript, Top
+@node Embedded CSS, Embperl, Javascript, Overview
 @comment  node-name,  next,  previous,  up
-@chapter CSS embedded in HTML
+@section CSS embedded in HTML
+
+CSS (Cascading Style Sheets) can also be embedded in HTML.  The
+@code{embedded-css} submode class recognizes this syntax:
+
+@example
+<style>
+h1 @{
+   ...
+@}
+</style>
+@end example
+
+It uses @code{css-mode} if present, @code{c++-mode} otherwise.  This can
+be customized: @xref{Preferred Modes}.
 
 
-@node Embperl, RPM, Embedded CSS, Top
+@node Embperl, ePerl, Embedded CSS, Overview
 @comment  node-name,  next,  previous,  up
-@chapter Embperl: More Perl in HTML
+@section Embperl: More Perl in HTML
+
+Embperl is another syntax for embedding Perl in HTML.  See
+@uref{http://perl.apache.org/embperl} for more information.  The
+@code{embperl} submode class recognizes most if not all of the Embperl
+embedding syntax.  Its Perl mode is also controllable by the user;
+@xref{Preferred Modes}.
 
 
-@node RPM, Concept Index, Embperl, Top
+@node ePerl, JSP, Embperl, Overview
 @comment  node-name,  next,  previous,  up
-@chapter RPM Spec Files
+@section ePerl: General Perl Embedding
+
+Yet another syntax for embedding Perl is called ePerl.  See
+@uref{http://www.engelschall.com/sw/eperl/} for more information.  The
+@code{eperl} submode class handles this syntax, using the Perl mode
+specified by the user; @xref{Preferred Modes}.
+
+
+@node JSP, RPM, ePerl, Overview
+@comment  node-name,  next,  previous,  up
+@section JSP: Java Embedded in HTML
+
+JSP (Java Server Pages) is a syntax for embedding Java code in HTML.
+The submode class @code{jsp} handles this syntax, using a Java mode
+specified by the user; @xref{Preferred Modes}.  The default is
+@code{jde-mode} if present, otherwise @code{java-mode}.
+
+
+@node RPM, Basic Classes, JSP, Overview
+@comment  node-name,  next,  previous,  up
+@section RPM Spec Files
 
 @file{mmm-rpm.el} contains the definition of an MMM Mode submode class
 for editing shell script sections within RPM (Redhat Package Manager)
@@ -1325,30 +1365,454 @@ Thanks to Marcus Harnisch <Marcus.Harnisch@@gmx.net> for contributing
 this submode class.
 
 
-@node Concept Index, Function Index, RPM, Top
+@node Writing Classes
 @comment  node-name,  next,  previous,  up
-@chapter Concept Index
+@chapter Writing Submode Classes
+
+Sometimes (perhaps often) you may want to use MMM with a syntax for
+which it is suited, but for which no submode is supplied.  In such cases
+you may have to write your own submode class.  This chapter briefly
+describes how to write a submode class, from the basic to the advanced,
+with examples.
+
+@menu
+* Basic Classes::               
+* Paired Delimiters::           
+* Region Placement::            
+* Submode Groups::              
+* Calculated Submodes::         
+* Calculated Faces::            
+* Insertion Commands::          
+* Other Hooks::                 
+* Delimiter Forms::             
+* Misc Keywords::               
+@end menu
+
+@node Basic Classes, Paired Delimiters, RPM, Overview
+@comment  node-name,  next,  previous,  up
+@section Writing Basic Submode Classes
+@cindex simple submode classes
+@cindex submode classes, simple
+
+Writing a submode class can become rather complex, if the syntax to
+match is complicated and you want to take advantage of some of MMM
+Mode's extra features.  But a simple submode class is not particularly
+difficult to write.  This section describes the basics of writing
+submode classes.
+
+Submode classes are stored in the variable @code{mmm-classes-alist}.
+Each element of this list represents a single submode class.  For
+convenience, the function @code{mmm-add-classes} takes a list of submode
+classes and adds them all to this alist.  Each class is represented by a
+list containing the class name---a symbol such as @code{mason} or
+@code{html-js}---followed by pairs of keywords and arguments called a
+@dfn{class specifier}.  For example, consider the specifier for the
+submode class @code{embedded-css}:
+
+@lisp
+(mmm-add-classes
+ '((embedded-css
+    :submode css
+    :face mmm-declaration-submode-face
+    :front "<style[^>]*>"
+    :back "</style>")))
+@end lisp
+
+The name of the submode is @code{embedded-css}, the first element of the
+list.  The rest of the list consists of pairs of keywords (symbols
+beginning with a colon) such as @code{:submode} and @code{:front}, and
+arguments, such as @code{css} and @code{"<style[^>]*>"}.  It is the
+keywords and arguments that specify how the submode works.  The order of
+keywords is not important; all that matters is the arguments that follow
+them.
+
+The three most important keywords are @code{:submode}, @code{:front},
+and @code{:back}.  The argument following @code{:submode} names the
+major mode to use in submode regions.  It can be either a symbol naming
+a major mode, such as @code{text-mode} or @code{c++-mode}, or a symbol
+to look up in @code{mmm-major-mode-preferences} (@pxref{Preferred
+Modes}) such as @code{css}, as in this case.
+
+The arguments following @code{:front} and @code{:back} are regular
+expressions (@pxref{Regexps, , , emacs, The Emacs Manual}) that should
+match the delimiter strings which begin and end the submode regions.  In
+our example, CSS regions begin with a @samp{<style>} tag, possibly with
+parameters, and end with a @samp{</style>} tag.
+
+The argument following @code{:face} specifies the face (background
+color) to use when @code{mmm-submode-decoration-level} is 2 (high
+coloring).  @xref{Region Coloring}, for a list of canonical available
+faces.
+
+There are many more possible keywords arguments.  In the following
+sections, we will examine each of them and their uses in writing submode
+classes.
+
+
+@node Paired Delimiters, Region Placement, Basic Classes, Overview
+@comment  node-name,  next,  previous,  up
+@section Matching Paired Delimiters
+
+A simple pair of regular expressions does not always suffice to exactly
+specify the beginning and end of submode regions correctly.  For this
+reason, there are several other possible keyword/argument pairs which
+influence the matching process.
+
+Many submode regions are marked by paired delimiters.  For example, the
+tags used by Mason (@pxref{Mason}) include @samp{<%init>...</%init>} and
+@samp{<%args>...</%args>}.  It would be possible to write a separate
+submode class for each type of region, but there is an easier way: the
+keyword argument @code{:save-matches}.  If supplied and non-nil, it
+causes the regular expression @code{:back}, before being searched for,
+to be formatted by replacing all strings of the form @samp{~@var{N}}
+(where @var{N} is an integer) with the corresponding numbered
+subexpression of the match for @code{:front}.  As an example, here is an
+excerpt from the @code{here-doc} submode class.  @xref{Here-documents},
+for more information about this submode.
+
+@lisp
+:front "<<\\([a-zA-Z0-9_-]+\\)"
+:back "^~1$"
+:save-matches 1
+@end lisp
+
+The regular expression for @code{:front} matches @samp{<<} followed by a
+string of one or more alphanumeric characters, underscores, and dashes.
+The latter string, which happens to be the name of the here-document, is
+saved as the first subexpression, since it is surrounded by
+@samp{\(...\)}.  Then, because the value of @code{:save-matches} is
+present and non-nil, the string @samp{~1} is replaced in the value of
+@code{:back} by the name of the here-document, thus creating a regular
+expression to match the correct ending delimiter.
+
+
+@node Region Placement, Submode Groups, Paired Delimiters, Overview
+@comment  node-name,  next,  previous,  up
+@section Placing Submode Regions Precisely
+
+Normally, a submode region begins immediately after the end of the
+string matching the @code{:front} regular expression and ends
+immediately before the beginning of the string matching the @code{:back}
+regular expression.  This can be changed with the keywords
+@code{:include-front} and @code{:include-back}.  If their arguments are
+@code{nil}, or they do not appear, the default behavior is unchanged.
+But if the argument of @code{:include-front} (respectively,
+@code{:include-back}) is non-nil, the submode region will begin
+(respectively, end) immediately before (respectively, after) the string
+matching the @code{:front} (respectively, @code{:back}) regular
+expression.  In other words, these keywords specify whether or not the
+delimiter strings are @emph{included} in the submode region.
+
+Two more keywords which affect the placement of the region
+@code{:front-offset} and @code{:back-offset}, which both take integers
+as arguments.  The argument of @code{:front-offset} (respectively,
+@code{:back-offset}) gives the distance in characters from the beginning
+(respectively, ending) location specified so far, to the actual point
+where the submode region begins (respectively, ends).  For example, if
+@code{:include-front} is nil or unsupplied and @code{:front-offset} is
+2, the submode region will begin two characters after the end of the
+match for @code{:front}, and if @code{:include-back} is non-nil and
+@code{:back-offset} is -1, the region will end one character before the
+end of the match for @code{:back}.
+
+In addition to integers, the arguments of @code{:front-offset} and
+@code{:back-offset} can be functions which are invoked to move the point
+from the position specified by the matches and inclusions to the correct
+beginning or end of the submode region, or lists whose elements are
+either functions or numbers and whose effects are applied in sequence.
+To help disentangle these options, here is another excerpt from the
+@code{here-doc} submode class:
+
+@lisp
+:front "<<\\([a-zA-Z0-9_-]+\\)"
+:front-offset (end-of-line 1)
+:back "^~1$"
+:save-matches 1
+@end lisp
+
+Here the value of @code{:front-offset} is the list @code{(end-of-line
+1)}, meaning that from the end of the match for @code{:front}, go to the
+end of the line, and then one more character forward (thus to the
+beginning of the next line), and begin the submode region there.  This
+coincides with the normal behavior of here-documents: they begin on the
+following line and go until the ending flag.
+
+
+@node Submode Groups, Calculated Submodes, Region Placement, Overview
+@comment  node-name,  next,  previous,  up
+@section Defining Groups of Submodes
+
+Sometimes more than one submode class is required to accurately reflect
+the behavior of a single type of syntax.  For example, Mason has three
+very different types of Perl regions: blocks bounded by matched tags
+such as @samp{<%perl>...</%perl>}, inline output expressions bounded by
+@samp{<%...%>}, and single lines of code which simply begin with a
+@samp{%} character.  In cases like these, it is possible to specify an
+``umbrella'' class, to turn all these classes on or off together.
+
+@defun mmm-add-group @var{group} @var{classes}
+The submode classes @var{classes}, which should be a list just as might
+be passed to @code{mmm-add-classes}, are added just as by that function.
+Furthermore, another class named @var{group} is added, which encompasses
+all the classes in @var{classes}.
+@end defun
+
+Technically, an group class is specified with a @code{:classes} keyword
+argument, and the subsidiary classes are given a non-nil @code{:private}
+keyword argument to make them invisible.  But in general, all you should
+ever need to know is how to invoke the function above.
+
+
+@node Calculated Submodes, Calculated Faces, Submode Groups, Overview
+@comment  node-name,  next,  previous,  up
+@section Calculating the Correct Submode
+
+In most cases, the author of a submode class will know in advance what
+major mode to use, such as @code{text-mode} or @code{c++-mode}.  If
+there are multiple possible modes that the user might desire, then
+@code{mmm-major-mode-preferences} should be used (@pxref{Preferred
+Modes}).  The function @code{mmm-set-major-mode-preferences} can be
+used, with a third argument, to ensure than the mode is present.
+
+In some cases, however, the author has no way of knowing in advance even
+what language the submode region will be in.  The @code{here-doc} class
+is one of these.  In such cases, instead of the @code{:submode} keyword,
+the @code{:match-submode} keyword must be used.  Its argument should be
+a function, probably written by the author of the submode class, which 
+calculates what major mode each region should use.
+
+It is invoked immediately after a match is found for @code{:front}, and
+is passed one argument: a string representing the front delimiter.
+Normally this string is simply whatever was matched by @code{:front},
+but this can be changed with the keyword @code{:front-form}
+(@pxref{Delimiter Forms}).  The function should then return a symbol
+that would be a valid argument to @code{:submode}: either the name of a
+mode, or that of a language to look up a preferred mode.  If it detects
+an invalid match---for example, the user has specified a mode which is
+not available---it should @code{(signal 'mmm-no-matching-submode nil)}.
+
+Since here-documents can contain code in any language, the
+@code{here-doc} submode class uses @code{:match-submode} rather than
+@code{:submode}.  The function it uses is @code{mmm-here-doc-get-mode},
+defined in @file{mmm-sample.el}, which inspects the name of the
+here-document for flags indicating the proper mode.  For example, this
+code should probably be in @code{perl-mode} (or @code{cperl-mode}):
+
+@example
+print <<PERL;
+s/foo/bar/g;
+PERL
+@end example
+
+This function is also a good example of proper elisp hygiene: when
+writing accessory functions for a submode class, they should usually be
+prefixed with @samp{mmm-} followed by the name of the submode class, to
+avoid namespace conflicts.
+
+
+@node Calculated Faces, Insertion Commands, Calculated Submodes, Overview
+@comment  node-name,  next,  previous,  up
+@section Calculating the Correct Highlight Face
+
+As explained in @ref{Basic Classes}, the keyword @code{:face} should be
+used to specify which of the standard submode faces (@pxref{Region
+Coloring}) a submode region should be highlighted with under high
+decoration.  However, sometimes the function of a region can depend on
+the form of the delimiters as well.  In this case, a more flexible
+alternative to @code{:face} is @code{:match-face}.  Its value can be a
+function, which is called with one argument---the form of the front
+delimiter, as with @code{:match-submode}---and should return the face to
+use.  A more common value for @code{:match-face} is an association list,
+a list of pairs @code{(@var{delim} . @var{face})}, each specifying that
+if the delimiter is @var{delim}, the corresponding region should be
+highlighted with @var{face}.  For example, here is an excerpt from the
+@code{embperl} submode class:
+
+@lisp
+:submode perl
+:front "\\[\\([-\\+!\\*\\$]\\)"
+:back "~1\\]"
+:save-matches 1
+:match-face (("[+" . mmm-output-submode-face)
+             ("[-" . mmm-code-submode-face)
+             ("[!" . mmm-init-submode-face)
+             ("[*" . mmm-code-submode-face)
+             ("[$" . mmm-special-submode-face))
+@end lisp
+
+Thus, regions beginning with @samp{[+} are highlighted as output
+expressions, which they are, while @samp{[-} and @samp{[*} regions are
+highlighted as simple executed code, and so on.
+
+
+@node Insertion Commands, Other Hooks, Calculated Faces, Overview
+@comment  node-name,  next,  previous,  up
+@section Specifying Insertion Commands
+
+As described in @ref{Insertion}, submode classes can specify key
+sequences which automatically insert submode regions, with delimiters
+already in place.  This is done by the keyword argument @code{:insert}.
+Its value should be a list, each element of which specifies a single
+insertion key sequence.  As an example, consider the following insertion
+key sequence specifier, from the @code{embperl} submode class:
+
+@lisp
+(?p embperl "Region Type (Character): "
+    @@ "[" str @@ " " _ " " @@ str "]" @@)
+@end lisp
+
+As you can see, the specifier is a list.  The first element of the list
+is the character @samp{p}.  (The question mark tells Emacs that this is
+a character object, not a one-character symbol.)  In general, the first
+element can be any key, including both characters such as @samp{?p} and
+function keys such as @samp{return}.  It can also be a dotted pair in
+which the first element is a modifier symbol such as @code{meta}, and
+the second is a character or function key.  The use of any other
+modifier than meta is discouraged, as `mmm-insert-modifiers' is
+sometimes set to \(control), and other modifiers are not very portable.
+The second element is a symbol identifying this key sequence.  The third
+element is a prompt string which is used to ask the user for input when
+this key sequence is invoked.  If it is nil, the user is not prompted.
+
+The rest of the list specifies the actual text to be inserted, where the
+submode region and delimiters should be, and where the point should end
+up.  (Actually, this string is simply passed to @code{skeleton-insert};
+see the documentation string of that function for more details on the
+permissible elements of such a skeleton.)  Strings and variable names
+are inserted and interpolated.  The value entered by the user when
+prompted, if any, is available in the variable @code{str}.  The final
+location of the point (or the text around which the region is to be
+wrapped) is marked with a single underscore @samp{_}.  Finally, the
+@@-signs mark the delimiters and submode regions.  There should be four
+@@-signs: one at the beginning of the front delimiter, one at the
+beginning of the submode region, one at the end of the submode region,
+and one at the end of the back delimiter.
+
+The above key sequence, bound by default to @kbd{C-c % p}, always
+prompts the user for the type of region to insert.  It can also be
+convenient to have separate key sequences for each type of region to be
+inserted, such as @kbd{C-c % +} for @samp{[+...+]} regions, @kbd{C-c %
+-} for @samp{[-...-]} regions, and so on.  So that the whole skeleton
+doesn't have to be written out half a dozen times, there is a shortcut
+syntax, as follows:
+
+@lisp
+(?+ embperl+ ?p . "+")             
+@end lisp
+
+If the key sequence specification is a dotted list with four elements,
+as this example is, it means to use the skeleton defined for the key
+sequence given as the third element (@code{?p}), but to pass it the
+fourth (dotted) element (@code{"+"}) as the `str' variable; the user is
+not prompted.
+
+
+@node Other Hooks, Delimiter Forms, Insertion Commands, Overview
+@comment  node-name,  next,  previous,  up
+@section Other Hooks into the Scanning Process
+
+Sometimes, even the flexibility allowed by all the keyword arguments
+discussed so far is insufficient to correctly match submode regions.
+There are several other keyword arguments which accept custom functions
+to be invoked at various points in the MMM-ification process.
+
+First of all, the arguments of @code{:front} and @code{:back}, in
+addition to regular expressions, can be themselves functions.  Such
+functions should ``act like'' a regular expression search: they should
+start searching at point, take one argument as a limit for the search,
+and return its result by setting the match data (presumably by calling
+some regexp matching function).
+
+This is rarely necessary, however, because often all that is needed is a
+simple regexp search, followed by some sort of verification.  The
+keyword arguments @code{:front-verify} and @code{:back-verify}, if
+supplied, may be functions which are invoked after a match is found for
+@code{:front} or @code{:back}, respectively, and should inspect the
+match data (such as with @code{match-string}) and return non-nil if a
+submode region should be begun at this match, nil if this match should
+be ignored and the search continue after it.
+
+The keyword argument @code{:creation-hook}, if supplied, should be a
+function that is invoked whenever a submode region of this class is
+created, with point at the beginning of the new region.  This can be
+used, for example, to set local variables appropriately.
+
+Finally, the entire MMM-ification process has a ``back door'' which
+allows class authors to take control of the entire thing.  If the
+keyword argument @code{:handler} is supplied, it overrides any other
+processing and is called, and passed all other class keyword arguments,
+instead of @code{mmm-ify} to create submode regions.  If you need to
+write a handler function, I suggest looking at the source for
+@code{mmm-ify} to get an idea of what must be done.
+
+
+@node Delimiter Forms, Misc Keywords, Other Hooks, Overview
+@comment  node-name,  next,  previous,  up
+@section Controlling the Form of the Delimiters
+
+On each submode region overlay, MMM Mode stores the ``form'' of the
+front and back delimiters, which are regular expressions that match the
+delimiters.  At present these are not used for much, but in the future
+they may be used to help with automatic updating of regions as you type.
+Normally, the form stored is the result of evaluating the expression
+@code{(regexp-quote (match-string 0))} after each match is found.
+
+You can customize this with the keyword argument @code{:front-form}
+(respectively, @code{:back-form}).  If it is a string, it is used
+verbatim for the front (respectively, back) form.  If it is a function,
+that function is called and should inspect the match data and return the
+regular expression to use as the form.
+
+In addition, the form itself can be set to a function, by giving a
+one-element list containing only that function as the argument to
+@code{:front-form} or @code{:back-form}.  Such a function should take
+1-2 arguments.  The first argument is the overlay to match the delimiter
+for.  If the second is non-nil, it means to insert the delimiter and
+adjust the overlay; if nil it means to match the delimiter and return
+the result in the match data.
+
+
+@node Misc Keywords,  , Delimiter Forms, Overview
+@comment  node-name,  next,  previous,  up
+@section Miscellaneous Other Keyword Arguments
+
+You can specify whether delimiter searches should be case-sensitive with
+the keyword argument @code{:case-fold-search}.  It defaults to @code{t},
+meaning that case should be ignored.  See the documentation for the
+variable @code{case-fold-search}.
+
+@node Indices,  , Overview, Top
+@comment  node-name,  next,  previous,  up
+@chapter Indices
+
+@menu
+* Concept Index::               
+* Function Index::              
+* Keystroke Index::             
+@end menu
+
+@node Concept Index, Function Index, Indices, Indices
+@comment  node-name,  next,  previous,  up
+@section Concept Index
 
 @printindex cp
 
 
-@node Function Index, Keystroke Index, Concept Index, Top
+@node Function Index, Keystroke Index, Concept Index, Indices
 @comment  node-name,  next,  previous,  up
-@chapter Function and Variable Index
+@section Function and Variable Index
 
 @printindex fn
 
 
-@node Keystroke Index,  , Function Index, Top
+@node Keystroke Index,  , Function Index, Indices
 @comment  node-name,  next,  previous,  up
-@chapter Keystroke Index
+@section Keystroke Index
 
 @printindex ky
 
 
 @bye
-
-@c etc...
 
 @c Local Variables:
 @c mode: texinfo
