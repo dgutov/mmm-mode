@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
-;; Version: $Id: mmm-class.el,v 1.8 2000/07/21 00:51:40 mas Exp $
+;; Version: $Id: mmm-class.el,v 1.9 2000/07/29 17:26:54 mas Exp $
 
 ;;{{{ GPL
 
@@ -115,7 +115,9 @@ and interactive history."
            front back save-matches (case-fold-search t)
            (beg-sticky (not (number-or-marker-p front)))
            (end-sticky (not (number-or-marker-p back)))
-           (front-offset 0) (back-offset 0) front-verify back-verify
+           include-front include-back
+           (front-offset 0) (back-offset 0)
+           front-verify back-verify
            front-form back-form creation-hook match-submode
            ;insert
            &allow-other-keys
@@ -138,58 +140,70 @@ the rest of the arguments are for an actual class being applied. See
    (t
     (mmm-save-all
      (goto-char start)
-     (loop for (beg end matched-front matched-back matched-submode) =
-           (apply #'mmm-match-region :start (point)
-                  (mmm-save-keywords
-                   front back stop save-matches front-offset
-                   back-offset front-verify back-verify front-form
-                   back-form match-submode))
+     (loop for (beg end matched-front matched-back matched-submode back-to) =
+           (apply #'mmm-match-region :start (point) all)
            while beg
            while (or (not end) (/= beg end)) ; Sanity check
            if end do            ; match-submode, if present, succeeded.
            (condition-case nil
-               (mmm-make-region
-                (or matched-submode submode) beg end
-                :front matched-front :back matched-back
-                :beg-sticky beg-sticky :end-sticky end-sticky
-                :face face :creation-hook creation-hook)
-             ;; If our region is invalid, go back to the end of the front
-             ;; match and continue on.
-             (mmm-invalid-parent (goto-char (- beg front-offset))))
-           else do
-           ;; If match-submode was unable to find a match, go back
-           ;; to the end of the front match and continue on.
-           (goto-char (- beg front-offset))
+               (progn
+                 (apply #'mmm-make-region (or matched-submode submode)
+                        beg end :front matched-front :back matched-back
+                        all)
+                 (goto-char end))
+             ;; If our region is invalid, go back to the end of the
+             ;; front match and continue on.
+             (mmm-invalid-parent (goto-char back-to)))
+           ;; If match-submode was unable to find a match, go back to
+           ;; the end of the front match and continue on.
+           else do (goto-char back-to)
            )))))
 
 ;;}}}
 ;;{{{ Match Regions
 
 (defun* mmm-match-region
-    (&key front back start stop front-verify back-verify front-offset
-          back-offset save-matches front-form back-form match-submode)
+    (&key start stop front back front-verify back-verify
+          include-front include-back front-offset back-offset
+          front-form back-form save-matches match-submode
+          &allow-other-keys)
   "Find the first valid region between point and STOP.
-Return \(BEG END FRONT-FORM BACK-FORM SUBMODE) specifying the region.
-See `mmm-match-and-verify' for the valid values of FRONT and BACK
-\(markers, regexps, or functions).  A nil value for END means that
-MATCH-SUBMODE failed to find a valid submode."
+Return \(BEG END FRONT-FORM BACK-FORM SUBMODE BACK-TO) specifying the
+region.  See `mmm-match-and-verify' for the valid values of FRONT and
+BACK \(markers, regexps, or functions).  A nil value for END means
+that MATCH-SUBMODE failed to find a valid submode.  BACK-TO is the
+point at which the search should continue if the region is invalid."
   (when (mmm-match-and-verify front start stop front-verify)
-    (let* ((beg (+ (match-end 0) front-offset))
-           (front-form (mmm-get-form front-form))
-           (submode (if match-submode
-                        (condition-case nil
-                            (mmm-save-all
-                             (funcall match-submode front-form))
-                          (mmm-no-matching-submode
-                           (return-from
-                               mmm-match-region
-                             (values beg nil nil nil nil))))
-                      nil)))
-      (when (mmm-match-and-verify (mmm-format-matches back save-matches)
-                                  beg stop back-verify)
-        (let ((end (+ (match-beginning 0) back-offset))
-              (back-form (mmm-get-form back-form)))
-          (values beg end front-form back-form submode))))))
+    (let ((beg (mmm-match->point include-front front-offset))
+          (back-to (match-end 0))
+          (front-form (mmm-get-form front-form)))
+      (let ((submode (if match-submode
+                         (condition-case nil
+                             (mmm-save-all
+                              (funcall match-submode front-form))
+                           (mmm-no-matching-submode
+                            (return-from
+                                mmm-match-region
+                              (values nil nil nil nil nil back-to))))
+                       nil)))
+        (when (mmm-match-and-verify
+               (mmm-format-matches back save-matches)
+               beg stop back-verify)
+          (let ((end (mmm-match->point (not include-back) back-offset))
+                (back-form (mmm-get-form back-form)))
+            (values beg end front-form back-form submode back-to)))))))
+
+(defun mmm-match->point (beginp offset)
+  "Find a point of starting or stopping from the match data.
+If BEGINP, start at \(match-beginning 0), else \(match-end 0), and
+move OFFSET.  Handles all values for OFFSET--see `mmm-classes-alist'."
+  (save-excursion
+    (goto-char (if beginp (match-beginning 0) (match-end 0)))
+    (dolist (spec (if (listp offset) offset (list offset)))
+      (if (numberp spec)
+          (forward-char (or spec 0))
+        (funcall spec)))
+    (point)))
 
 (defun mmm-match-and-verify (pos start stop &optional verify)
   "Find first match for POS between point and STOP satisfying VERIFY.
