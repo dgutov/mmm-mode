@@ -588,7 +588,8 @@ different keymaps, syntax tables, local variables, etc. for submodes."
       (ignore-errors (funcall func)))))
 
 (defun mmm-add-hooks ()
-  (make-local-hook 'post-command-hook)
+  (if (featurep 'xemacs)
+      (make-local-hook 'post-command-hook))
   (add-hook 'post-command-hook 'mmm-update-submode-region nil 'local))
 
 (defun mmm-remove-hooks ()
