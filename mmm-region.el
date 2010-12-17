@@ -525,7 +525,8 @@ is non-nil, don't quit if the info is already there."
                     ;; Code copied from font-lock.el to detect when font-lock
                     ;; should be on via global-font-lock-mode.
                     (and (or font-lock-defaults
-                             (assq major-mode font-lock-defaults-alist)
+                             (and (boundp 'font-lock-defaults-alist)
+                                  (assq major-mode font-lock-defaults-alist))
                              (assq major-mode font-lock-keywords-alist))
                          (or (eq font-lock-global-modes t)
                              (if (eq (car-safe font-lock-global-modes) 'not)
