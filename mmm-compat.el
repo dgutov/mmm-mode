@@ -65,9 +65,9 @@
   (defmacro defgroup (&rest args)
     nil)
   (defmacro defface (var values doc &rest args)
-    (` (make-face (quote (, var)))))
+    `(make-face (quote ,var)))
   (defmacro defcustom (var value doc &rest args) 
-    (` (defvar (, var) (, value) (, doc)))))
+    `(defvar ,var ,value ,doc)))
 
 ;;}}}
 ;;{{{ Regexp-Opt (Emacs 19)
