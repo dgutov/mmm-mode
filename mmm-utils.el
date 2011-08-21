@@ -78,7 +78,11 @@ substituted for the corresponding REGEXP wherever it matches."
     (save-match-data
       (dolist (pair arg-pairs)
         (while (string-match (car pair) string)
-          (setq string (replace-match (cdr pair) t t string))))))
+          (setq string (replace-match
+                        (if (fboundp 'format-mode-line)
+                            (format-mode-line (cdr pair))
+                          (cdr pair))
+                        t t string))))))
   string)
 
 (defun mmm-format-matches (string &optional on-string)
