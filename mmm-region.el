@@ -590,6 +590,7 @@ different keymaps, syntax tables, local variables, etc. for submodes."
 (defun mmm-add-hooks ()
   (if (featurep 'xemacs)
       (make-local-hook 'post-command-hook))
+  ;; FIXME: Use text properties `point-entered' and `point-left' instead?
   (add-hook 'post-command-hook 'mmm-update-submode-region nil 'local))
 
 (defun mmm-remove-hooks ()
@@ -777,9 +778,10 @@ of the REGIONS covers START to STOP."
                 (when (get (car elt) 'mmm-font-lock-mode)
                   (mmm-fontify-region-list (car elt) (cdr elt))))
             (mmm-regions-alist start stop)))
-  ;; With jit-lock, this causes blips in the mode line and menus.
-  ;; Shouldn't be necessary here, since it's in post-command-hook too.
-  ;;(mmm-update-submode-region)
+  ;; It's in `post-command-hook' too, but that's executed before font-lock,
+  ;; so the latter messes up local vars (such as line-indent-function)
+  ;; until after the next command.
+  (mmm-update-submode-region)
   (when loudly (message nil)))
 
 (defun mmm-fontify-region-list (mode regions)
