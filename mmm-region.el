@@ -790,7 +790,8 @@ of the REGIONS covers START to STOP."
   "Fontify REGIONS, each like \(BEG END), in mode MODE."
   (save-excursion
     (let (;(major-mode mode)
-          (func (get mode 'mmm-fontify-region-function)))
+          (func (get mode 'mmm-fontify-region-function))
+          font-lock-extend-region-functions)
       (mapc #'(lambda (reg)
                   (goto-char (car reg))
                   ;; Here we do the same sort of thing that
