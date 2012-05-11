@@ -378,35 +378,51 @@ of coloring respectively.
                  (const :tag "Low" 1)
                  (const :tag "High" 2)))
 
-(defface mmm-init-submode-face '((t (:background "Pink")))
+(defface mmm-init-submode-face '((((background light)) (:background "Pink"))
+				 (((background dark)) (:background "MediumOrchid"))
+				 (t (:background "Pink")))
   "Face used for submodes containing initialization code."
   :group 'mmm-faces)
 
-(defface mmm-cleanup-submode-face '((t (:background "Wheat")))
+(defface mmm-cleanup-submode-face '((((background light)) (:background "Wheat"))
+				    (((background dark)) (:background "peru"))
+				    (t (:background "Wheat")))
   "Face used for submodes containing cleanup code."
   :group 'mmm-faces)
 
-(defface mmm-declaration-submode-face '((t (:background "Aquamarine")))
+(defface mmm-declaration-submode-face '((((background light)) (:background "Aquamarine"))
+					(((background dark)) (:background "DarkTurquoise"))
+					(t (:background "Aquamarine")))
   "Face used for submodes containing declarations."
   :group 'mmm-faces)
 
-(defface mmm-comment-submode-face '((t (:background "SkyBlue")))
+(defface mmm-comment-submode-face '((((background light)) (:background "SkyBlue"))
+				    (((background dark)) (:background "SteelBlue"))
+				    (t (:background "SkyBlue")))
   "Face used for submodes containing comments and documentation."
   :group 'mmm-faces)
 
-(defface mmm-output-submode-face '((t (:background "Plum")))
+(defface mmm-output-submode-face '((((background light)) (:background "Plum"))
+				    (((background dark)) (:background "MediumVioletRed"))
+				    (t (:background "Plum")))
   "Face used for submodes containing expression that are output."
   :group 'mmm-faces)
 
-(defface mmm-special-submode-face '((t (:background "MediumSpringGreen")))
+(defface mmm-special-submode-face '((((background light)) (:background "MediumSpringGreen"))
+				    (((background dark)) (:background "ForestGreen"))
+				    (t (:background "MediumSpringGreen")))
   "Face used for special submodes not fitting any other category."
   :group 'mmm-faces)
 
-(defface mmm-code-submode-face '((t (:background "LightGray")))
+(defface mmm-code-submode-face '((((background light)) (:background "LightGray"))
+				 (((background dark)) (:background "DimGray"))
+				 (t (:background "LightGray")))
   "Face used for submodes containing ordinary code."
   :group 'mmm-faces)
 
-(defface mmm-default-submode-face '((t (:background "gray85")))
+(defface mmm-default-submode-face '((((background light)) (:background "gray85"))
+				    (((background dark)) (:background "gray20"))
+				    (t (:background "gray85")))
   "Face used for all submodes at decoration level 1.
 Also used at decoration level 2 for submodes not specifying a type."
   :group 'mmm-faces)
