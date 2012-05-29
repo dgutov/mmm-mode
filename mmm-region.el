@@ -472,12 +472,12 @@ Does not handle delimiters.  Use `mmm-make-region'."
 (defun mmm-clear-overlays (&optional start stop strict)
   "Clears all MMM overlays overlapping START and STOP.
 If STRICT, only clear those entirely included in that region."
-  (mapcar #'delete-overlay
-	  (if strict
-	      (mmm-overlays-contained-in (or start (point-min))
-					 (or stop (point-max)))
-	    (mmm-overlays-overlapping (or start (point-min))
-				      (or stop (point-max)))))
+  (mapc #'delete-overlay
+        (if strict
+            (mmm-overlays-contained-in (or start (point-min))
+                                       (or stop (point-max)))
+          (mmm-overlays-overlapping (or start (point-min))
+                                    (or stop (point-max)))))
   (mmm-update-submode-region))
 
 ;;}}}
@@ -507,8 +507,7 @@ is non-nil, don't quit if the info is already there."
           ;; On errors, the temporary buffers don't get deleted, so here
           ;; we get rid of any old ones that may be hanging around.
           (when (buffer-live-p (get-buffer mmm-temp-buffer-name))
-            (save-excursion
-              (set-buffer (get-buffer mmm-temp-buffer-name))
+            (with-current-buffer (get-buffer mmm-temp-buffer-name)
               (set-buffer-modified-p nil)
               (kill-buffer (current-buffer))))
           ;; Now make a new temporary buffer.

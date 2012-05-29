@@ -30,6 +30,7 @@
 
 ;;; Code:
 
+(require 'cl)
 (require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-vars)

@@ -35,6 +35,7 @@
 
 ;;; Code:
 
+(require 'cl)
 (require 'mmm-region)
 (require 'mmm-vars)
 (require 'mmm-mode)

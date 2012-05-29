@@ -31,6 +31,7 @@
 
 ;;; Code:
 
+(require 'cl)
 (require 'mmm-auto)
 (require 'mmm-vars)
 
