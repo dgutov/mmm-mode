@@ -33,6 +33,7 @@
 ;;; Code:
 
 (require 'mmm-compat)
+(require 'cl)
 
 ;; MISCELLANEOUS
 ;;{{{ Shut up the Byte Compiler
