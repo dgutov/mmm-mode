@@ -206,6 +206,7 @@ the rest of the arguments are for an actual class being applied. See
 
 (defun* mmm-match-region
     (&key start stop front back front-verify back-verify
+          front-delim back-delim
           include-front include-back front-offset back-offset
           front-form back-form save-matches match-submode match-face
 	  front-match back-match end-not-begin
@@ -271,8 +272,8 @@ BEGINP, start at \(match-beginning MATCH), else \(match-end MATCH),
 and move OFFSET.  Handles all values of OFFSET--see `mmm-classes-alist'."
   (save-excursion
     (goto-char (if beginp
-		   (match-beginning front-match)
-		 (match-end back-match)))
+		   (match-beginning match)
+		 (match-end match)))
     (dolist (spec (if (listp offset) offset (list offset)))
       (if (numberp spec)
           (forward-char (or spec 0))
