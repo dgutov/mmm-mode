@@ -289,6 +289,10 @@
 	 comment-end 
 	 comment-start 
 	 comment-start-skip))
+    ,@(mapcar
+       (lambda (var) (list var nil '(js-mode)))
+       '(js--quick-match-re
+         js--quick-match-re-func))
     ;; Skeleton insertion
     skeleton-transformation
     ;; Abbrev mode
