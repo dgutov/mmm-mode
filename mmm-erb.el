@@ -223,3 +223,4 @@
     (when name (symbol-value name))))
 
 (provide 'mmm-erb)
+;;; mmm-erb.el ends here
