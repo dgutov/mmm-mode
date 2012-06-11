@@ -1,3 +1,50 @@
+;;; mmm-erb.el --- ERB templates editing support
+
+;; Copyright (C) 2012 by Dmitry Gutov
+
+;; Author: Dmitry Gutov <dgutov@yandex.ru>
+
+;;{{{ GPL
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
+
+;;}}}
+
+;;; Commentary:
+
+;; This file contains the definition of JavaScript, CSS, ERB and EJS submode
+;; classes, and well as support functions for proper indentation.
+
+;; Usage:
+
+;; (require 'mmm-auto)
+;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-js)
+;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-css)
+;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\.erb\\'" 'erb)
+;; (mmm-add-mode-ext-class 'html-erb-mode "\\.jst\\.ejs\\'" 'ejs)
+
+;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . html-erb-mode))
+;; (add-to-list 'auto-mode-alist '("\\.jst\\.ejs\\'"  . html-erb-mode))
+
+;;; Code:
+
+(require 'sgml-mode)
+(eval-when-compile (require 'cl))
+(require 'mmm-vars)
+
 (mmm-add-group
  'html-js
  '((js-script-cdata
@@ -45,11 +92,6 @@
                  (?= ejs-expression nil @ "<%=" @ " " _ " " @ "%>" @)))))
 
 (pushnew '(indent-line-function buffer) mmm-save-local-variables)
-
-(mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-js)
-(mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-css)
-(mmm-add-mode-ext-class 'html-erb-mode "\\.html\\.erb\\'" 'erb)
-(mmm-add-mode-ext-class 'html-erb-mode "\\.jst\\.ejs\\'" 'ejs)
 
 ;;;###autoload
 (define-derived-mode html-erb-mode html-mode "ERB-HTML"
@@ -131,9 +173,8 @@
               (when (plusp n) (decf n))
             (incf n (if (eq type 'close) 0 1))))
     (let ((eol (progn (goto-char here) (end-of-line 1) (point))))
-      ;; There can be primary mode regions in the list, so we loop.
-      ;; Look for "else" and "end" instructions.
-      ;; If a block start instruction comes first, don't adjust modifier.
+      ;; Look for "else" and "end" instructions to adjust modifier.
+      ;; If a block start instruction comes first, abort.
       (loop for region in (mmm-regions-in here eol)
             for type = (mmm-erb-scan-region region)
             until (eq type 'open)
