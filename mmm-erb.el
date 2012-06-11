@@ -169,7 +169,8 @@
 (defun mmm-erb-scan-ejs (limit)
   (cond ((looking-at "\\(?:if\\|for\\|while\\)\\b") 'open)
         ((looking-at "} *else\\b") 'middle)
-        ((looking-at "}") 'close)))
+        ((looking-at "}") 'close)
+        ((re-search-forward " *{ *" limit t) 'open)))
 
 (defun mmm-erb-orig-indent-function (mode)
   (cadr (assoc 'indent-line-function (get mode 'mmm-local-variables))))
