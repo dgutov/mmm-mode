@@ -64,12 +64,15 @@
 
 (defun mmm-erb-indent-line ()
   (interactive)
-  (mmm-update-submode-region)
-  (if (and mmm-current-overlay mmm-current-submode
-           (< (overlay-start mmm-current-overlay) (point-at-bol)))
-      ;; Region starts before the current line (hence, contains indentation).
-      (mmm-erb-indent-line-submode)
-    (mmm-erb-indent-line-primary)))
+  (let ((offset (- (current-column) (current-indentation))))
+    (back-to-indentation)
+    (mmm-update-submode-region)
+    (if (and mmm-current-overlay mmm-current-submode
+             (< (overlay-start mmm-current-overlay) (point-at-bol)))
+        ;; Region starts before the current line (and contains indentation).
+        (mmm-erb-indent-line-submode)
+      (mmm-erb-indent-line-primary))
+    (when (> offset 0) (forward-char offset))))
 
 (defun mmm-erb-indent-line-submode ()
   (let (added-whitespace)
@@ -100,51 +103,46 @@
          (mmm-erb-indent-offset mmm-primary-mode))))))
 
 (defun mmm-erb-indent-to-region-start (&optional additional-offset)
-  (let* ((indent (current-indentation))
-         (offset (- (current-column) indent)))
+  (let ((indent (current-indentation)))
     (indent-line-to
      (save-excursion
        (goto-char (1- (overlay-start mmm-current-overlay)))
        (+ (current-indentation)
-          (or additional-offset 0))))
-    (when (> offset 0) (forward-char offset))))
+          (or additional-offset 0))))))
 
 (defun mmm-erb-indent-line-primary ()
-  (save-excursion
-    (let* ((here (point))
-           ;; Before previous line's tag.
-           (start (progn (forward-line -1)
-                         (back-to-indentation)
-                         (let ((lcon (sgml-lexical-context)))
-                           (when (eq (car lcon) 'tag)
-                             ;; Tag spreads several lines.
-                             (goto-char (cdr lcon))
-                             (back-to-indentation)))
-                         (point)))
-           (regions (mmm-regions-in start here))
-           (offset (- (current-column) (current-indentation)))
-           (n 0))
-      ;; Collect indent modifier depending on type of tags.
-      (loop for region in regions
+  (let* ((here (point))
+         ;; Go before previous line's tag.
+         (start (progn (forward-line -1)
+                       (back-to-indentation)
+                       (let ((lcon (sgml-lexical-context)))
+                         (when (eq (car lcon) 'tag)
+                           ;; Tag spreads several lines.
+                           (goto-char (cdr lcon))
+                           (back-to-indentation)))
+                       (point)))
+         (regions (mmm-regions-in start here))
+         (n 0))
+    ;; Collect indent modifier depending on type of tags.
+    (loop for region in regions
+          for type = (mmm-erb-scan-region region)
+          when type do
+          (if (eq type 'close)
+              (when (plusp n) (decf n))
+            (incf n (if (eq type 'close) 0 1))))
+    (let ((eol (progn (goto-char here) (end-of-line 1) (point))))
+      ;; There can be primary mode regions in the list, so we loop.
+      ;; Look for "else" and "end" instructions.
+      ;; If a block start instruction comes first, don't adjust modifier.
+      (loop for region in (mmm-regions-in here eol)
             for type = (mmm-erb-scan-region region)
-            when type do
-            (if (eq type 'close)
-                (when (plusp n) (decf n))
-              (incf n (if (eq type 'close) 0 1))))
-      (let ((eol (progn (goto-char here) (end-of-line 1) (point))))
-        ;; There can be primary mode regions in the list, so we loop.
-        ;; Look for "else" and "end" instructions.
-        ;; If a block start instruction comes first, don't adjust modifier.
-        (loop for region in (mmm-regions-in here eol)
-              for type = (mmm-erb-scan-region region)
-              until (eq type 'open)
-              when (memq type '(middle close)) do (decf n)))
-      (goto-char here)
-      (funcall (mmm-erb-orig-indent-function mmm-primary-mode))
-      (let* ((indent (current-indentation))
-             (indent-step (mmm-erb-indent-offset mmm-primary-mode)))
-        (indent-line-to (+ indent (if n (* indent-step n) 0)))
-        (when (> offset 0) (forward-char offset))))))
+            until (eq type 'open)
+            when (memq type '(middle close)) do (decf n)))
+    (goto-char here)
+    (funcall (mmm-erb-orig-indent-function mmm-primary-mode))
+    (let* ((indent (current-indentation))
+           (indent-step (mmm-erb-indent-offset mmm-primary-mode)))
+      (indent-line-to (+ indent (if n (* indent-step n) 0))))))
 
 (defun mmm-erb-scan-region (region)
   (when region ; Can be nil if a line is empty, for example.
