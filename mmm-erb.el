@@ -102,9 +102,11 @@
   (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
 
 (defun mmm-erb-process-submode ()
+  "Hook function run when entering erb submode."
   (setq indent-line-function 'mmm-erb-indent-line))
 
 (defun mmm-erb-indent-line ()
+  "Indent current line or selection intelligently."
   (interactive)
   (let ((offset (- (current-column) (current-indentation))))
     (back-to-indentation)
@@ -117,6 +119,7 @@
     (when (> offset 0) (forward-char offset))))
 
 (defun mmm-erb-indent-line-submode ()
+  "Indent line within a submode."
   (let (added-whitespace)
     (if (<= (overlay-end mmm-current-overlay)
             (save-excursion (back-to-indentation) (point)))
@@ -145,6 +148,7 @@
          (mmm-erb-indent-offset mmm-primary-mode))))))
 
 (defun mmm-erb-indent-to-region-start (&optional additional-offset)
+  "Indent line to match start of region, possibly adding ADDITIONAL-OFFSET."
   (let ((indent (current-indentation)))
     (indent-line-to
      (save-excursion
