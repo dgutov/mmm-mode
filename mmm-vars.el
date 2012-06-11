@@ -784,6 +784,44 @@ parent buffer.  In general, this has been found to cause more problems
 than it solves, but some modes require it.")
 
 ;;}}}
+;;{{{ Idle Parsing
+
+(defcustom mmm-parse-when-idle nil
+  "Non-nil to automatically reparse the buffer when it has some
+  modifications and Emacs has been idle for `mmm-idle-timer-delay'."
+  :type 'boolean
+  :group 'mmm)
+
+(defcustom mmm-idle-timer-delay 0.2
+  "Delay in secs before re-parsing after user makes changes."
+  :type 'number
+  :group 'mmm)
+(make-variable-buffer-local 'mmm-idle-timer-delay)
+
+(defvar mmm-mode-parse-timer nil "Private variable.")
+(make-variable-buffer-local 'mmm-mode-parse-timer)
+(defvar mmm-mode-buffer-dirty nil "Private variable.")
+(make-variable-buffer-local 'mmm-mode-buffer-dirty)
+
+(defun mmm-mode-edit (beg end len)
+  (setq mmm-mode-buffer-dirty t)
+  (mmm-mode-reset-timer))
+
+(defun mmm-mode-reset-timer ()
+  (when mmm-mode-parse-timer
+    (cancel-timer mmm-mode-parse-timer))
+  (setq mmm-mode-parse-timer
+        (run-with-idle-timer mmm-idle-timer-delay nil
+                             #'mmm-mode-idle-reparse (current-buffer))))
+
+(defun mmm-mode-idle-reparse (buffer)
+  (with-current-buffer buffer
+    (when mmm-mode-buffer-dirty
+      (mmm-apply-all)
+      (setq mmm-mode-buffer-dirty nil)
+      (setq mmm-mode-parse-timer nil))))
+
+;;}}}
 
 ;; NON-USER VARIABLES
 ;;{{{ Mode Variable
