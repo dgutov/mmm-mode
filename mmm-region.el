@@ -592,11 +592,15 @@ different keymaps, syntax tables, local variables, etc. for submodes."
 (defun mmm-add-hooks ()
   (if (featurep 'xemacs)
       (make-local-hook 'post-command-hook))
-  ;; FIXME: Use text properties `point-entered' and `point-left' instead?
-  (add-hook 'post-command-hook 'mmm-update-submode-region nil 'local))
+  (add-hook 'post-command-hook 'mmm-update-submode-region nil t)
+  (when mmm-parse-when-idle
+    (add-hook 'pre-command-hook 'mmm-mode-reset-timer nil t)
+    (add-hook 'after-change-functions 'mmm-mode-edit nil t)))
 
 (defun mmm-remove-hooks ()
-  (remove-hook 'post-command-hook 'mmm-update-submode-region 'local))
+  (remove-hook 'post-command-hook 'mmm-update-submode-region t)
+  (remove-hook 'pre-command-hook 'mmm-mode-reset-timer t)
+  (remove-hook 'after-change-functions 'mmm-mode-edit t))
 
 ;;}}}
 ;;{{{ Local Variables
