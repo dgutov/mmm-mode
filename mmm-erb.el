@@ -44,6 +44,7 @@
 (require 'sgml-mode)
 (eval-when-compile (require 'cl))
 (require 'mmm-vars)
+(require 'mmm-region)
 
 (mmm-add-group
  'html-js
