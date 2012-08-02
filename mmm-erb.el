@@ -202,12 +202,17 @@
             (skip-syntax-forward "-")
             (funcall scan-fn end)))))))
 
+(defconst mmm-erb-ruby-close-re "\\bend\\b\\|}"
+  "Regexp to match the end of an Ruby block.")
+
 (defun mmm-erb-scan-erb (limit)
   (cond ((looking-at "\\(?:if\\|unless\\|for\\|while\\)\\b") 'open)
         ((looking-at "\\(?:else\\|elsif\\)\\b") 'middle)
-        ((looking-at "end\\b\\|}") 'close)
-        ((re-search-forward (concat "\\(?: +do +\\| *{ *\\)"
-                                    "\\(?:|[A-Za-z0-9_, ]*|\\)? *") limit t)
+        ((looking-at mmm-erb-ruby-close-re) 'close)
+        ((and (re-search-forward (concat "\\(?: +do +\\| *{ *\\)"
+                                         "\\(?:|[A-Za-z0-9_, ]*|\\)? *")
+                                 limit t)
+              (not (re-search-forward mmm-erb-ruby-close-re limit t)))
          'open)))
 
 (defun mmm-erb-scan-ejs (limit)
