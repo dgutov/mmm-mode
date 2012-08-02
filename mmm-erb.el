@@ -25,19 +25,27 @@
 
 ;;; Commentary:
 
-;; This file contains the definition of JavaScript, CSS, ERB and EJS submode
+;; This file contains definitions of JavaScript, CSS, ERB and EJS submode
 ;; classes, and well as support functions for proper indentation.
 
 ;; Usage:
 
 ;; (require 'mmm-auto)
-;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-js)
-;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-css)
+
+;; (setq mmm-global-mode 'auto)
+
+;; (mmm-add-mode-ext-class 'html-erb-mode nil 'html-js)
+;; (mmm-add-mode-ext-class 'html-erb-mode nil 'html-css)
 ;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\.erb\\'" 'erb)
 ;; (mmm-add-mode-ext-class 'html-erb-mode "\\.jst\\.ejs\\'" 'ejs)
 
 ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . html-erb-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.jst\\.ejs\\'"  . html-erb-mode))
+
+;; Optional settings:
+
+;; (setq mmm-submode-decoration-level 2
+;;       mmm-parse-when-idle t)
 
 ;;; Code:
 
@@ -103,11 +111,11 @@
   (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
 
 (defun mmm-erb-process-submode ()
-  "Hook function run when entering erb submode."
+  "Hook function to run after primary or submode major mode function."
   (setq indent-line-function 'mmm-erb-indent-line))
 
 (defun mmm-erb-indent-line ()
-  "Indent current line or selection intelligently."
+  "Indent the current line intelligently."
   (interactive)
   (let ((offset (- (current-column) (current-indentation))))
     (back-to-indentation)
@@ -158,6 +166,7 @@
           (or additional-offset 0))))))
 
 (defun mmm-erb-indent-line-primary ()
+  "Indent line in primary mode."
   (let* ((here (point))
          ;; Go before previous line's tag.
          (start (progn (forward-line -1)
@@ -202,8 +211,8 @@
             (skip-syntax-forward "-")
             (funcall scan-fn end)))))))
 
-(defconst mmm-erb-ruby-close-re "\\bend\\b\\|}"
-  "Regexp to match the end of an Ruby block.")
+(defconst mmm-erb-ruby-close-re "\\<end\\>\\|}"
+  "Regexp to match the end of a Ruby block.")
 
 (defun mmm-erb-scan-erb (limit)
   (cond ((looking-at "\\(?:if\\|unless\\|for\\|while\\)\\b") 'open)
@@ -233,4 +242,5 @@
     (when name (symbol-value name))))
 
 (provide 'mmm-erb)
+
 ;;; mmm-erb.el ends here
