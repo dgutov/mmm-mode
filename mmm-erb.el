@@ -91,14 +91,16 @@
                      ("<%" . mmm-code-submode-face))
         :insert ((?% erb-code nil @ "<%" @ " " _ " " @ "%>" @)
                  (?# erb-comment nil @ "<%#" @ " " _ " " @ "%>" @)
-                 (?= erb-expression nil @ "<%=" @ " " _ " " @ "%>" @)))
+                 (?= erb-expression nil @ "<%=" @ " " _ " " @ "%>" @))
+        :creation-hook mmm-erb-mark-as-special)
    (ejs :submode js-mode :front "<%[#=]?" :back "-?%>"
         :match-face (("<%#" . mmm-comment-submode-face)
                      ("<%=" . mmm-output-submode-face)
                      ("<%" . mmm-code-submode-face))
         :insert ((?% ejs-code nil @ "<%" @ " " _ " " @ "%>" @)
                  (?# ejs-comment nil @ "<%#" @ " " _ " " @ "%>" @)
-                 (?= ejs-expression nil @ "<%=" @ " " _ " " @ "%>" @)))))
+                 (?= ejs-expression nil @ "<%=" @ " " _ " " @ "%>" @))
+        :creation-hook mmm-erb-mark-as-special)))
 
 (pushnew '(indent-line-function buffer) mmm-save-local-variables)
 
@@ -113,6 +115,10 @@
 (defun mmm-erb-process-submode ()
   "Hook function to run after primary or submode major mode function."
   (setq indent-line-function 'mmm-erb-indent-line))
+
+(defun mmm-erb-mark-as-special ()
+  "Hook function to run in ERB and EJS tag regions."
+  (overlay-put mmm-current-overlay 'mmm-special-tag t))
 
 (defun mmm-erb-indent-line ()
   "Indent the current line intelligently."
@@ -205,11 +211,12 @@
       (let ((scan-fn (plist-get '(ruby-mode mmm-erb-scan-erb
                                   js-mode   mmm-erb-scan-ejs)
                                 submode)))
-        (when scan-fn
-          (save-excursion
-            (goto-char beg)
-            (skip-syntax-forward "-")
-            (funcall scan-fn end)))))))
+        (and scan-fn
+             (overlay-get (mmm-overlay-at beg) 'mmm-special-tag)
+             (save-excursion
+               (goto-char beg)
+               (skip-syntax-forward "-")
+               (funcall scan-fn end)))))))
 
 (defconst mmm-erb-ruby-close-re "\\<end\\>\\|}"
   "Regexp to match the end of a Ruby block.")
