@@ -47,6 +47,13 @@
 ;; (setq mmm-submode-decoration-level 2
 ;;       mmm-parse-when-idle t)
 
+;; nXML as primary mode (supports only JS and CSS subregions):
+
+;; (mmm-add-mode-ext-class 'nxml-web-mode nil 'html-js)
+;; (mmm-add-mode-ext-class 'nxml-web-mode nil 'html-css)
+
+;; (add-to-list 'auto-mode-alist '("\\.xhtml\\'" . nxml-web-mode))
+
 ;;; Code:
 
 (require 'sgml-mode)
@@ -242,11 +249,17 @@
 
 (defvar mmm-erb-offset-var-alist
   '((html-erb-mode . sgml-basic-offset)
-    (nxml-mode . nxml-child-indent)))
+    (nxml-web-mode . nxml-child-indent)))
 
 (defun mmm-erb-indent-offset (mode)
   (let ((name (cdr (assoc mode mmm-erb-offset-var-alist))))
     (when name (symbol-value name))))
+
+;;;###autoload
+(define-derived-mode nxml-web-mode nxml-mode "nXML-Web"
+  (add-hook 'mmm-nxml-web-mode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-css-mode-submode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
 
 (provide 'mmm-erb)
 
