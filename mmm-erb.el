@@ -25,19 +25,34 @@
 
 ;;; Commentary:
 
-;; This file contains the definition of JavaScript, CSS, ERB and EJS submode
+;; This file contains definitions of JavaScript, CSS, ERB and EJS submode
 ;; classes, and well as support functions for proper indentation.
 
 ;; Usage:
 
 ;; (require 'mmm-auto)
-;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-js)
-;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\(\\.erb\\)?\\'" 'html-css)
+
+;; (setq mmm-global-mode 'auto)
+
+;; (mmm-add-mode-ext-class 'html-erb-mode nil 'html-js)
+;; (mmm-add-mode-ext-class 'html-erb-mode nil 'html-css)
 ;; (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\.erb\\'" 'erb)
 ;; (mmm-add-mode-ext-class 'html-erb-mode "\\.jst\\.ejs\\'" 'ejs)
 
 ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . html-erb-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.jst\\.ejs\\'"  . html-erb-mode))
+
+;; Optional settings:
+
+;; (setq mmm-submode-decoration-level 2
+;;       mmm-parse-when-idle t)
+
+;; nXML as primary mode (supports only JS and CSS subregions):
+
+;; (mmm-add-mode-ext-class 'nxml-web-mode nil 'html-js)
+;; (mmm-add-mode-ext-class 'nxml-web-mode nil 'html-css)
+
+;; (add-to-list 'auto-mode-alist '("\\.xhtml\\'" . nxml-web-mode))
 
 ;;; Code:
 
@@ -83,14 +98,16 @@
                      ("<%" . mmm-code-submode-face))
         :insert ((?% erb-code nil @ "<%" @ " " _ " " @ "%>" @)
                  (?# erb-comment nil @ "<%#" @ " " _ " " @ "%>" @)
-                 (?= erb-expression nil @ "<%=" @ " " _ " " @ "%>" @)))
+                 (?= erb-expression nil @ "<%=" @ " " _ " " @ "%>" @))
+        :creation-hook mmm-erb-mark-as-special)
    (ejs :submode js-mode :front "<%[#=]?" :back "-?%>"
         :match-face (("<%#" . mmm-comment-submode-face)
                      ("<%=" . mmm-output-submode-face)
                      ("<%" . mmm-code-submode-face))
         :insert ((?% ejs-code nil @ "<%" @ " " _ " " @ "%>" @)
                  (?# ejs-comment nil @ "<%#" @ " " _ " " @ "%>" @)
-                 (?= ejs-expression nil @ "<%=" @ " " _ " " @ "%>" @)))))
+                 (?= ejs-expression nil @ "<%=" @ " " _ " " @ "%>" @))
+        :creation-hook mmm-erb-mark-as-special)))
 
 (pushnew '(indent-line-function buffer) mmm-save-local-variables)
 
@@ -103,11 +120,15 @@
   (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
 
 (defun mmm-erb-process-submode ()
-  "Hook function run when entering erb submode."
+  "Hook function to run after primary or submode major mode function."
   (setq indent-line-function 'mmm-erb-indent-line))
 
+(defun mmm-erb-mark-as-special ()
+  "Hook function to run in ERB and EJS tag regions."
+  (overlay-put mmm-current-overlay 'mmm-special-tag t))
+
 (defun mmm-erb-indent-line ()
-  "Indent current line or selection intelligently."
+  "Indent the current line intelligently."
   (interactive)
   (let ((offset (- (current-column) (current-indentation))))
     (back-to-indentation)
@@ -158,6 +179,7 @@
           (or additional-offset 0))))))
 
 (defun mmm-erb-indent-line-primary ()
+  "Indent line in primary mode."
   (let* ((here (point))
          ;; Go before previous line's tag.
          (start (progn (forward-line -1)
@@ -196,14 +218,15 @@
       (let ((scan-fn (plist-get '(ruby-mode mmm-erb-scan-erb
                                   js-mode   mmm-erb-scan-ejs)
                                 submode)))
-        (when scan-fn
-          (save-excursion
-            (goto-char beg)
-            (skip-syntax-forward "-")
-            (funcall scan-fn end)))))))
+        (and scan-fn
+             (overlay-get (mmm-overlay-at beg) 'mmm-special-tag)
+             (save-excursion
+               (goto-char beg)
+               (skip-syntax-forward "-")
+               (funcall scan-fn end)))))))
 
-(defconst mmm-erb-ruby-close-re "\\bend\\b\\|}"
-  "Regexp to match the end of an Ruby block.")
+(defconst mmm-erb-ruby-close-re "\\<end\\>\\|}"
+  "Regexp to match the end of a Ruby block.")
 
 (defun mmm-erb-scan-erb (limit)
   (cond ((looking-at "\\(?:if\\|unless\\|for\\|while\\)\\b") 'open)
@@ -226,11 +249,18 @@
 
 (defvar mmm-erb-offset-var-alist
   '((html-erb-mode . sgml-basic-offset)
-    (nxml-mode . nxml-child-indent)))
+    (nxml-web-mode . nxml-child-indent)))
 
 (defun mmm-erb-indent-offset (mode)
   (let ((name (cdr (assoc mode mmm-erb-offset-var-alist))))
     (when name (symbol-value name))))
 
+;;;###autoload
+(define-derived-mode nxml-web-mode nxml-mode "nXML-Web"
+  (add-hook 'mmm-nxml-web-mode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-css-mode-submode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
+
 (provide 'mmm-erb)
+
 ;;; mmm-erb.el ends here
