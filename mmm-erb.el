@@ -112,20 +112,12 @@
 (pushnew '(indent-line-function buffer) mmm-save-local-variables)
 
 ;;;###autoload
-(define-minor-mode mmm-html-minor-mode
-  "Minor mode which provides context and set-up for HTML-related mmm-mode classes."
-  nil " ERB" nil
-  (setq sgml-unclosed-tags nil) ; Simplifies indentation logic.
-  (dolist (hook '(mmm-html-erb-mode-hook
-                  mmm-nxml-web-mode-hook
-                  mmm-ruby-mode-submode-hook
-                  mmm-css-mode-submode-hook
-                  mmm-js-mode-submode-hook))
-    (add-hook hook 'mmm-erb-process-submode nil t)))
-
-;;;###autoload
 (define-derived-mode html-erb-mode html-mode "ERB-HTML"
-  (mmm-html-minor-mode t))
+  (setq sgml-unclosed-tags nil) ; Simplifies indentation logic.
+  (add-hook 'mmm-html-erb-mode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-ruby-mode-submode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-css-mode-submode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
 
 (defun mmm-erb-process-submode ()
   "Hook function to run after primary or submode major mode function."
@@ -265,7 +257,9 @@
 
 ;;;###autoload
 (define-derived-mode nxml-web-mode nxml-mode "nXML-Web"
-  (mmm-html-minor-mode t))
+  (add-hook 'mmm-nxml-web-mode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-css-mode-submode-hook 'mmm-erb-process-submode nil t)
+  (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
 
 (provide 'mmm-erb)
 
