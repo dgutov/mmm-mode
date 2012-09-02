@@ -19,6 +19,7 @@ INSTALLATION
   To install in the standard locations, unpack the archive, `cd' to
   the mmm-mode-X.X.X directory created, and run these commands:
 
+    ./autogen.sh
     ./configure
     make
     make install

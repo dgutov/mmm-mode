@@ -1,1 +1,5 @@
+autom4te.cache
+aclocal.m4
+configure
+Makefile.in
 *.elc
