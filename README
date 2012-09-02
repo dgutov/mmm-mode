@@ -14,6 +14,10 @@ OVERVIEW
 
 INSTALLATION
 
+  Users of package.el (a.k.a. ELPA) can easily install MMM Mode from the
+  Melpa package repository at http://melpa.milkbox.net/ -- this is the
+  preferred and best-supported installation mechanism.
+
   MMM Mode has a standard GNU configure-driven installation.  (See the
   file INSTALL for generic instructions, most of which don't apply.)
   To install in the standard locations, unpack the archive, `cd' to
