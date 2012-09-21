@@ -159,6 +159,7 @@
 	 c-bitfield-kwds
 	 c-block-comment-prefix
 	 c-block-decls-with-vars
+         c-block-prefix-charset
 	 c-block-stmt-1-key
 	 c-block-stmt-1-key 
 	 c-block-stmt-1-kwds
@@ -215,6 +216,7 @@
 	 c-label-minimum-indentation
 	 c-lambda-kwds
 	 c-literal-start-regexp 
+         c-nonlabel-token-key
 	 c-nonsymbol-chars 
 	 c-nonsymbol-token-regexp
 	 c-not-decl-init-keywords
@@ -286,6 +288,7 @@
 	 c-type-decl-prefix-key 
 	 c-type-decl-suffix-key 
 	 c-type-prefix-key 
+         c-prefix-spec-kwds-re
 	 comment-end 
 	 comment-start 
 	 comment-start-skip))
