@@ -180,9 +180,13 @@
 	 c-cpp-defined-fns
 	 c-current-comment-prefix
 	 c-decl-block-key
-	 c-decl-block-key 
-	 c-decl-prefix-re 
+	 c-decl-block-key
+         c-decl-hangon-key
+         c-decl-prefix-or-start-re
+	 c-decl-prefix-re
 	 c-decl-spec-kwds
+         c-decl-start-kwds
+         c-decl-start-re
 	 c-doc-comment-start-regexp
 	 c-expr-kwds
 	 c-file-offsets
@@ -289,6 +293,7 @@
 	 c-type-decl-suffix-key 
 	 c-type-prefix-key 
          c-prefix-spec-kwds-re
+         c-typedef-key
 	 comment-end 
 	 comment-start 
 	 comment-start-skip))
