@@ -112,8 +112,7 @@ error once all classes have been applied."
 The classes come from mode/ext, `mmm-classes', `mmm-global-classes',
 and interactive history."
   (mmm-clear-overlays start stop 'strict)
-  (let ((font-lock-mode))
-    (mmm-apply-classes (mmm-get-all-classes t) :start start :stop stop))
+  (mmm-apply-classes (mmm-get-all-classes t) :start start :stop stop)
   (mmm-update-submode-region)
   (mmm-refontify-maybe start stop))
 
