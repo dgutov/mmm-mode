@@ -565,9 +565,7 @@ is non-nil, don't quit if the info is already there."
       (if region-entry
           (setcdr region-entry region-vars)
         (push (cons mode region-vars)
-              mmm-region-saved-locals-defaults))
-      ;; The temp buffer stuff above wipes fontification.
-      (mmm-refontify-maybe))))
+              mmm-region-saved-locals-defaults)))))
 
 ;;}}}
 ;;{{{ Updating Hooks
