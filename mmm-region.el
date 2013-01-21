@@ -565,9 +565,7 @@ is non-nil, don't quit if the info is already there."
       (if region-entry
           (setcdr region-entry region-vars)
         (push (cons mode region-vars)
-              mmm-region-saved-locals-defaults))
-      ;; The temp buffer stuff above wipes fontification.
-      (mmm-refontify-maybe))))
+              mmm-region-saved-locals-defaults)))))
 
 ;;}}}
 ;;{{{ Updating Hooks
@@ -771,23 +769,31 @@ of the REGIONS covers START to STOP."
 
 (defun mmm-fontify-region (start stop &optional loudly)
   "Fontify from START to STOP keeping track of submodes correctly."
-  (when loudly
-    (message "Fontifying %s with submode regions..." (buffer-name)))
-  ;; Necessary to catch changes in font-lock cache state and position.
-  (mmm-save-changed-local-variables
-   mmm-current-overlay mmm-current-submode)
-  ;; For some reason `font-lock-fontify-block' binds this to nil, thus
-  ;; preventing `mmm-beginning-of-syntax' from doing The Right Thing.
-  ;; I don't know why it does this, but let's undo it here.
-  (let ((font-lock-beginning-of-syntax-function 'mmm-beginning-of-syntax))
-    (mapc #'(lambda (elt)
-                (when (get (car elt) 'mmm-font-lock-mode)
-                  (mmm-fontify-region-list (car elt) (cdr elt))))
-            (mmm-regions-alist start stop)))
-  ;; It's in `post-command-hook' too, but that's executed before font-lock,
-  ;; so the latter messes up local vars (such as line-indent-function)
-  ;; until after the next command.
-  (mmm-update-submode-region)
+  (let ((saved-mode mmm-current-submode)
+        (saved-pos (and mmm-current-overlay
+                        (overlay-start mmm-current-overlay))))
+    (unwind-protect
+        (progn
+          (when loudly
+            (message "Fontifying %s with submode regions..." (buffer-name)))
+          ;; Necessary to catch changes in font-lock cache state and position.
+          (mmm-save-changed-local-variables
+           mmm-current-overlay mmm-current-submode)
+          ;; For some reason `font-lock-fontify-block' binds this to nil, thus
+          ;; preventing `mmm-beginning-of-syntax' from doing The Right Thing.
+          ;; I don't know why it does this, but let's undo it here.
+          (let ((font-lock-beginning-of-syntax-function 'mmm-beginning-of-syntax))
+            (mapc #'(lambda (elt)
+                      (when (get (car elt) 'mmm-font-lock-mode)
+                        (mmm-fontify-region-list (car elt) (cdr elt))))
+                  (mmm-regions-alist start stop))))
+      (save-excursion
+        ;; `post-command-hook' contains `mmm-update-submode-region',
+        ;; but jit-lock runs later, so we need to restore local vars now.
+        (goto-char (or saved-pos (point-min)))
+        (mmm-set-current-submode saved-mode)
+        ;; This looks for the current overlay at point to set region locals.
+        (mmm-set-local-variables saved-mode))))
   (when loudly (message nil)))
 
 (defun mmm-fontify-region-list (mode regions)

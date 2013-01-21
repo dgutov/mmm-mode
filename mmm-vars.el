@@ -801,11 +801,12 @@ than it solves, but some modes require it.")
                              #'mmm-mode-idle-reparse (current-buffer))))
 
 (defun mmm-mode-idle-reparse (buffer)
-  (with-current-buffer buffer
-    (when mmm-mode-buffer-dirty
-      (mmm-apply-all)
-      (setq mmm-mode-buffer-dirty nil)
-      (setq mmm-mode-parse-timer nil))))
+  (when (buffer-live-p buffer)
+    (with-current-buffer buffer
+      (when mmm-mode-buffer-dirty
+        (mmm-apply-all)
+        (setq mmm-mode-buffer-dirty nil)
+        (setq mmm-mode-parse-timer nil)))))
 
 ;;}}}
 
