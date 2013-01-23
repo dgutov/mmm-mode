@@ -495,69 +495,36 @@ which is set here as well.  See `mmm-save-local-variables'.  If FORCE
 is non-nil, don't quit if the info is already there."
   (let ((buffer-entry (assq mode mmm-buffer-saved-locals))
         (region-entry (assq mode mmm-region-saved-locals-defaults))
-        global-vars buffer-vars region-vars
-        ;; kludge for XEmacs 20
-        (html-helper-build-new-buffer nil))
+        global-vars buffer-vars region-vars)
     (unless (and (not force)
                  (get mode 'mmm-local-variables)
                  buffer-entry
                  region-entry)
-      (save-excursion
-        (let ((filename (buffer-file-name)))
-          ;; On errors, the temporary buffers don't get deleted, so here
-          ;; we get rid of any old ones that may be hanging around.
-          (when (buffer-live-p (get-buffer mmm-temp-buffer-name))
-            (with-current-buffer (get-buffer mmm-temp-buffer-name)
-              (set-buffer-modified-p nil)
-              (kill-buffer (current-buffer))))
-          ;; Now make a new temporary buffer.
-          (set-buffer (mmm-make-temp-buffer (current-buffer)
-                                            mmm-temp-buffer-name))
-	  ;; Handle stupid modes that need the file name set
-          (if (memq mode mmm-set-file-name-for-modes)
-              (setq buffer-file-name filename)))
-        (funcall mode)
-        (when (featurep 'font-lock)
-          ;; XEmacs doesn't have global-font-lock-mode (or rather, it
-          ;; has nothing but global-font-lock-mode).
-          (when (or mmm-xemacs
-                    ;; Code copied from font-lock.el to detect when font-lock
-                    ;; should be on via global-font-lock-mode.
-                    (and (or font-lock-defaults
-                             (and (boundp 'font-lock-defaults-alist)
-                                  (assq major-mode font-lock-defaults-alist))
-                             (assq major-mode font-lock-keywords-alist))
-                         (or (eq font-lock-global-modes t)
-                             (if (eq (car-safe font-lock-global-modes) 'not)
-                                 (not (memq major-mode
-                                            (cdr font-lock-global-modes)))
-                               (memq major-mode font-lock-global-modes)))))
-            ;; Don't actually fontify in the temp buffer, but note
-            ;; that we should fontify when we use this mode.
-            (put mode 'mmm-font-lock-mode t))
-          ;; Get the font-lock variables
-          (when mmm-font-lock-available-p
-            ;; To fool `font-lock-add-keywords'
-            (let ((font-lock-mode t))
-              (mmm-set-font-lock-defaults)))
-          ;; These can't be in the local variables list, because we
-          ;; replace their actual values, but we want to use their
-          ;; original values elsewhere.
-          (unless (and mmm-xemacs (= emacs-major-version 20))
-            ;; XEmacs 20 doesn't have this variable.  This effectively
-            ;; prevents the MMM font-lock support from working, but we
-            ;; just ignore it and go on, to prevent an error message.
-            (put mode 'mmm-fontify-region-function
-                 font-lock-fontify-region-function))
-          (put mode 'mmm-beginning-of-syntax-function
-               font-lock-beginning-of-syntax-function))
-        ;; Get variables
-        (setq global-vars (mmm-get-locals 'global)
-              buffer-vars (mmm-get-locals 'buffer)
-              region-vars (mmm-get-locals 'region))
-        (put mode 'mmm-mode-name mode-name)
-        (set-buffer-modified-p nil)
-        (kill-buffer (current-buffer)))
+      (let ((temp-buffer (mmm-make-temp-buffer (current-buffer)
+                                               mmm-temp-buffer-name))
+            (mmm-in-temp-buffer t))
+        (unwind-protect
+            (with-current-buffer temp-buffer
+              ;; Handle stupid modes that need the file name set.
+              (when (memq mode mmm-set-file-name-for-modes)
+                (setq buffer-file-name filename))
+              (funcall mode)
+              (when (featurep 'font-lock)
+                (put mode 'mmm-font-lock-mode font-lock-mode)
+                ;; These can't be in the local variables list, because we
+                ;; replace their actual values, but we want to use their
+                ;; original values elsewhere.
+                (put mode 'mmm-fontify-region-function
+                     font-lock-fontify-region-function)
+                (put mode 'mmm-beginning-of-syntax-function
+                     font-lock-beginning-of-syntax-function))
+              ;; Get variables
+              (setq global-vars (mmm-get-locals 'global)
+                    buffer-vars (mmm-get-locals 'buffer)
+                    region-vars (mmm-get-locals 'region))
+              (put mode 'mmm-mode-name mode-name))
+          (set-buffer-modified-p nil)
+          (kill-buffer temp-buffer)))
       (put mode 'mmm-local-variables global-vars)
       (if buffer-entry
           (setcdr buffer-entry buffer-vars)
@@ -692,23 +659,21 @@ region and mode for the previous position."
 (defun mmm-enable-font-lock (mode)
   "Turn on font lock if it is not already on and MODE enables it."
   (mmm-update-mode-info mode)
-  (and mmm-font-lock-available-p
-       (not font-lock-mode)
+  (and (not font-lock-mode)
        (get mode 'mmm-font-lock-mode)
        (font-lock-mode 1)))
 
 (defun mmm-update-font-lock-buffer ()
-  "Turn on font lock iff any mode in the buffer enables it."
-  (when mmm-font-lock-available-p
-    (if (some #'(lambda (mode)
-                  (get mode 'mmm-font-lock-mode))
-	      (cons mmm-primary-mode
-		    (mapcar #'(lambda (ovl)
-				(overlay-get ovl 'mmm-mode))
-			    (mmm-overlays-overlapping
-			     (point-min) (point-max)))))
-        (font-lock-mode 1)
-      (font-lock-mode 0))))
+  "Turn on font lock if any mode in the buffer enables it."
+  (if (some #'(lambda (mode)
+                (get mode 'mmm-font-lock-mode))
+            (cons mmm-primary-mode
+                  (mapcar #'(lambda (ovl)
+                              (overlay-get ovl 'mmm-mode))
+                          (mmm-overlays-overlapping
+                           (point-min) (point-max)))))
+      (font-lock-mode 1)
+    (font-lock-mode 0)))
 
 (defun mmm-refontify-maybe (&optional start stop)
   "Re-fontify from START to STOP, or entire buffer, if enabled."

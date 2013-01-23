@@ -156,37 +156,14 @@ This makes `@' in skeletons act approximately like it does in FSF."
 ;;{{{ Make Temp Buffers (XEmacs)
 
 (defmacro mmm-make-temp-buffer (buffer name)
-  "Return a buffer called NAME including the text of BUFFER.
+  "Return a buffer with name based on NAME including the text of BUFFER.
 This text should not be modified."
   (if (fboundp 'make-indirect-buffer)
-      `(make-indirect-buffer ,buffer ,name)
+      `(make-indirect-buffer ,buffer (generate-new-buffer-name ,name))
     `(save-excursion
-       (set-buffer (get-buffer-create ,name))
+       (set-buffer (generate-new-buffer ,name))
        (insert-buffer ,buffer)
        (current-buffer))))
-
-;;}}}
-;;{{{ Font Lock Available (Emacs w/o X)
-
-(defvar mmm-font-lock-available-p (or window-system mmm-xemacs)
-  "Whether font-locking is available.
-Emacs 19 and 20 only provide font-lock with a window system in use.")
-
-;;}}}
-;;{{{ Font Lock Defaults (XEmacs)
-
-(defmacro mmm-set-font-lock-defaults ()
-  "Set font-lock defaults without trying to turn font-lock on.
-In XEmacs, `font-lock-set-defaults' calls `font-lock-set-defaults-1'
-to do the real work but then `turn-on-font-lock', which in turn calls
-`font-lock-mode', which unsets the defaults if running in a hidden
-buffer \(name begins with a space).  So in XEmacs, we just call
-`font-lock-set-defaults-1' directly."
-  (if mmm-xemacs
-      `(font-lock-set-defaults-1)
-    `(font-lock-set-defaults)))
-
-;;}}}
 
 (provide 'mmm-compat)
 

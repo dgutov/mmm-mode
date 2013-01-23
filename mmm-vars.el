@@ -1026,8 +1026,13 @@ The CLASSES are all made private, i.e. non-user-visible."
 ;;}}}
 ;;{{{ Temp Buffer Name
 
-(defvar mmm-temp-buffer-name " *mmm-temp*"
-  "Name for temporary buffers created by MMM Mode.")
+(defvar mmm-temp-buffer-name "mmm-temp-buffer"
+  "Name for temporary buffers created by MMM Mode.
+Using non-special name, so that font-lock-mode will be enabled
+automatically when appropriate, and will set all related vars.")
+
+(defvar mmm-in-temp-buffer nil
+  "Bound to t when working in the temp buffer.")
 
 ;;}}}
 ;;{{{ Interactive History
