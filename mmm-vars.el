@@ -123,7 +123,9 @@
         '(mode-popup-menu
           (((lambda () current-menubar) . set-buffer-menubar))
           ))
-    font-lock-keywords
+    (font-lock-keywords buffer)
+    font-lock-set-defaults
+    font-lock-major-mode
     font-lock-keywords-only
     font-lock-keywords-case-fold-search
     font-lock-syntax-table
@@ -289,6 +291,13 @@
     ((current-local-map . use-local-map) buffer)
     paragraph-separate
     paragraph-start
+    (whitespace-active-style buffer)
+    (whitespace-display-table buffer)
+    (whitespace-display-table-was-local buffer)
+    (whitespace-font-lock buffer)
+    (whitespace-font-lock-mode buffer)
+    (whitespace-font-lock-keywords buffer)
+    (whitespace-mode buffer)
     )
   "Which local variables to save for major mode regions.
 Each element has the form \(VARIABLE [TYPE [MODES]]), causing VARIABLE
