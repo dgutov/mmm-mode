@@ -793,7 +793,7 @@ of the REGIONS covers START to STOP."
         (goto-char (or saved-pos (point-min)))
         (mmm-set-current-submode saved-mode)
         ;; This looks for the current overlay at point to set region locals.
-        (mmm-set-local-variables saved-mode))))
+        (mmm-set-local-variables (or saved-mode mmm-primary-mode)))))
   (when loudly (message nil)))
 
 (defun mmm-fontify-region-list (mode regions)
