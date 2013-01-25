@@ -123,7 +123,9 @@
         '(mode-popup-menu
           (((lambda () current-menubar) . set-buffer-menubar))
           ))
-    font-lock-keywords
+    (font-lock-keywords buffer)
+    font-lock-set-defaults
+    font-lock-major-mode
     font-lock-keywords-only
     font-lock-keywords-case-fold-search
     font-lock-syntax-table
@@ -291,6 +293,13 @@
     ((current-local-map . use-local-map) buffer)
     paragraph-separate
     paragraph-start
+    (whitespace-active-style buffer)
+    (whitespace-display-table buffer)
+    (whitespace-display-table-was-local buffer)
+    (whitespace-font-lock buffer)
+    (whitespace-font-lock-mode buffer)
+    (whitespace-font-lock-keywords buffer)
+    (whitespace-mode buffer)
     )
   "Which local variables to save for major mode regions.
 Each element has the form \(VARIABLE [TYPE [MODES]]), causing VARIABLE
@@ -1028,8 +1037,13 @@ The CLASSES are all made private, i.e. non-user-visible."
 ;;}}}
 ;;{{{ Temp Buffer Name
 
-(defvar mmm-temp-buffer-name " *mmm-temp*"
-  "Name for temporary buffers created by MMM Mode.")
+(defvar mmm-temp-buffer-name "mmm-temp-buffer"
+  "Name for temporary buffers created by MMM Mode.
+Using non-special name, so that font-lock-mode will be enabled
+automatically when appropriate, and will set all related vars.")
+
+(defvar mmm-in-temp-buffer nil
+  "Bound to t when working in the temp buffer.")
 
 ;;}}}
 ;;{{{ Interactive History
