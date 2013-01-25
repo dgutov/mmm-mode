@@ -211,6 +211,7 @@
 	 c-label-minimum-indentation
 	 c-lambda-kwds
 	 c-literal-start-regexp 
+	 c-macro-with-semi-re
          c-nonlabel-token-key
 	 c-nonsymbol-chars 
 	 c-nonsymbol-token-regexp
@@ -272,6 +273,7 @@
 	 c-type-prefix-key 
          c-prefix-spec-kwds-re
          c-typedef-key
+	 c-typedef-decl-key
 	 comment-end 
 	 comment-start 
 	 comment-start-skip))
