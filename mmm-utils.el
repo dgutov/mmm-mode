@@ -46,9 +46,7 @@ means not hidden, not a minibuffer, not in batch mode, and not in of
                (window-minibuffer-p (selected-window))
                (memq major-mode mmm-never-modes)
                noninteractive
-               ;; Unnecessary as now hidden
-;;;               (equal (buffer-name) mmm-temp-buffer-name)
-               )
+               mmm-in-temp-buffer)
      ,@body))
 
 ;;;(def-edebug-spec mmm-valid-buffer t)
