@@ -616,7 +616,7 @@ Looks up both global, buffer, and region saves."
                   (funcall (cdar var) (cadr var))
                 (make-local-variable (car var))
                 (set (car var) (cadr var))))
-          (mmm-get-saved-local-variables mode ovl)))
+          (mmm-get-saved-local-variables (or mode mmm-primary-mode) ovl)))
 
 (defun mmm-get-saved-local-variables (mode ovl)
   (append (get mode 'mmm-local-variables)
@@ -753,7 +753,7 @@ of the REGIONS covers START to STOP."
       ;; `post-command-hook' contains `mmm-update-submode-region',
       ;; but jit-lock runs later, so we need to restore local vars now.
       (mmm-set-current-pair saved-mode saved-ovl)
-      (mmm-set-local-variables (or saved-mode mmm-primary-mode) saved-ovl)))
+      (mmm-set-local-variables saved-mode saved-ovl)))
   (when loudly (message nil)))
 
 (defun mmm-fontify-region-list (mode regions)
