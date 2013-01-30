@@ -425,10 +425,7 @@ with point at the start of the new region."
      (mmm-set-local-variables submode region-ovl)
      (mmm-run-submode-hook submode)
      (when creation-hook
-       (funcall creation-hook))
-     (mmm-save-changed-local-variables submode region-ovl))
-    (setq mmm-previous-submode submode
-          mmm-previous-overlay region-ovl)
+       (funcall creation-hook)))
     (mmm-update-submode-region)
     region-ovl))
 
