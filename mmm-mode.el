@@ -156,7 +156,7 @@ available through M-x customize under Programming | Tools | Mmm."
                   (copy-tree (cdr (assq major-mode mmm-region-saved-locals-defaults)))))
      ;; Without the next line, the (make-marker) above gets replaced
      ;; with the starting value of nil, and all comes to naught.
-     (mmm-set-local-variables major-mode)
+     (mmm-set-local-variables major-mode nil)
      (mmm-add-hooks)
      (mmm-fixup-skeleton)
      (make-local-variable 'font-lock-fontify-region-function)
