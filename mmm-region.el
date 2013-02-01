@@ -761,12 +761,8 @@ of the REGIONS covers START to STOP."
 (defun mmm-fontify-region-list (mode regions)
   "Fontify REGIONS, each like \(BEG END), in mode MODE."
   (save-excursion
-    (let (;(major-mode mode)
-          (func (get mode 'mmm-fontify-region-function))
-          (font-lock-dont-widen t)
-          font-lock-extend-region-functions
-          syntax-propertize-extend-region-functions
-          (syntax-propertize-function (get mode 'mmm-syntax-propertize-function)))
+    (let ((func (get mode 'mmm-fontify-region-function))
+          font-lock-extend-region-functions)
       (mapc #'(lambda (reg)
                   (goto-char (car reg))
                   ;; Here we do the same sort of thing that
@@ -775,22 +771,14 @@ of the REGIONS covers START to STOP."
                   ;; fontify, or change the mode line.
                   (mmm-set-current-pair mode (mmm-submode-overlay-at mode))
                   (mmm-set-local-variables mode mmm-current-overlay)
-                  ;; (message "beg %s end %s spd %s" (car reg) (cadr reg)
-                  ;;          syntax-propertize--done)
-                  (save-restriction
-                    (if mmm-current-overlay
-                        (narrow-to-region (overlay-start mmm-current-overlay)
-                                          (overlay-end mmm-current-overlay))
-                      (narrow-to-region (car reg) (cadr reg)))
-                    (let ((syntax-propertize--done (car reg))) ;; tis slow :(
-                      (funcall func (car reg) (cadr reg) nil)))
+                  (funcall func (car reg) (cadr reg) nil)
                   ;; Catch changes in font-lock cache.
                   (mmm-save-changed-local-variables
                    mmm-current-submode mmm-current-overlay))
               regions))))
 
 ;;}}}
-;;{{{ Beginning of Syntax
+;;{{{ Syntax
 
 (defun mmm-beginning-of-syntax ()
   (goto-char
@@ -800,6 +788,32 @@ of the REGIONS covers START to STOP."
      (max (if ovl (overlay-start ovl) (point-min))
           (if func (progn (funcall func) (point)) (point-min))
           (point-min)))))
+
+(defun mmm-syntax-propertize-function (start stop)
+  (let ((saved-mode mmm-current-submode)
+        (saved-ovl  mmm-current-overlay))
+    (mmm-save-changed-local-variables
+     mmm-current-submode mmm-current-overlay)
+    (unwind-protect
+        (mapc #'(lambda (elt)
+                  (destructuring-bind (mode beg end) elt
+                    (goto-char beg)
+                    (mmm-set-current-pair mode (mmm-submode-overlay-at mode))
+                    (mmm-set-local-variables mode mmm-current-overlay)
+                    (let ((syntax-propertize-chunk-size (- end beg))
+                          (func (get mode 'mmm-syntax-propertize-function)))
+                      (if func
+                          (save-restriction
+                            (if mmm-current-overlay
+                                (narrow-to-region (overlay-start mmm-current-overlay)
+                                                  (overlay-end mmm-current-overlay))
+                              (narrow-to-region beg end))
+                            (funcall func beg end))
+                        (remove-text-properties
+                         beg end '(syntax-table nil syntax-multiline nil))))))
+              (mmm-regions-in start stop))
+      (mmm-set-current-pair saved-mode saved-ovl)
+      (mmm-set-local-variables saved-mode saved-ovl))))
 
 ;;}}}
 

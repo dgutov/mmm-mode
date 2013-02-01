@@ -165,6 +165,8 @@ available through M-x customize under Programming | Tools | Mmm."
                                    'syntax-begin-function
                                  'font-lock-beginning-of-syntax-function))
           'mmm-beginning-of-syntax)
+     (set (make-local-variable 'syntax-propertize-function)
+          'mmm-syntax-propertize-function)
      (setq mmm-mode t)
      (condition-case err
          (mmm-apply-all)
