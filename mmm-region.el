@@ -516,7 +516,9 @@ is non-nil, don't quit if the info is already there."
                 (put mode 'mmm-fontify-region-function
                      font-lock-fontify-region-function)
                 (put mode 'mmm-beginning-of-syntax-function
-                     font-lock-beginning-of-syntax-function))
+                     font-lock-beginning-of-syntax-function)
+                (put mode 'mmm-syntax-propertize-function
+                     syntax-propertize-function))
               ;; Get variables
               (setq global-vars (mmm-get-locals 'global)
                     buffer-vars (mmm-get-locals 'buffer)
@@ -761,7 +763,10 @@ of the REGIONS covers START to STOP."
   (save-excursion
     (let (;(major-mode mode)
           (func (get mode 'mmm-fontify-region-function))
-          font-lock-extend-region-functions)
+          (font-lock-dont-widen t)
+          font-lock-extend-region-functions
+          syntax-propertize-extend-region-functions
+          (syntax-propertize-function (get mode 'mmm-syntax-propertize-function)))
       (mapc #'(lambda (reg)
                   (goto-char (car reg))
                   ;; Here we do the same sort of thing that
@@ -770,7 +775,15 @@ of the REGIONS covers START to STOP."
                   ;; fontify, or change the mode line.
                   (mmm-set-current-pair mode (mmm-submode-overlay-at mode))
                   (mmm-set-local-variables mode mmm-current-overlay)
-                  (funcall func (car reg) (cadr reg) nil)
+                  ;; (message "beg %s end %s spd %s" (car reg) (cadr reg)
+                  ;;          syntax-propertize--done)
+                  (save-restriction
+                    (if mmm-current-overlay
+                        (narrow-to-region (overlay-start mmm-current-overlay)
+                                          (overlay-end mmm-current-overlay))
+                      (narrow-to-region (car reg) (cadr reg)))
+                    (let ((syntax-propertize--done (car reg))) ;; tis slow :(
+                      (funcall func (car reg) (cadr reg) nil)))
                   ;; Catch changes in font-lock cache.
                   (mmm-save-changed-local-variables
                    mmm-current-submode mmm-current-overlay))
