@@ -611,14 +611,15 @@ Return \((VAR VALUE) ...).  In some cases, VAR will be of the form
 
 (defun mmm-set-local-variables (mode ovl)
   "Set all the local variables saved for MODE and OVL.
-Looks up both global, buffer, and region saves."
+Looks up global, buffer and region saves.  When MODE is nil, just
+the region ones."
   (mapcar #'(lambda (var)
               ;; (car VAR) may be (GETTER . SETTER)
               (if (consp (car var))
                   (funcall (cdar var) (cadr var))
                 (make-local-variable (car var))
                 (set (car var) (cadr var))))
-          (mmm-get-saved-local-variables (or mode mmm-primary-mode) ovl)))
+          (mmm-get-saved-local-variables mode ovl)))
 
 (defun mmm-get-saved-local-variables (mode ovl)
   (append (get mode 'mmm-local-variables)
@@ -755,7 +756,7 @@ of the REGIONS covers START to STOP."
       ;; `post-command-hook' contains `mmm-update-submode-region',
       ;; but jit-lock runs later, so we need to restore local vars now.
       (mmm-set-current-pair saved-mode saved-ovl)
-      (mmm-set-local-variables saved-mode saved-ovl)))
+      (mmm-set-local-variables (or saved-mode mmm-primary-mode) saved-ovl)))
   (when loudly (message nil)))
 
 (defun mmm-fontify-region-list (mode regions)
@@ -770,7 +771,9 @@ of the REGIONS covers START to STOP."
                   ;; to use a specific mode, and don't save anything,
                   ;; fontify, or change the mode line.
                   (mmm-set-current-pair mode (mmm-submode-overlay-at mode))
-                  (mmm-set-local-variables mode mmm-current-overlay)
+                  (mmm-set-local-variables (unless (eq mmm-previous-submode mode)
+                                             mode)
+                                           mmm-current-overlay)
                   (funcall func (car reg) (cadr reg) nil)
                   ;; Catch changes in font-lock cache.
                   (mmm-save-changed-local-variables
