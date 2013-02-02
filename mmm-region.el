@@ -796,21 +796,24 @@ of the REGIONS covers START to STOP."
      mmm-current-submode mmm-current-overlay)
     (unwind-protect
         (mapc #'(lambda (elt)
-                  (destructuring-bind (mode beg end) elt
+                  (let* ((mode (car elt))
+                         (func (get mode 'mmm-syntax-propertize-function))
+                         (beg (cadr elt)) (end (caddr elt))
+                         (syntax-propertize-chunk-size (- end beg)))
                     (goto-char beg)
                     (mmm-set-current-pair mode (mmm-submode-overlay-at mode))
                     (mmm-set-local-variables mode mmm-current-overlay)
-                    (let ((syntax-propertize-chunk-size (- end beg))
-                          (func (get mode 'mmm-syntax-propertize-function)))
-                      (if func
-                          (save-restriction
-                            (if mmm-current-overlay
-                                (narrow-to-region (overlay-start mmm-current-overlay)
-                                                  (overlay-end mmm-current-overlay))
-                              (narrow-to-region beg end))
-                            (funcall func beg end))
-                        (remove-text-properties
-                         beg end '(syntax-table nil syntax-multiline nil))))))
+                    (save-restriction
+                      (if mmm-current-overlay
+                          (narrow-to-region (overlay-start mmm-current-overlay)
+                                            (overlay-end mmm-current-overlay))
+                        (narrow-to-region beg end))
+                      (cond
+                       (func
+                        (funcall func beg end))
+                       (font-lock-syntactic-keywords
+                        (let ((syntax-propertize-function nil))
+                          (font-lock-fontify-syntactic-keywords-region beg end)))))))
               (mmm-regions-in start stop))
       (mmm-set-current-pair saved-mode saved-ovl)
       (mmm-set-local-variables saved-mode saved-ovl))))
