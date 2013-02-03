@@ -716,20 +716,23 @@ union covers the region from START to STOP, including delimiters."
     (setcdr (last regions 2) nil)
     regions))
 
-
 (defun mmm-regions-alist (start stop)
   "Return a list of lists of the form \(MODE . REGIONS) where REGIONS
 is a list of elements of the form \(BEG END). The disjoint union all
 of the REGIONS covers START to STOP."
-  (let ((regions (mmm-regions-in start stop)))
-    (mapcar #'(lambda (mode)
-                (cons mode
-                      (mapcan #'(lambda (region)
-                                  (if (eq mode (car region))
-                                      (list (cdr region))))
-                              regions)))
-            ;; All the modes
-            (remove-duplicates (mapcar #'car regions)))))
+  (let ((regions (mmm-regions-in start stop))
+        alist)
+    (mapc (lambda (region)
+            (let* ((mode (car region))
+                   (elem (cdr region))
+                   (kv (assoc mode alist)))
+              (if kv
+                  (push elem (cdr kv))
+                (push (cons mode (list elem)) alist))))
+          regions)
+    (mapcar (lambda (kv)
+              (cons (car kv) (nreverse (cdr kv))))
+            alist)))
 
 ;;}}}
 ;;{{{ Fontify Regions
