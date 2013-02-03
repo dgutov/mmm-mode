@@ -200,15 +200,6 @@ and update the saved previous values."
   (setq mmm-current-submode mode
         mmm-current-overlay ovl))
 
-;; TODO: Only used in `mmm-fontify-region-list', so far.
-;; Might be worth eliminating by making `mmm-regions-alist' include overlay
-;; references, not just the bounds of regions.
-(defun mmm-submode-overlay-at (mode &optional pos)
-  "Return the highest priority region of MODE at POS or point, if any."
-  (find-if #'(lambda (ovl)
-               (eq (overlay-get ovl 'mmm-mode) mode))
-           (mmm-overlays-at pos 'all)))
-
 (defun mmm-submode-at (&optional pos type)
   "Return the submode at POS \(or point), or NIL if none.
 See `mmm-included-p' for values of TYPE."
@@ -704,21 +695,24 @@ The list is sorted in order of increasing buffer position."
         #'<))
 
 (defun mmm-regions-in (start stop)
-  "Return a list of regions of the form (MODE BEG END) whose disjoint
+  "Return a list of regions of the form (MODE BEG END OVL) whose disjoint
 union covers the region from START to STOP, including delimiters."
   (let ((regions 
          (maplist #'(lambda (pos-list)
-                      (if (cdr pos-list)
-                          (list (or (mmm-submode-at (car pos-list) 'beg)
-                                    mmm-primary-mode)
-                                (car pos-list) (cadr pos-list))))
+                      (when (cdr pos-list)
+                        (let ((ovl (mmm-overlay-at (car pos-list) 'beg)))
+                          (list (if ovl
+                                    (overlay-get ovl 'mmm-mode)
+                                  mmm-primary-mode)
+                                (car pos-list) (cadr pos-list)
+                                ovl))))
                   (mmm-submode-changes-in start stop))))
     (setcdr (last regions 2) nil)
     regions))
 
 (defun mmm-regions-alist (start stop)
   "Return a list of lists of the form \(MODE . REGIONS) where REGIONS
-is a list of elements of the form \(BEG END). The disjoint union all
+is a list of elements of the form \(BEG END OVL). The disjoint union all
 of the REGIONS covers START to STOP."
   (let ((regions (mmm-regions-in start stop))
         alist)
@@ -773,7 +767,7 @@ of the REGIONS covers START to STOP."
                   ;; `mmm-update-submode-region' does, but we force it
                   ;; to use a specific mode, and don't save anything,
                   ;; fontify, or change the mode line.
-                  (mmm-set-current-pair mode (mmm-submode-overlay-at mode))
+                  (mmm-set-current-pair mode (caddr reg))
                   (mmm-set-local-variables (unless (eq mmm-previous-submode mode)
                                              mode)
                                            mmm-current-overlay)
@@ -805,9 +799,10 @@ of the REGIONS covers START to STOP."
                   (let* ((mode (car elt))
                          (func (get mode 'mmm-syntax-propertize-function))
                          (beg (cadr elt)) (end (caddr elt))
+                         (ovl (cadddr elt))
                          (syntax-propertize-chunk-size (- end beg)))
                     (goto-char beg)
-                    (mmm-set-current-pair mode (mmm-submode-overlay-at mode))
+                    (mmm-set-current-pair mode ovl)
                     (mmm-set-local-variables mode mmm-current-overlay)
                     (save-restriction
                       (if mmm-current-overlay
