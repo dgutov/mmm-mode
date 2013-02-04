@@ -6,7 +6,7 @@
 ;; Package: mmm-mode
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
 ;; Keywords: convenience, faces, languages, tools
-;; Version: 0.4.8
+;; Version: 0.5.0
 
 ;; Revision: $Id: mmm-mode.el,v 1.17 2004/06/16 14:14:18 alanshutko Exp $
 
@@ -165,6 +165,8 @@ available through M-x customize under Programming | Tools | Mmm."
                                    'syntax-begin-function
                                  'font-lock-beginning-of-syntax-function))
           'mmm-beginning-of-syntax)
+     (set (make-local-variable 'syntax-propertize-function)
+          'mmm-syntax-propertize-function)
      (setq mmm-mode t)
      (condition-case err
          (mmm-apply-all)
