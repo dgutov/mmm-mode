@@ -214,12 +214,12 @@
 
 (defun mmm-erb-scan-region (region)
   (when region ; Can be nil if a line is empty, for example.
-    (destructuring-bind (submode beg end) region
+    (destructuring-bind (submode beg end ovl) region
       (let ((scan-fn (plist-get '(ruby-mode mmm-erb-scan-erb
                                   js-mode   mmm-erb-scan-ejs)
                                 submode)))
         (and scan-fn
-             (overlay-get (mmm-overlay-at beg) 'mmm-special-tag)
+             (overlay-get ovl 'mmm-special-tag)
              (save-excursion
                (goto-char beg)
                (skip-syntax-forward "-")
