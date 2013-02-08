@@ -507,9 +507,11 @@ is non-nil, don't quit if the info is already there."
                 (put mode 'mmm-fontify-region-function
                      font-lock-fontify-region-function)
                 (put mode 'mmm-beginning-of-syntax-function
-                     font-lock-beginning-of-syntax-function)
+                     (or syntax-begin-function
+                         font-lock-beginning-of-syntax-function))
                 (put mode 'mmm-syntax-propertize-function
-                     syntax-propertize-function))
+                     (and (boundp 'syntax-propertize-function)
+                          syntax-propertize-function)))
               ;; Get variables
               (setq global-vars (mmm-get-locals 'global)
                     buffer-vars (mmm-get-locals 'buffer)
