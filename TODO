@@ -19,7 +19,7 @@ after MMM does, but changing that that didn't fix it.
 
 Improve re-parsing current region to use inclusion/offsets/etc.
 
-Support for: ASP, PHP
+Support for: ASP, PHP, JSP
 
 DEB and/or RPM packages would be nice.
 
@@ -58,10 +58,5 @@ faces of mason and has :parent mason-text, and allow a mode to specify
 what about it changes depending on its parent, or a parent to specify
 changes to its children, or a group to specify changes to its members.
 
-If font-locking needs more help, try narrowing the region before
-fontifying, or even advising `parse-partial-sexp' and friends.  At
-present, it seems good enough, though.
-
-It'd be nice if submode regions could preserve the indentation of the
-dominant major mode code around them. For example, Perl code embedded
-in HTML where the HTML is indented such as for a table.
+Port or generalize the relevant bits from ERB indentation code to similar
+packages for other languages.
