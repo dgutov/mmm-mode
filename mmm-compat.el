@@ -70,29 +70,11 @@
     `(defvar ,var ,value ,doc)))
 
 ;;}}}
-;;{{{ Regexp-Opt (Emacs 19)
-
-(condition-case ()
-    (require 'regexp-opt)
-  (error nil))
-
-(unless (and (featurep 'regexp-opt)
-             (fboundp 'regexp-opt))
-  ;; No regexp-opt; create one
-  (defun regexp-opt (strings &optional paren)
-    (concat (if paren "\\(" "")
-            (mapconcat 'regexp-quote strings "\\|")
-            (if paren "\\)" ""))))
-
-;;}}}
 ;;{{{ Regexp-Opt (XEmacs)
 
-(defmacro mmm-regexp-opt (strings paren)
-  "Act like FSF Emacs' `regexp-opt', whichever Emacs we're in.
-XEmacs' `regexp-opt' requires an extra parameter to do grouping."
-  (if (featurep 'xemacs)
-      `(regexp-opt ,strings ,paren t)
-    `(regexp-opt ,strings ,paren)))
+;; As of XEmacs' xemacs-base package version 1.82,
+;; the regexp-opt API is compatible with GNU Emacs.
+(defalias 'mmm-regexp-opt 'regexp-opt)
 
 ;;}}}
 ;;{{{ Overlays (XEmacs)
