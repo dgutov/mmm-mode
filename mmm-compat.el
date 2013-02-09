@@ -28,8 +28,8 @@
 
 ;; This file provides a number of hacks that are necessary for MMM
 ;; Mode to function in different Emacsen.  MMM Mode is designed for
-;; FSF Emacs 20 and 21, but these hacks usually enable it to work
-;; almost perfectly in Emacs 19 and XEmacs 20 or 21.
+;; FSF Emacs, but these hacks usually enable it to work
+;; almost perfectly in XEmacs 21.
 
 ;;; Code:
 
@@ -39,35 +39,6 @@
 
 (defvar mmm-xemacs (featurep 'xemacs)
   "Whether we are running XEmacs.")
-
-;;}}}
-;;{{{ Keywords (Emacs 19)
-
-;; Emacs 19 doesn't automatically set keyword variables to themselves.
-;; We shouldn't have to do any more than these, since CL automatically
-;; defines all keywords used for function arguments.
-(defvar mmm-keywords-used
-  '(:group :regexp :region :function :insert :classes :private)
-  "List of extra keywords used by MMM Mode.")
-
-(dolist (keyword mmm-keywords-used)
-  (set keyword keyword))
-
-;;}}}
-;;{{{ Customization (Emacs 19)
-
-(condition-case ()
-    (require 'custom)
-  (error nil))
-
-(unless (and (featurep 'custom)
-             (fboundp 'custom-declare-variable))
-  (defmacro defgroup (&rest args)
-    nil)
-  (defmacro defface (var values doc &rest args)
-    `(make-face (quote ,var)))
-  (defmacro defcustom (var value doc &rest args) 
-    `(defvar ,var ,value ,doc)))
 
 ;;}}}
 ;;{{{ Regexp-Opt (XEmacs)
