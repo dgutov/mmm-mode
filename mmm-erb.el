@@ -109,19 +109,10 @@
                  (?= ejs-expression nil @ "<%=" @ " " _ " " @ "%>" @))
         :creation-hook mmm-erb-mark-as-special)))
 
-(pushnew '(indent-line-function buffer) mmm-save-local-variables)
-
 ;;;###autoload
 (define-derived-mode html-erb-mode html-mode "ERB-HTML"
   (setq sgml-unclosed-tags nil) ; Simplifies indentation logic.
-  (add-hook 'mmm-html-erb-mode-hook 'mmm-erb-process-submode nil t)
-  (add-hook 'mmm-ruby-mode-submode-hook 'mmm-erb-process-submode nil t)
-  (add-hook 'mmm-css-mode-submode-hook 'mmm-erb-process-submode nil t)
-  (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
-
-(defun mmm-erb-process-submode ()
-  "Hook function to run after primary or submode major mode function."
-  (setq indent-line-function 'mmm-erb-indent-line))
+  (set (make-local-variable 'mmm-indent-line-function) 'mmm-erb-indent-line))
 
 (defun mmm-erb-mark-as-special ()
   "Hook function to run in ERB and EJS tag regions."
@@ -245,7 +236,7 @@
         ((re-search-forward " *{ *" limit t) 'open)))
 
 (defun mmm-erb-orig-indent-function (mode)
-  (cadr (assoc 'indent-line-function (get mode 'mmm-local-variables))))
+  (get mode 'mmm-indent-line-function))
 
 (defvar mmm-erb-offset-var-alist
   '((html-erb-mode . sgml-basic-offset)
@@ -257,9 +248,7 @@
 
 ;;;###autoload
 (define-derived-mode nxml-web-mode nxml-mode "nXML-Web"
-  (add-hook 'mmm-nxml-web-mode-hook 'mmm-erb-process-submode nil t)
-  (add-hook 'mmm-css-mode-submode-hook 'mmm-erb-process-submode nil t)
-  (add-hook 'mmm-js-mode-submode-hook 'mmm-erb-process-submode nil t))
+  (set (make-local-variable 'mmm-indent-line-function) 'mmm-erb-indent-line))
 
 (provide 'mmm-erb)
 

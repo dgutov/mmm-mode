@@ -131,7 +131,6 @@
     font-lock-syntax-table
     font-lock-mark-block-function       ; Override this?
     font-lock-syntactic-keywords
-    indent-line-function
     parse-sexp-ignore-comments  ; Fixes indentation in PHP-mode?
     ;; Can be different in different buffers
     (c-basic-offset
