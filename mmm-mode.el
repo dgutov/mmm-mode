@@ -117,17 +117,17 @@ over certain regions.  The submode regions are usually highlighted by
 a background color for ease of recognition.  While the point is in a
 submode region, the following changes \(are supposed to) occur:
 
-1. The local keymap is that of the submode.
+1. The local keymap and the syntax table are that of the submode.
 2. The mode line changes to show what submode region is active.
 3. The major mode menu and mouse popup menu are that of the submode.
 4. Some local variables of the submode shadow the default mode's.
-5. The syntax table and indentation are those of the submode.
-6. Font-lock fontifies correctly for the submode.
+5. Font-lock fontifies correctly for the submode.
+6. Indentation function dispatches to the appropriate submode.
 
 For further information, including installation and configuration
 instructions, see the Info file mmm.info which is included with the
 distribution of MMM Mode.  Many of MMM's configuration variables are
-available through M-x customize under Programming | Tools | Mmm."
+available through M-x customize-group RET mmm."
   (interactive "P")
   (if (if arg (> (prefix-numeric-value arg) 0) (not mmm-mode))
       (mmm-mode-on)
@@ -168,6 +168,7 @@ available through M-x customize under Programming | Tools | Mmm."
           'mmm-beginning-of-syntax)
      (set (make-local-variable 'syntax-propertize-function)
           'mmm-syntax-propertize-function)
+     (set (make-local-variable 'indent-line-function) mmm-indent-line-function)
      (setq mmm-mode t)
      (condition-case err
          (mmm-apply-all)
