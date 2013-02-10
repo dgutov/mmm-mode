@@ -511,7 +511,8 @@ is non-nil, don't quit if the info is already there."
                          font-lock-beginning-of-syntax-function))
                 (put mode 'mmm-syntax-propertize-function
                      (and (boundp 'syntax-propertize-function)
-                          syntax-propertize-function)))
+                          syntax-propertize-function))
+                (put mode 'mmm-indent-line-function indent-line-function))
               ;; Get variables
               (setq global-vars (mmm-get-locals 'global)
                     buffer-vars (mmm-get-locals 'buffer)
@@ -821,7 +822,24 @@ of the REGIONS covers START to STOP."
       (mmm-set-local-variables saved-mode saved-ovl))))
 
 ;;}}}
+;;{{{ Indentation
 
+(defvar mmm-indent-line-function 'mmm-indent-line
+  "The function to call to indent inside a primary mode region.
+This will be the value of `indent-line-function' for the whole
+buffer. It's supposed to delegate to the appropriate submode's
+indentation function. See `mmm-indent-line' as the starting point.")
+
+(defun mmm-indent-line ()
+  (interactive)
+  (funcall
+    (save-excursion
+      (back-to-indentation)
+      (mmm-update-submode-region)
+      (get (or mmm-current-submode mmm-primary-mode)
+           'mmm-indent-line-function))))
+
+;;}}}
 (provide 'mmm-region)
 
 ;;; mmm-region.el ends here
