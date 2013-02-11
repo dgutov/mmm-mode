@@ -1,8 +1,46 @@
 MMM Mode NEWS -- history of user-visible changes.  -*-outline-*-
 Copyright (C) 2003, 2004 Michael Abraham Shulman
+Copyright (C) 2013 Dmitry Gutov
 See the file COPYING for copying conditions.
 
-Please submit bug reports at http://sourceforge.net/projects/mmm-mode/
+Please submit bug reports at https://github.com/purcell/mmm-mode/issues
+
+* Changes in MMM Mode 0.5.0
+
+** Compatibility with recent Emacsen
+
+Updated to work with Emacs 23 and 24. Removed some compatibility code
+for older versions. Added new local variables used in the latest js-mode
+and cc-engine modes.
+
+** New submode classes
+
+New submode classes for ERB and EJS templates, both in mmm-erb.el. It
+also includes a smart indentation algorithm, supporting them together
+with script and style tag subregions in HTML code.
+
+** Parsing when idle
+
+Setting `mmm-parse-when-idle' will make MMM Mode re-parse modified
+buffers when Emacs is idle. This can lead to visible pauses, though,
+depending on the size of the buffer and the number of subregions.
+
+** Support submode-specific syntax functions
+
+Relevant for Emacs 24: we define a composite syntax-propertize-function
+that delegates syntax recognition to respective submode functions.
+
+For users, this means regular expressions in js-mode and string
+interpolations and percent literals in ruby-mode.
+
+** Indentation
+
+More consistent indentation behavior, the default implementation
+delegates to the submode at the end of the indentation.
+
+The major mode can provide its own implementation by setting
+mmm-indent-line-function, to handle specific mode combinations better.
+
 
 * Changes in MMM Mode 0.4.8
 
