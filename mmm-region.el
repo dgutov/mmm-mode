@@ -602,6 +602,10 @@ Return \((VAR VALUE) ...).  In some cases, VAR will be of the form
   "Get the value of the local variable VAR saved for MODE and OVL, if any."
   (cadr (assq var (mmm-get-saved-local-variables ovl mode))))
 
+;; FIXME: It's too easy to accidentally pass nil as MODE here.
+;; We probably should call this from `mmm-set-current-pair', and not
+;; rely on its callers to default to the primary mode when appropriate.
+;; Also, incorporate the opmimization from `mmm-fontify-region-list'.
 (defun mmm-set-local-variables (mode ovl)
   "Set all the local variables saved for MODE and OVL.
 Looks up global, buffer and region saves.  When MODE is nil, just
@@ -818,7 +822,7 @@ of the REGIONS covers START to STOP."
                           (font-lock-fontify-syntactic-keywords-region beg end)))))))
               (mmm-regions-in start stop))
       (mmm-set-current-pair saved-mode saved-ovl)
-      (mmm-set-local-variables saved-mode saved-ovl))))
+      (mmm-set-local-variables (or saved-mode mmm-primary-mode) saved-ovl))))
 
 ;;}}}
 ;;{{{ Indentation
