@@ -61,36 +61,6 @@
 (require 'mmm-vars)
 (require 'mmm-region)
 
-(mmm-add-group
- 'html-js
- '((js-script-cdata
-    :submode js-mode
-    :face mmm-code-submode-face
-    :front "<script[^>]*>[ \t\n]*\\(//\\)?<!\\[CDATA\\[[ \t]*\n?"
-    :back "[ \t]*\\(//\\)?]]>[ \t\n]*</script>")
-   (js-script
-    :submode js-mode
-    :face mmm-code-submode-face
-    :front "<script[^>]*>[ \t]*\n?"
-    :back "[ \t]*</script>"
-    :insert ((?j js-tag nil @ "<script type=\"text/javascript\">\n"
-                 @ "" _ "" @ "\n</script>" @)))))
-
-(mmm-add-group
- 'html-css
- '((css-cdata
-    :submode css-mode
-    :face mmm-code-submode-face
-    :front "<style[^>]*>[ \t\n]*\\(//\\)?<!\\[CDATA\\[[ \t]*\n?"
-    :back "[ \t]*\\(//\\)?]]>[ \t\n]*</style>")
-   (css
-    :submode css-mode
-    :face mmm-code-submode-face
-    :front "<style[^>]*>[ \t]*\n?"
-    :back "[ \t]*</style>"
-    :insert ((?c css-tag nil @ "<style type=\"text/css\">\n"
-                 @ "" _ "" @ "\n</style>" @)))))
-
 (mmm-add-classes
  '((erb :submode ruby-mode :front "<%[#=]?" :back "-?%>"
         :match-face (("<%#" . mmm-comment-submode-face)

@@ -67,7 +67,7 @@
 (defvar mmm-autoloaded-classes
   '((mason "mmm-mason" nil)
     (myghty "mmm-myghty" nil)
-    (embedded-css "mmm-sample" nil)
+    (html-css "mmm-sample" nil)
     (html-js "mmm-sample" nil)
     (here-doc "mmm-sample" nil)
     (embperl "mmm-sample" nil)

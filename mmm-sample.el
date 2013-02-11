@@ -27,7 +27,11 @@
 ;;; Commentary:
 
 ;; This file contains several sample submode classes for use with MMM
-;; Mode. For a more detailed and useful example, see `mmm-mason.el'.
+;; Mode. For a more detailed, advanced example, see `mmm-mason.el'.
+
+;; In order to use any of classes defined here, just require `mmm-auto' and
+;; add the respective (major mode -> class <- file extension) associations
+;; with `mmm-add-mode-ext-class'.
 
 ;;; Code:
 
@@ -35,41 +39,60 @@
 (require 'mmm-auto)
 (require 'mmm-vars)
 
-;;{{{ CSS embedded in HTML
+;;{{{ <Perl> in httpd.conf
 
 ;; This is the simplest example. Many applications will need no more
 ;; than a simple regexp.
+;;
+;; Usage: (mmm-add-mode-ext-class 'apache-generic-mode nil 'httpd-conf-perl)
+
 (mmm-add-classes
- '((embedded-css
-    :submode css
-    :face mmm-declaration-submode-face
+ '((httpd-conf-perl
+    :submode perl
     :delimiter-mode nil
-    :front "<style[^>]*>"
-    :back "</style>")))
+    :front "<Perl>"
+    :back "</Perl>")))
 
 ;;}}}
-;;{{{ Javascript in HTML
+;;{{{ JavaScript in HTML
 
-;; We use two classes here, one for code in a <script> tag and another
-;; for code embedded as a property of an HTML tag, then another class
-;; to group them together.
+;; We use two classes here, both for code in a <script> tag, one wrapped in
+;; CDATA, another not. And another class to group them together.
+;;
+;; Usage: (mmm-add-mode-ext-class 'html-mode nil 'html-js)
+
 (mmm-add-group
  'html-js
- '((js-tag
-    :submode javascript
+ '((js-script-cdata
+    :submode js-mode
     :face mmm-code-submode-face
-    :delimiter-mode nil
-    :front "<script\[^>\]*\\(language=\"javascript\\([0-9.]*\\)\"\\|type=\"text/javascript\"\\)\[^>\]*>"
-    :back"</script>"
-    :insert ((?j js-tag nil @ "<script language=\"JavaScript\">"
-                 @ "\n" _ "\n" @ "</script>" @))
-    )
-   (js-inline
-    :submode javascript
+    :front "<script[^>]*>[ \t\n]*\\(//\\)?<!\\[CDATA\\[[ \t]*\n?"
+    :back "[ \t]*\\(//\\)?]]>[ \t\n]*</script>")
+   (js-script
+    :submode js-mode
     :face mmm-code-submode-face
-    :delimiter-mode nil
-    :front "on\\w+=\""
-    :back "\"")))
+    :front "<script[^>]*>[ \t]*\n?"
+    :back "[ \t]*</script>"
+    :insert ((?j js-tag nil @ "<script type=\"text/javascript\">\n"
+                 @ "" _ "" @ "\n</script>" @)))))
+
+;;}}}
+;;{{{ CSS in HTML
+
+(mmm-add-group
+ 'html-css
+ '((css-cdata
+    :submode css-mode
+    :face mmm-code-submode-face
+    :front "<style[^>]*>[ \t\n]*\\(//\\)?<!\\[CDATA\\[[ \t]*\n?"
+    :back "[ \t]*\\(//\\)?]]>[ \t\n]*</style>")
+   (css
+    :submode css-mode
+    :face mmm-code-submode-face
+    :front "<style[^>]*>[ \t]*\n?"
+    :back "[ \t]*</style>"
+    :insert ((?c css-tag nil @ "<style type=\"text/css\">\n"
+                 @ "" _ "" @ "\n</style>" @)))))
 
 ;;}}}
 ;;{{{ Here-documents
@@ -157,7 +180,7 @@ and MODE is a major mode function symbol.")
                  ("[$" . mmm-special-submode-face))
     :insert ((?p embperl "Region Type (Character): " @ "[" str
                  @ " " _ " " @ str "]" @)
-             (?+ embperl+ ?p . "+")             
+             (?+ embperl+ ?p . "+")
              (?- embperl- ?p . "-")
              (?! embperl! ?p . "!")
              (?* embperl* ?p . "*")
@@ -289,19 +312,6 @@ and MODE is a major mode function symbol.")
     :delimiter-mode nil
     :front "<! *doctype[^>[]*\\["
     :back "]>")))
-
-;;}}}
-;;{{{ <Perl> in httpd.conf
-
-(mmm-add-classes
- '((httpd-conf-perl
-    :submode perl
-    :delimiter-mode nil
-    :front "<Perl>"
-    :back "</Perl>")))
-
-;; Suggested Use:
-;; (mmm-add-mode-ext-class 'apache-generic-mode nil 'httpd-conf-perl)
 
 ;;}}}
 ;;{{{ PHP in HTML
