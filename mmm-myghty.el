@@ -5,9 +5,8 @@
 ;; Copyright (C) 2004 by Ben Bangert
 
 ;; Original Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Based on mmm-mason.el Version: $Id: mmm-myghty.el,v 1.13 2003/03/09 17:04:03
 
-;; Trivial changes by Ben Bangert
+;; Based on mmm-mason.el, trivial changes by Ben Bangert
 
 ;;{{{ GPL
 

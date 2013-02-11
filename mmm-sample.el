@@ -3,7 +3,6 @@
 ;; Copyright (C) 2003, 2004 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-sample.el,v 1.28 2004/06/03 00:53:52 alanshutko Exp $
 
 ;;{{{ GPL
 

@@ -9,8 +9,6 @@
 ;; Keywords: convenience, faces, languages, tools
 ;; Version: 0.5.0
 
-;; Revision: $Id: mmm-mode.el,v 1.17 2004/06/16 14:14:18 alanshutko Exp $
-
 ;;{{{ GPL
 
 ;; This file is free software; you can redistribute it and/or modify

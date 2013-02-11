@@ -3,7 +3,6 @@
 ;; Copyright (C) 2000 by Michael Abraham Shulman
 
 ;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
-;; Version: $Id: mmm-region.el,v 1.38 2003/06/19 11:24:04 viritrilbia Exp $
 
 ;;{{{ GPL
 
