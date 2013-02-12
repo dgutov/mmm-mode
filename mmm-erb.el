@@ -25,8 +25,8 @@
 
 ;;; Commentary:
 
-;; This file contains definitions of JavaScript, CSS, ERB and EJS submode
-;; classes, and well as support functions for proper indentation.
+;; This file contains definitions of ERB and EJS submode classes, and well as
+;; support functions for proper indentation.
 
 ;; Usage:
 
@@ -97,6 +97,12 @@
     (if (and mmm-current-overlay mmm-current-submode
              (< (overlay-start mmm-current-overlay) (point-at-bol)))
         ;; Region starts before the current line (and contains indentation).
+        ;; If it starts on the current line, then either first part of the line
+        ;; is in primary mode, or we're on the first line of a script or style
+        ;; tag contents. In the latter case, better to also indent it according
+        ;; to the primary mode (as text): `js-indent-line' ignores narrowing,
+        ;; gets confused by the angle bracket on the previous line and thus
+        ;; breaks our "top level" heuristic.
         (mmm-erb-indent-line-submode)
       (mmm-erb-indent-line-primary))
     (when (> offset 0) (forward-char offset))))
