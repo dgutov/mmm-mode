@@ -153,8 +153,8 @@ everything in `mmm-major-mode-hook' will be run."
 
 (defun mmm-mode-on-maybe ()
   "Conditionally turn on MMM Mode.
-Turn on MMM Mode if `global-mmm-mode' is non-nil and there are classes
-to apply, or always if `global-mmm-mode' is t."
+Turn on MMM Mode if `mmm-global-mode' is non-nil and there are classes
+to apply, or always if `mmm-global-mode' is t."
   (cond ((eq mmm-global-mode t) (mmm-mode-on))
         ((not mmm-global-mode))
         ((mmm-get-all-classes nil) (mmm-mode-on)))
