@@ -553,12 +553,12 @@ which will always be available."
                                          (fboundp))))))
 
 (defun mmm-add-to-major-mode-preferences (language mode &optional default)
-  "Set the preferred major mode for LANGUAGE to MODE.
-This sets the value of `mmm-major-mode-preferences'.  If DEFAULT is
-nil or unsupplied, MODE is added at the front of the list of modes for
-LANGUAGE.  If DEFAULT is non-nil, then it is added at the end.  This
-may be used by packages to ensure that some mode is present, but not
-override any user-specified mode."
+  "Add major mode MODE as acceptable for LANGUAGE.
+This sets the value of `mmm-major-mode-preferences'. If DEFAULT
+is non-nil, MODE is added at the front of the list of modes for
+LANGUAGE. Otherwise, it is added at the end. This may be used by
+packages to ensure that some mode is present, but not override
+any user-specified mode."
   (let ((pair (assq language mmm-major-mode-preferences)))
     (if pair
         ;; Existing mode preferences
