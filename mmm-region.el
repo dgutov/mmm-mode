@@ -518,7 +518,6 @@ is non-nil, don't quit if the info is already there."
                     buffer-vars (mmm-get-locals 'buffer)
                     region-vars (mmm-get-locals 'region))
               (put mode 'mmm-mode-name mode-name))
-          (set-buffer-modified-p nil)
           (kill-buffer temp-buffer)))
       (put mode 'mmm-local-variables global-vars)
       (if buffer-entry
