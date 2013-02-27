@@ -485,7 +485,9 @@ which is set here as well.  See `mmm-save-local-variables'.  If FORCE
 is non-nil, don't quit if the info is already there."
   (let ((buffer-entry (assq mode mmm-buffer-saved-locals))
         (region-entry (assq mode mmm-region-saved-locals-defaults))
-        global-vars buffer-vars region-vars)
+        global-vars buffer-vars region-vars
+        ;; http://debbugs.gnu.org/13836
+        buffer-file-truename)
     (unless (and (not force)
                  (get mode 'mmm-local-variables)
                  buffer-entry
