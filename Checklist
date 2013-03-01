@@ -2,21 +2,18 @@
                  Checklist for New MMM Mode Releases
 
 0. Test all new code, under all Emacsen if possible.  Check that the
-   package builds and installs.  The ChangeLog should be kept up to
-   date with important changes, such as with `C-x 4 a' in Emacs.
+   package builds and installs.
 
-1. Check everything into CVS.  Use of PCL-CVS `C' command is
-   recommended to bring ChangeLog entries into cvs comments, or else
-   update the ChangeLog with `C-x v a' after checking in other files.
+1. Check everything into Git.
 
 2. Update the NEWS and TODO files and any other commentary files and
-   check them (and ChangeLog) into CVS.
+   check them into Git.
 
 3. Update version numbers and dates in `mmm-mode.el', `configure.in',
    `mmm-vars.el', and `version.texi' (the latter by running `make').
    Check them in with comment "Released x.x.x".
 
-4. Make a CVS snapshot (`C-x v s') of the MMM Mode directory.  This is
+4. Make a Git snapshot (`C-x v s') of the MMM Mode directory.  This is
    the point at which a release becomes official.
 
 5. Run `make dist' and upload the tarball.  Upload to SourceForge.

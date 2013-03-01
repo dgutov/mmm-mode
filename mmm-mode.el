@@ -9,7 +9,7 @@
 ;; Maintainer: Dmitry Gutov <dgutov@yandex.ru>
 ;; URL: https://github.com/purcell/mmm-mode
 ;; Keywords: convenience, faces, languages, tools
-;; Version: 0.5.0
+;; Version: 0.5.1
 
 ;;{{{ GPL
 
