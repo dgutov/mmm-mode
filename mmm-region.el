@@ -694,13 +694,18 @@ region and mode for the previous position."
 (defun mmm-submode-changes-in (start stop)
   "Return a list of all submode-change positions from START to STOP.
 The list is sorted in order of increasing buffer position."
-  (sort (remove-duplicates
-         (list* start stop
-                (mapcan #'(lambda (ovl)
-                            `(,(overlay-start ovl)
-                              ,(overlay-end ovl)))
-                        (mmm-overlays-overlapping start stop))))
-        #'<))
+  (let ((changes (sort (remove-duplicates
+                        (mapcan #'(lambda (ovl)
+                                    `(,(overlay-start ovl)
+                                      ,(overlay-end ovl)))
+                                (mmm-overlays-overlapping start stop)))
+                       #'<)))
+    (when (or (not changes) (< start (car changes)))
+      (push start changes))
+    (let ((last (last changes)))
+      (when (> stop (car last))
+        (setcdr last (list stop))))
+    changes))
 
 (defun mmm-regions-in (start stop)
   "Return a list of regions of the form (MODE BEG END OVL) whose disjoint

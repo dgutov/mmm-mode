@@ -202,7 +202,11 @@
         ((and (re-search-forward (concat "\\(?: +do +\\| *{ *\\)"
                                          "\\(?:|[A-Za-z0-9_, ]*|\\)? *")
                                  limit t)
-              (not (re-search-forward mmm-erb-ruby-close-re limit t)))
+              (let ((pt (point)))
+                (not (when (< pt limit)
+                       (goto-char limit)
+                       (skip-syntax-backward "-")
+                       (looking-back mmm-erb-ruby-close-re pt)))))
          'open)))
 
 (defun mmm-erb-scan-ejs (limit)
