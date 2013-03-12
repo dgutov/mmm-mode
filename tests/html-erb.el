@@ -13,17 +13,22 @@
    (overlay-end mmm-current-overlay)))
 
 (defmacro mmm-erb-deftest (name &rest body)
-  `(ert-deftest ,(intern (format "mmm-erb-%s" name)) ()
-     (ert-with-test-buffer nil
-       (let ((buffer-file-name "foo.html.erb")
-             (mmm-global-mode 'maybe)
-             mmm-parse-when-idle
-             mmm-mode-ext-classes-alist)
-         (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\.erb\\'" 'erb)
-         (html-erb-mode)
-         (mmm-mode-on-maybe)
-         (should mmm-mode)
-         ,@body))))
+  (let ((expected-result (and (eq (car body) :expected-result)
+                              (nth 1 body))))
+    (when expected-result
+      (setq body (nthcdr 2 body)))
+    `(ert-deftest ,(intern (format "mmm-erb-%s" name)) ()
+       :expected-result ,(or expected-result :passed)
+       (ert-with-test-buffer nil
+         (let ((buffer-file-name "foo.html.erb")
+               (mmm-global-mode 'maybe)
+               mmm-parse-when-idle
+               mmm-mode-ext-classes-alist)
+           (mmm-add-mode-ext-class 'html-erb-mode "\\.html\\.erb\\'" 'erb)
+           (html-erb-mode)
+           (mmm-mode-on-maybe)
+           (should mmm-mode)
+           ,@body)))))
 
 (put 'mmm-erb-deftest 'lisp-indent-function 'defun)
 
@@ -38,20 +43,38 @@
   (should (mmm-update-current-submode))
   (should (string= " end " (mmm-erb-current-overlay-string))))
 
-(mmm-erb-deftest attribute-values-are-strings
-  (insert mmm-erb-text)
-  (mmm-apply-all)
+(defun mmm-erb-assert-string-syntax ()
   (goto-char (point-min))
   (search-forward "\"")
   (should (nth 3 (syntax-ppss)))
   (search-forward "\"")
   (should (not (nth 3 (syntax-ppss)))))
 
-(mmm-erb-deftest quotes-outside-tags-dont-make-strings
-  (insert "<% foo do %><p>\"foo bar\"</p><% end %>")
-  (mmm-apply-all)
+(defun mmm-erb-assert-non-string-syntax ()
   (goto-char (point-min))
   (search-forward "\"")
   (should (not (nth 3 (syntax-ppss))))
   (search-forward "\"")
   (should (not (nth 3 (syntax-ppss)))))
+
+(mmm-erb-deftest attribute-values-are-strings
+  (insert mmm-erb-text)
+  (mmm-apply-all)
+  (mmm-erb-assert-string-syntax))
+
+(mmm-erb-deftest quotes-outside-tags-dont-make-strings
+  (insert "<% foo do %><p>\"foo bar\"</p><% end %>")
+  (mmm-apply-all)
+  (mmm-erb-assert-non-string-syntax))
+
+(mmm-erb-deftest gt-inside-subregion-doesnt-change-nesting
+  :expected-result :failed
+  (insert "<% if 2 > 1 %><div class=\"foo\"/><% end %>")
+  (mmm-apply-all)
+  (mmm-erb-assert-string-syntax))
+
+(mmm-erb-deftest lt-inside-subregion-doesnt-change-nesting
+  :expected-result :failed
+  (insert "<% if 2 < 1 %><p>\"foo bar\"</p><% end %>")
+  (mmm-apply-all)
+  (mmm-erb-assert-non-string-syntax))
