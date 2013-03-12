@@ -812,15 +812,16 @@ of the REGIONS covers START to STOP."
                   (let* ((mode (car elt))
                          (func (get mode 'mmm-syntax-propertize-function))
                          (beg (cadr elt)) (end (caddr elt))
-                         (ovl (cadddr elt)))
+                         (ovl (cadddr elt))
+                         syntax-ppss-cache
+                         syntax-ppss-last)
                     (goto-char beg)
                     (mmm-set-current-pair mode ovl)
                     (mmm-set-local-variables mode mmm-current-overlay)
                     (save-restriction
-                      (if mmm-current-overlay
-                          (narrow-to-region (overlay-start mmm-current-overlay)
-                                            (overlay-end mmm-current-overlay))
-                        (narrow-to-region beg end))
+                      (when mmm-current-overlay
+                        (narrow-to-region (overlay-start mmm-current-overlay)
+                                          (overlay-end mmm-current-overlay)))
                       (cond
                        (func
                         (funcall func beg end))
