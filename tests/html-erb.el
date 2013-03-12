@@ -7,6 +7,8 @@
      <div class=\"clear\"/>
    <% end %>")
 
+(defconst mmm-erb-edge-emacs (string-lessp "24.3.50" emacs-version))
+
 (defun mmm-erb-current-overlay-string ()
   (buffer-substring-no-properties
    (overlay-start mmm-current-overlay)
@@ -63,12 +65,13 @@
   (mmm-erb-assert-string-syntax))
 
 (mmm-erb-deftest quotes-outside-tags-dont-make-strings
+  :expected-result (if mmm-erb-edge-emacs :passed :failed)
   (insert "<% foo do %><p>\"foo bar\"</p><% end %>")
   (mmm-apply-all)
   (mmm-erb-assert-non-string-syntax))
 
 (mmm-erb-deftest gt-inside-subregion-doesnt-change-nesting
-  :expected-result :failed
+  :expected-result (if mmm-erb-edge-emacs :failed :passed)
   (insert "<% if 2 > 1 %><div class=\"foo\"/><% end %>")
   (mmm-apply-all)
   (mmm-erb-assert-string-syntax))
