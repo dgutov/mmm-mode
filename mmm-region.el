@@ -494,6 +494,7 @@ is non-nil, don't quit if the info is already there."
                  region-entry)
       (let ((temp-buffer (mmm-make-temp-buffer (current-buffer)
                                                mmm-temp-buffer-name))
+            (filename (buffer-file-name))
             (mmm-in-temp-buffer t))
         (unwind-protect
             (with-current-buffer temp-buffer
