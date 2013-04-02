@@ -796,7 +796,7 @@ of the REGIONS covers START to STOP."
 
 (defun mmm-beginning-of-syntax ()
   (goto-char
-   (let ((ovl (mmm-overlay-at (point)))
+   (let ((ovl (mmm-overlay-at (point) 'beg))
          (func (get (or mmm-current-submode mmm-primary-mode)
                     'mmm-beginning-of-syntax-function)))
      (max (if ovl (overlay-start ovl) (point-min))
