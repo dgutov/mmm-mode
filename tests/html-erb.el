@@ -71,13 +71,12 @@
   (mmm-erb-assert-non-string-syntax))
 
 (mmm-erb-deftest gt-inside-subregion-doesnt-change-nesting
-  :expected-result (if mmm-erb-edge-emacs :failed :passed)
   (insert "<% if 2 > 1 %><div class=\"foo\"/><% end %>")
   (mmm-apply-all)
   (mmm-erb-assert-string-syntax))
 
 (mmm-erb-deftest lt-inside-subregion-doesnt-change-nesting
-  :expected-result :failed
+  :expected-result (if mmm-erb-edge-emacs :passed :failed)
   (insert "<% if 2 < 1 %><p>\"foo bar\"</p><% end %>")
   (mmm-apply-all)
   (mmm-erb-assert-non-string-syntax))

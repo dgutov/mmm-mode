@@ -79,14 +79,23 @@
                  (?= ejs-expression nil @ "<%=" @ " " _ " " @ "%>" @))
         :creation-hook mmm-erb-mark-as-special)))
 
-;;;###autoload
-(define-derived-mode html-erb-mode html-mode "ERB-HTML"
-  (setq sgml-unclosed-tags nil) ; Simplifies indentation logic.
-  (set (make-local-variable 'mmm-indent-line-function) 'mmm-erb-indent-line))
-
 (defun mmm-erb-mark-as-special ()
   "Hook function to run in ERB and EJS tag regions."
   (overlay-put mmm-current-overlay 'mmm-special-tag t))
+
+;;;###autoload
+(define-derived-mode html-erb-mode html-mode "ERB-HTML"
+  (setq sgml-unclosed-tags nil) ; Simplifies indentation logic.
+  (set (make-local-variable 'mmm-indent-line-function) 'mmm-erb-indent-line)
+  (add-hook 'mmm-after-syntax-propertize-functions
+            'html-erb-after-syntax-propertize nil t))
+
+(defun html-erb-after-syntax-propertize (overlay mode beg end)
+  (when overlay
+    (with-silent-modifications
+      (funcall
+       (syntax-propertize-rules ("<\\|>" (0 ".")))
+       beg end))))
 
 (defun mmm-erb-indent-line ()
   "Indent the current line intelligently."

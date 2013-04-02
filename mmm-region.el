@@ -803,7 +803,15 @@ of the REGIONS covers START to STOP."
           (if func (progn (funcall func) (point)) (point-min))
           (point-min)))))
 
+(defvar mmm-after-syntax-propertize-functions nil
+  "List of functions to call after applying `syntax-table' text
+properties to a submode region. It is passed four arguments: the
+region overlay, the submode and the bounds of the region.")
+
 (defun mmm-syntax-propertize-function (start stop)
+  "Composite function that applies `syntax-table' text properties.
+It iterates over all submode regions between START and STOP and
+calls each respective submode's `syntax-propertize-function'."
   (let ((saved-mode mmm-current-submode)
         (saved-ovl  mmm-current-overlay))
     (mmm-save-changed-local-variables
@@ -828,7 +836,9 @@ of the REGIONS covers START to STOP."
                         (funcall func beg end))
                        (font-lock-syntactic-keywords
                         (let ((syntax-propertize-function nil))
-                          (font-lock-fontify-syntactic-keywords-region beg end)))))))
+                          (font-lock-fontify-syntactic-keywords-region beg end))))
+                      (run-hook-with-args 'mmm-after-syntax-propertize-functions
+                                          mmm-current-overlay mode beg end))))
               (mmm-regions-in start stop))
       (mmm-set-current-pair saved-mode saved-ovl)
       (mmm-set-local-variables (or saved-mode mmm-primary-mode) saved-ovl))))
