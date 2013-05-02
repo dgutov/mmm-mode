@@ -288,7 +288,7 @@
     abbrev-mode
     local-abbrev-table
     ;; And finally the syntax table and local map.
-    ((syntax-table . set-syntax-table))
+    ((syntax-table . set-syntax-table) buffer)
     ((current-local-map . use-local-map) buffer)
     paragraph-separate
     paragraph-start

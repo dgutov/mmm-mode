@@ -152,6 +152,7 @@ available through M-x customize-group RET mmm."
        (c-make-styles-buffer-local t))
      (mmm-update-mode-info major-mode)
      (setq mmm-region-saved-locals-for-dominant
+           ;; FIXME: Neither is defined in recent Emacs.
            (list* (list 'font-lock-cache-state nil)
                   (list 'font-lock-cache-position (make-marker))
                   (copy-tree (cdr (assq major-mode mmm-region-saved-locals-defaults)))))

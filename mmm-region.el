@@ -621,6 +621,21 @@ the region ones."
                 (set (car var) (cadr var))))
           (mmm-get-saved-local-variables mode ovl)))
 
+;; Used for debugging.
+(defun mmm-diff-local-variables (mode ovl)
+  (let (res)
+    (mapc (lambda (var)
+            (let ((current-value (if (consp (car var))
+                                     (funcall (caar var))
+                                   (symbol-value (car var)))))
+              (unless (equal current-value (cadr var))
+                (push
+                 (message "var: %s, current: %s, saved: %s" (car var)
+                          current-value (cadr var))
+                 res))))
+          (mmm-get-saved-local-variables mode ovl))
+    res))
+
 (defun mmm-get-saved-local-variables (mode ovl)
   (append (get mode 'mmm-local-variables)
           (cdr (assq mode mmm-buffer-saved-locals))
