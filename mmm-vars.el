@@ -997,6 +997,7 @@ PRIVATE, if supplied and non-nil, means that this class is a private
 or internal class, usually one invoked by another class via :classes,
 and is not for the user to see.")
 
+;;;###autoload
 (defun mmm-add-classes (classes)
   "Add the submode classes CLASSES to `mmm-classes-alist'."
   (dolist (class classes)
