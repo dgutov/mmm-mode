@@ -320,7 +320,7 @@ and MODE is a major mode function symbol.")
     :submode php-mode
     :face mmm-output-submode-face
     :front "<\\?php *echo "
-    :back "\\?>"
+    :back "\\(\\?>\\|\\'\\)"
     :include-front t
     :front-offset 5
     :insert ((?e php-echo nil @ "<?php" @ " echo " _ " " @ "?>" @))
@@ -329,7 +329,7 @@ and MODE is a major mode function symbol.")
     :submode php-mode
     :face mmm-code-submode-face
     :front "<\\?\\(php\\)?"
-    :back "\\?>"
+    :back "\\(\\?>\\|\\'\\)"
     :insert ((?p php-section nil @ "<?php" @ " " _ " " @ "?>" @)
              (?b php-block nil @ "<?php" @ "\n" _ "\n" @ "?>" @))
     )))
