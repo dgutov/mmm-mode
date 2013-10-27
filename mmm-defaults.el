@@ -23,10 +23,12 @@
 
 ;;; Commentary:
 
-;; Just add the following line to your init file to enable multiple mode
-;; support in ERB, EJS and PHP files:
+;; To enable multiple mode support in ERB, EJS and PHP files, just add the
+;; following line to your init file:
 ;;
 ;; (require 'mmm-defaults)
+;;
+;; Note that for PHP you still need to have php-mode (installed separately).
 ;;
 ;; TODO: Add more file types and classes here. Mention this file in README.
 
@@ -38,12 +40,13 @@
 
 ;;; ERB and EJS
 
-(mmm-add-mode-ext-class 'html-erb-mode "\\.html\\.erb\\'" 'erb)
-(mmm-add-mode-ext-class 'html-erb-mode "\\.jst\\.ejs\\'" 'ejs)
+(mmm-add-mode-ext-class 'html-erb-mode "\\.erb\\'" 'erb)
+(mmm-add-mode-ext-class 'html-erb-mode "\\.ejs\\'" 'ejs)
 (mmm-add-mode-ext-class 'html-erb-mode nil 'html-js)
 (mmm-add-mode-ext-class 'html-erb-mode nil 'html-css)
 
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . html-erb-mode))
+(add-to-list 'auto-mode-alist '("/[^.]+\\.erb\\'"  . html-erb-mode))
 (add-to-list 'auto-mode-alist '("\\.jst\\.ejs\\'"  . html-erb-mode))
 
 ;;; PHP
@@ -52,6 +55,7 @@
 (mmm-add-mode-ext-class 'html-mode nil 'html-css)
 (mmm-add-mode-ext-class 'html-mode "\\.php\\'" 'html-php)
 (add-to-list 'auto-mode-alist '("\\.html\\.php\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("/[^.]+\\.php\\'"  . html-mode))
 
 (provide 'mmm-defaults)
 
