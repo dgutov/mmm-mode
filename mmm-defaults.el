@@ -50,7 +50,7 @@
 
 (mmm-add-mode-ext-class 'html-mode nil 'html-js)
 (mmm-add-mode-ext-class 'html-mode nil 'html-css)
-(mmm-add-mode-ext-class 'html-mode nil 'html-php)
+(mmm-add-mode-ext-class 'html-mode "\\.php\\'" 'html-php)
 (add-to-list 'auto-mode-alist '("\\.html\\.php\\'" . html-mode))
 
 (provide 'mmm-defaults)
