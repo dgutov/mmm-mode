@@ -57,3 +57,35 @@
         (should pt)
         (goto-char pt)
         (should (looking-at "foo\\'"))))))
+
+(ert-deftest mmm-fontify-region-list-ignores-outside-for-syntactic-ff-tion ()
+  (ert-with-test-buffer nil
+    (let (mmm-mode-ext-classes-alist
+          mmm-parse-when-idle)
+      (insert "unpaired '!\n")
+      (insert "js>>\n")
+      (insert "var woo = js;\n")
+      (foo1-mode)
+      (mmm-mode-on)
+      (syntax-ppss-flush-cache (point-min))
+      (mmm-ify-by-regexp 'js-mode "js>>\n" 0 "\\'" 0 nil)
+      (font-lock-fontify-region (point-min) (point-max))
+      (search-backward "var")
+      (should (eq 'font-lock-keyword-face
+                  (get-text-property (point) 'face))))))
+
+(ert-deftest mmm-fontify-region-list-carries-string-after-subregion ()
+  (ert-with-test-buffer nil
+    (let (mmm-mode-ext-classes-alist
+          mmm-parse-when-idle)
+      (insert "<p class=\"foo <% 1 + 2 %> bar tee\"</p>")
+      (html-mode)
+      (mmm-mode-on)
+      (syntax-ppss-flush-cache (point-min))
+      (mmm-ify-by-regexp 'js-mode "<%" 0 "%>" 0 nil)
+      (font-lock-fontify-region (point-min) (point-max))
+      (search-backward "1")
+      (should (null (get-text-property (point) 'face)))
+      (search-forward "bar")
+      (should (eq 'font-lock-string-face
+                  (get-text-property (point) 'face))))))

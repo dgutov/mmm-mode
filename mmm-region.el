@@ -800,7 +800,9 @@ of the REGIONS covers START to STOP."
                   (mmm-set-local-variables (unless (eq mmm-previous-submode mode)
                                              mode)
                                            mmm-current-overlay)
-                  (funcall func (car reg) (cadr reg) nil)
+                  (let ((syntax-ppss-last (and (caddr reg) (list (car reg))))
+                        syntax-ppss-cache)
+                    (funcall func (car reg) (cadr reg) nil))
                   ;; Catch changes in font-lock cache.
                   (mmm-save-changed-local-variables
                    mmm-current-submode mmm-current-overlay))
@@ -844,6 +846,9 @@ calls each respective submode's `syntax-propertize-function'."
                     (mmm-set-local-variables mode mmm-current-overlay)
                     (save-restriction
                       (when mmm-current-overlay
+                        ;; Simple optimization to avoid calling syntax-beginning
+                        ;; for small buffers.
+                        (setq syntax-ppss-last (list beg))
                         (narrow-to-region (overlay-start mmm-current-overlay)
                                           (overlay-end mmm-current-overlay)))
                       (cond
