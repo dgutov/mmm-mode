@@ -114,6 +114,7 @@ and interactive history."
   (mmm-apply-classes (mmm-get-all-classes t) :start start :stop stop)
   (mmm-update-submode-region)
   (syntax-ppss-flush-cache start)
+  (syntax-propertize stop)
   (mmm-refontify-maybe start stop))
 
 ;;}}}

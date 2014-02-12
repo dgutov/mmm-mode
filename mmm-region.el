@@ -510,8 +510,7 @@ is non-nil, don't quit if the info is already there."
                 (put mode 'mmm-fontify-region-function
                      font-lock-fontify-region-function)
                 (put mode 'mmm-beginning-of-syntax-function
-                     (or syntax-begin-function
-                         font-lock-beginning-of-syntax-function))
+                     syntax-begin-function)
                 (put mode 'mmm-syntax-propertize-function
                      (and (boundp 'syntax-propertize-function)
                           syntax-propertize-function))
@@ -726,18 +725,19 @@ The list is sorted in order of increasing buffer position."
 (defun mmm-regions-in (start stop)
   "Return a list of regions of the form (MODE BEG END OVL) whose disjoint
 union covers the region from START to STOP, including delimiters."
-  (let ((regions 
-         (maplist #'(lambda (pos-list)
-                      (when (cdr pos-list)
-                        (let ((ovl (mmm-overlay-at (car pos-list) 'beg)))
-                          (list (if ovl
-                                    (overlay-get ovl 'mmm-mode)
-                                  mmm-primary-mode)
-                                (car pos-list) (cadr pos-list)
-                                ovl))))
-                  (mmm-submode-changes-in start stop))))
-    (setcdr (last regions 2) nil)
-    regions))
+  (when (> stop start)
+    (let ((regions
+           (maplist #'(lambda (pos-list)
+                        (when (cdr pos-list)
+                          (let ((ovl (mmm-overlay-at (car pos-list) 'beg)))
+                            (list (if ovl
+                                      (overlay-get ovl 'mmm-mode)
+                                    mmm-primary-mode)
+                                  (car pos-list) (cadr pos-list)
+                                  ovl))))
+                    (mmm-submode-changes-in start stop))))
+      (setcdr (last regions 2) nil)
+      regions)))
 
 (defun mmm-regions-alist (start stop)
   "Return a list of lists of the form \(MODE . REGIONS) where REGIONS
@@ -771,14 +771,10 @@ of the REGIONS covers START to STOP."
           ;; Necessary to catch changes in font-lock cache state and position.
           (mmm-save-changed-local-variables
            mmm-current-submode mmm-current-overlay)
-          ;; For some reason `font-lock-fontify-block' binds this to nil, thus
-          ;; preventing `mmm-beginning-of-syntax' from doing The Right Thing.
-          ;; I don't know why it does this, but let's undo it here.
-          (let ((font-lock-beginning-of-syntax-function 'mmm-beginning-of-syntax))
-            (mapc #'(lambda (elt)
-                      (when (get (car elt) 'mmm-font-lock-mode)
-                        (mmm-fontify-region-list (car elt) (cdr elt))))
-                  (mmm-regions-alist start stop))))
+          (mapc #'(lambda (elt)
+                    (when (get (car elt) 'mmm-font-lock-mode)
+                      (mmm-fontify-region-list (car elt) (cdr elt))))
+                (mmm-regions-alist start stop)))
       ;; `post-command-hook' contains `mmm-update-submode-region',
       ;; but jit-lock runs later, so we need to restore local vars now.
       (mmm-set-current-pair saved-mode saved-ovl)
@@ -791,34 +787,28 @@ of the REGIONS covers START to STOP."
     (let ((func (get mode 'mmm-fontify-region-function))
           font-lock-extend-region-functions)
       (mapc #'(lambda (reg)
-                  (goto-char (car reg))
+                (destructuring-bind (beg end ovl) reg
+                  (goto-char beg)
                   ;; Here we do the same sort of thing that
                   ;; `mmm-update-submode-region' does, but we force it
                   ;; to use a specific mode, and don't save anything,
                   ;; fontify, or change the mode line.
-                  (mmm-set-current-pair mode (caddr reg))
+                  (mmm-set-current-pair mode ovl)
                   (mmm-set-local-variables (unless (eq mmm-previous-submode mode)
                                              mode)
                                            mmm-current-overlay)
-                  (let ((syntax-ppss-last (and (caddr reg) (list (car reg))))
-                        syntax-ppss-cache)
-                    (funcall func (car reg) (cadr reg) nil))
+                  (save-restriction
+                    (let ((font-lock-dont-widen t)
+                          syntax-ppss-last syntax-ppss-cache)
+                      (when ovl (narrow-to-region beg end))
+                      (funcall func beg end nil)))
                   ;; Catch changes in font-lock cache.
                   (mmm-save-changed-local-variables
-                   mmm-current-submode mmm-current-overlay))
+                   mmm-current-submode mmm-current-overlay)))
               regions))))
 
 ;;}}}
 ;;{{{ Syntax
-
-(defun mmm-beginning-of-syntax ()
-  (goto-char
-   (let ((ovl (mmm-overlay-at (point) 'beg))
-         (func (get (or mmm-current-submode mmm-primary-mode)
-                    'mmm-beginning-of-syntax-function)))
-     (max (if ovl (overlay-start ovl) (point-min))
-          (if func (progn (funcall func) (point)) (point-min))
-          (point-min)))))
 
 (defvar mmm-after-syntax-propertize-functions nil
   "List of functions to call after applying `syntax-table' text
@@ -846,9 +836,6 @@ calls each respective submode's `syntax-propertize-function'."
                     (mmm-set-local-variables mode mmm-current-overlay)
                     (save-restriction
                       (when mmm-current-overlay
-                        ;; Simple optimization to avoid calling syntax-beginning
-                        ;; for small buffers.
-                        (setq syntax-ppss-last (list beg))
                         (narrow-to-region (overlay-start mmm-current-overlay)
                                           (overlay-end mmm-current-overlay)))
                       (cond

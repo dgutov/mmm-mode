@@ -163,10 +163,7 @@ available through M-x customize-group RET mmm."
      (mmm-fixup-skeleton)
      (make-local-variable 'font-lock-fontify-region-function)
      (setq font-lock-fontify-region-function 'mmm-fontify-region)
-     (set (make-local-variable (if (boundp 'syntax-begin-function) ; Emacs >= 23
-                                   'syntax-begin-function
-                                 'font-lock-beginning-of-syntax-function))
-          'mmm-beginning-of-syntax)
+     (set (make-local-variable 'syntax-begin-function) nil)
      (set (make-local-variable 'syntax-propertize-function)
           'mmm-syntax-propertize-function)
      (set (make-local-variable 'indent-line-function) mmm-indent-line-function)
@@ -197,9 +194,7 @@ available through M-x customize-group RET mmm."
     (mmm-update-submode-region)
     (setq font-lock-fontify-region-function
           (get mmm-primary-mode 'mmm-fontify-region-function))
-    (set (if (boundp 'syntax-begin-function) ; Emacs >= 23
-             'syntax-begin-function
-           'font-lock-beginning-of-syntax-function)
+    (set 'syntax-begin-function
          (get mmm-primary-mode 'mmm-beginning-of-syntax-function))
     (mmm-update-font-lock-buffer)
     (mmm-refontify-maybe)
