@@ -391,7 +391,9 @@ with point at the start of the new region."
     ;; Save evaporation type for checking later
     (overlay-put region-ovl 'mmm-evap evaporation)
     ;; Calculate priority to supersede anything already there.
-    (overlay-put region-ovl 'priority (length (mmm-overlays-at beg)))
+    ;; XXX: Actually, don't, in order not to hide the region highlighting.
+    ;; Let's try omitting the priorities and see if any problems crop up.
+    ;; (overlay-put region-ovl 'priority (length (mmm-overlays-at beg)))
     ;; Make overlays for the delimiters, with appropriate pointers.
     (when front
       (let ((front-ovl
