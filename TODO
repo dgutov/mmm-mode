@@ -19,7 +19,7 @@ after MMM does, but changing that that didn't fix it.
 
 Improve re-parsing current region to use inclusion/offsets/etc.
 
-Support for: ASP, PHP, JSP
+Support for: ASP
 
 DEB and/or RPM packages would be nice.
 
