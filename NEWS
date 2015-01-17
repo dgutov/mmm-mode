@@ -1,9 +1,26 @@
 MMM Mode NEWS -- history of user-visible changes.  -*-outline-*-
 Copyright (C) 2003, 2004 Michael Abraham Shulman
-Copyright (C) 2013 Dmitry Gutov
+Copyright (C) 2013-2015 Dmitry Gutov
 See the file COPYING for copying conditions.
 
 Please submit bug reports at https://github.com/purcell/mmm-mode/issues
+
+* Changes in MMM Mode 0.5.2
+
+Introduced `mmm-after-syntax-propertize-functions'. A primary major
+mode can set it to adjust `syntax-table' text properties in submode
+regions.
+
+New file `mmm-defaults.el'. A user can simply require it and have
+basic setup for ERB, EJS and PHP files (for the last one, `php-mode'
+has to be installed separately).
+
+`mmm-add-classes' is autoloaded.
+
+`mmm-beginning-of-syntax' was removed.
+
+Assorted highlighting and syntax detection improvements.
+
 
 * Changes in MMM Mode 0.5.1
 
