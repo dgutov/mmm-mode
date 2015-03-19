@@ -81,12 +81,12 @@
 (mmm-add-group
  'html-css
  '((css-cdata
-    :submode css-mode
+    :submode css
     :face mmm-code-submode-face
     :front "<style[^>]*>[ \t\n]*\\(//\\)?<!\\[CDATA\\[[ \t]*\n?"
     :back "[ \t]*\\(//\\)?]]>[ \t\n]*</style>")
    (css
-    :submode css-mode
+    :submode css
     :face mmm-code-submode-face
     :front "<style[^>]*>[ \t]*\n?"
     :back "[ \t]*</style>"
