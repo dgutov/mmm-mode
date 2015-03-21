@@ -299,6 +299,11 @@
     (whitespace-font-lock-mode buffer)
     (whitespace-font-lock-keywords buffer)
     (whitespace-mode buffer)
+    forward-sexp-function
+    smie-rules-function
+    smie-grammar
+    smie-forward-token-function
+    smie-backward-token-function
     )
   "Which local variables to save for major mode regions.
 Each element has the form \(VARIABLE [TYPE [MODES]]), causing VARIABLE
