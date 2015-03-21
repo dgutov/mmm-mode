@@ -856,7 +856,7 @@ calls each respective submode's `syntax-propertize-function'."
 ;;{{{ Indentation
 
 (defvar mmm-indent-line-function 'mmm-indent-line
-  "The function to call to indent inside a primary mode region.
+  "The function to call to indent a line.
 This will be the value of `indent-line-function' for the whole
 buffer. It's supposed to delegate to the appropriate submode's
 indentation function. See `mmm-indent-line' as the starting point.")
@@ -867,8 +867,12 @@ indentation function. See `mmm-indent-line' as the starting point.")
     (save-excursion
       (back-to-indentation)
       (mmm-update-submode-region)
-      (get (or mmm-current-submode mmm-primary-mode)
-           'mmm-indent-line-function))))
+      (get
+       (if (and mmm-current-overlay
+                (> (overlay-end mmm-current-overlay) (point)))
+           mmm-current-submode
+         mmm-primary-mode)
+       'mmm-indent-line-function))))
 
 ;;}}}
 (provide 'mmm-region)
