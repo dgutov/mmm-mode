@@ -159,7 +159,7 @@ names which match REGEXP."
 				     nil)
 				 (list name
 				       (car pos-list) (cadr pos-list)))))))
-		   (mmm-submode-changes-in start stop t delim))))
+		   (mmm-submode-changes-in start stop))))
     ;; The above loop leaves lots of nils in the list...
     ;; Removing them saves us from having to do the (last x 2)
     ;; trick that mmm-regions-in does.
