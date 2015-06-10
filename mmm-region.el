@@ -497,7 +497,10 @@ is non-nil, don't quit if the info is already there."
       (let ((temp-buffer (mmm-make-temp-buffer (current-buffer)
                                                mmm-temp-buffer-name))
             (filename (buffer-file-name))
-            (mmm-in-temp-buffer t))
+            (mmm-in-temp-buffer t)
+            ;; Don't try to use jit-lock, it's automatically disabled
+            ;; starting with 24.4 anyway.
+            font-lock-support-mode)
         (unwind-protect
             (with-current-buffer temp-buffer
               ;; Handle stupid modes that need the file name set.
