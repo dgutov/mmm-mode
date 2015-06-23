@@ -11,11 +11,7 @@
 * MMM-Mode: (mmm).                 Multiple Major Modes for Emacs
 @end direntry
 
-@include version.texi
-
 @ifinfo
-This is edition @value{EDITION} of the MMM Mode Manual, last updated
-@value{UPDATED}. It documents version @value{VERSION} of MMM Mode.
 
 Copyright 2000 Michael Abraham Shulman.
 
@@ -47,8 +43,6 @@ approved by the Free Software Foundation.
 @titlepage
 @title MMM Mode Manual
 @subtitle Multiple Major Modes for Emacs
-@subtitle Edition @value{EDITION}
-@subtitle @value{UPDATED}
 @author Michael Abraham Shulman
 @page
 @vskip 0pt plus 1filll
@@ -78,9 +72,6 @@ approved by the Free Software Foundation.
 
 MMM Mode is a minor mode for Emacs which allows Multiple Major Modes to
 coexist in a single buffer.
-
-This is edition @value{EDITION} of the MMM Mode Manual, last updated
-@value{UPDATED}, which documents version @value{VERSION} of MMM Mode.
 
 @end ifinfo
 
