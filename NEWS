@@ -1,9 +1,15 @@
 MMM Mode NEWS -- history of user-visible changes.  -*-outline-*-
 Copyright (C) 2003, 2004 Michael Abraham Shulman
 Copyright (C) 2013-2015 Dmitry Gutov
+Copyright (C) 2015 Steve Purcell
 See the file COPYING for copying conditions.
 
 Please submit bug reports at https://github.com/purcell/mmm-mode/issues
+
+* Changes in MMM Mode 0.5.4
+
+Fixes for indentation, SMIE support, and minor bugs.
+
 
 * Changes in MMM Mode 0.5.2
 
