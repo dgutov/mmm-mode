@@ -224,7 +224,7 @@ and OK-RESUME if the region is valid."
     (let ((beg (mmm-match->point include-front front-offset front-match))
 	  (front-pos (if front-delim
 			 (mmm-match->point t front-delim front-match)
-		       nil))
+		       (match-beginning front-match)))
           (invalid-resume (match-end front-match))
           (front-form (mmm-get-form front-form)))
       (let ((submode (if match-submode
@@ -257,9 +257,9 @@ and OK-RESUME if the region is valid."
 					back-offset back-match))
 		 (back-pos (if back-delim
 			       (mmm-match->point nil back-delim back-match)
-			     nil))
+			     (match-end back-match)))
 		 (back-form (mmm-get-form back-form))
-		 (ok-resume (if end-not-begin 
+		 (ok-resume (if end-not-begin
 				(match-end back-match)
 			      end)))
             (values beg end front-pos back-pos front-form back-form
