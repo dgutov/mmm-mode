@@ -148,7 +148,8 @@
        #'(lambda (var) (list var nil mmm-c-derived-modes))
        '(c++-template-syntax-table
 	 c-<-op-cont-regexp 
-	 c->-op-cont-regexp 
+	 c->-op-cont-regexp
+         c-after-brace-list-key
 	 c-after-suffixed-type-decl-key
 	 c-after-suffixed-type-maybe-decl-key
 	 c-any-class-key
@@ -156,15 +157,18 @@
 	 c-assignment-op-regexp
 	 c-backslash-column
 	 c-basic-offset
+         c-before-context-fontification-functions
 	 c-bitfield-kwds
 	 c-block-comment-prefix
 	 c-block-decls-with-vars
          c-block-prefix-charset
+         c-block-stmt-1-2-key
 	 c-block-stmt-1-key
 	 c-block-stmt-1-kwds
 	 c-block-stmt-2-key
 	 c-block-stmt-2-kwds
-	 c-brace-list-key 
+	 c-brace-list-key
+         c-case-kwds-regexp
 	 c-cast-parens 
 	 c-class-key
 	 c-class-kwds
@@ -186,6 +190,7 @@
 	 c-expr-kwds
 	 c-file-offsets
 	 c-file-style
+         c-not-primitive-type-keywords-regexp
 	 c-hanging-braces-alist
 	 c-hanging-colons-alist
 	 c-hanging-comment-ender-p
@@ -206,14 +211,14 @@
 	 c-keywords-obarray
 	 c-keywords-regexp
 	 c-known-type-key
-	 c-label-key
-	 c-label-kwds
+         c-label-kwds
 	 c-label-kwds-regexp
 	 c-label-minimum-indentation
 	 c-lambda-kwds
 	 c-literal-start-regexp 
 	 c-macro-with-semi-re
          c-nonlabel-token-key
+         c-nonlabel-token-2-key
 	 c-nonsymbol-chars 
 	 c-nonsymbol-token-regexp
 	 c-not-decl-init-keywords
@@ -252,6 +257,7 @@
 	 c-primitive-type-key 
 	 c-primitive-type-kwds
 	 c-protection-kwds
+         c-postfix-decl-spec-key
 	 c-recognize-<>-arglists 
 	 c-recognize-knr-p
 	 c-recognize-paren-inits 
@@ -271,7 +277,8 @@
 	 c-syntactic-ws-start 
 	 c-type-decl-prefix-key 
 	 c-type-decl-suffix-key 
-	 c-type-prefix-key 
+	 c-type-prefix-key
+         c-typeof-key
          c-prefix-spec-kwds-re
          c-typedef-key
 	 c-typedef-decl-key

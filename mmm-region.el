@@ -512,8 +512,11 @@ is non-nil, don't quit if the info is already there."
                 ;; These can't be in the local variables list, because we
                 ;; replace their actual values, but we want to use their
                 ;; original values elsewhere.
-                (put mode 'mmm-fontify-region-function
-                     font-lock-fontify-region-function)
+                (unless (bound-and-true-p c-buffer-is-cc-mode)
+                  ;; TODO: Remove this conditional after cc-mode
+                  ;; respects submode boundaries.
+                  (put mode 'mmm-fontify-region-function
+                       font-lock-fontify-region-function))
                 (put mode 'mmm-beginning-of-syntax-function
                      syntax-begin-function)
                 (put mode 'mmm-syntax-propertize-function
