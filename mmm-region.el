@@ -512,11 +512,8 @@ is non-nil, don't quit if the info is already there."
                 ;; These can't be in the local variables list, because we
                 ;; replace their actual values, but we want to use their
                 ;; original values elsewhere.
-                (unless (bound-and-true-p c-buffer-is-cc-mode)
-                  ;; TODO: Remove this conditional after cc-mode
-                  ;; respects submode boundaries.
-                  (put mode 'mmm-fontify-region-function
-                       font-lock-fontify-region-function))
+                (put mode 'mmm-fontify-region-function
+                     font-lock-fontify-region-function)
                 (put mode 'mmm-beginning-of-syntax-function
                      syntax-begin-function)
                 (put mode 'mmm-syntax-propertize-function
@@ -808,7 +805,10 @@ of the REGIONS covers START to STOP."
                   (save-restriction
                     (let ((font-lock-dont-widen t)
                           syntax-ppss-last syntax-ppss-cache)
-                      (when ovl (narrow-to-region beg end))
+                      ;; TODO: Remove this conditional when cc-mode
+                      ;; respects submode boundaries.
+                      (when (and ovl (not (memq mode mmm-c-derived-modes)))
+                        (narrow-to-region beg end))
                       (funcall func beg end nil)))
                   ;; Catch changes in font-lock cache.
                   (mmm-save-changed-local-variables
