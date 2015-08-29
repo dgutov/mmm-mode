@@ -108,7 +108,7 @@
   '(c-mode c++-mode objc-mode pike-mode java-mode jde-mode javascript-mode
     php-mode))
 
-(defvar mmm-save-local-variables 
+(defvar mmm-save-local-variables
   `(;; Don't use `function' (#') here!!  We're already inside `quote'!
     major-mode
     comment-start
@@ -131,6 +131,7 @@
     font-lock-syntax-table
     font-lock-mark-block-function       ; Override this?
     font-lock-syntactic-keywords
+    font-lock-syntactic-face-function
     parse-sexp-ignore-comments  ; Fixes indentation in PHP-mode?
     ;; Can be different in different buffers
     (c-basic-offset
