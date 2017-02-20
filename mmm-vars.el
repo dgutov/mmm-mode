@@ -271,6 +271,7 @@
 	 c-specifier-kwds
 	 c-stmt-delim-chars 
 	 c-stmt-delim-chars-with-comma
+         c-symbol-char-key
 	 c-symbol-key
 	 c-symbol-start 
 	 c-syntactic-eol
