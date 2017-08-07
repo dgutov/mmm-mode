@@ -123,6 +123,16 @@ submode region, the following changes \(are supposed to) occur:
 4. Some local variables of the submode shadow the default mode's.
 5. Font-lock fontifies correctly for the submode.
 6. Indentation function dispatches to the appropriate submode.
+7. User-specified hooks run when the point enters or exits a submode.
+
+The user may specify a number of hooks which may run when the point
+transitions between submodes, or between the primary mode and a
+submode. When a major mode is entered, the hook mmm-x-enter-hook is
+run, where x is the name of the major mode. When a major mode is
+left, the hook mmm-y-exit-hook is run, where y is the name of the
+major mode. Users may also specify hooks with names of the form
+mmm-x-y-hook which are run when the point leaves a mode named x,
+and enters a mode named y.
 
 For further information, including installation and configuration
 instructions, see the Info file mmm.info which is included with the
