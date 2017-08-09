@@ -545,10 +545,14 @@ different keymaps, syntax tables, local variables, etc. for submodes."
   (when (mmm-update-current-submode)
     (mmm-save-changed-local-variables mmm-previous-submode
                                       mmm-previous-overlay)
-    (let ((mode (or mmm-current-submode mmm-primary-mode)))
-      (mmm-update-mode-info mode)
-      (mmm-set-local-variables mode mmm-current-overlay)
-      (mmm-enable-font-lock mode))
+    (let ((new-mode (or mmm-current-submode mmm-primary-mode))
+          (old-mode (or mmm-previous-submode mmm-primary-mode)))
+      (mmm-run-constructed-hook old-mode new-mode)
+      (mmm-run-constructed-hook old-mode "exit")
+      (mmm-run-constructed-hook new-mode "enter")
+      (mmm-update-mode-info new-mode)
+      (mmm-set-local-variables new-mode mmm-current-overlay)
+      (mmm-enable-font-lock new-mode))
     (mmm-set-mode-line)
     (dolist (func (if mmm-current-overlay
 		      (overlay-get mmm-current-overlay 'entry-hook)
