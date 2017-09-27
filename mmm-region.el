@@ -871,6 +871,18 @@ This will be the value of `indent-line-function' for the whole
 buffer. It's supposed to delegate to the appropriate submode's
 indentation function. See `mmm-indent-line' as the starting point.")
 
+(defun mmm-indent-line-narrowed ()
+  "An indent function which works on modes which don't play well with mmm-mode.
+Calls `mmm-indent-line' internally, but narrows the buffer before indenting to
+appease modes which rely on constructs like (point-min) to indent."
+  (interactive)
+  (if mmm-current-overlay
+      (save-restriction
+        (narrow-to-region (overlay-start mmm-current-overlay)
+                          (overlay-end mmm-current-overlay))
+        (mmm-indent-line))
+    (mmm-indent-line)))
+
 (defun mmm-indent-line ()
   (interactive)
   (funcall
