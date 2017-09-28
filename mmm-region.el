@@ -873,15 +873,25 @@ indentation function. See `mmm-indent-line' as the starting point.")
 
 (defun mmm-indent-line-narrowed ()
   "An indent function which works on modes which don't play well with mmm-mode.
-Calls `mmm-indent-line' internally, but narrows the buffer before indenting to
+Works like `mmm-indent-line' , but narrows the buffer before indenting to
 appease modes which rely on constructs like (point-min) to indent."
   (interactive)
-  (if mmm-current-overlay
-      (save-restriction
-        (narrow-to-region (overlay-start mmm-current-overlay)
-                          (overlay-end mmm-current-overlay))
-        (mmm-indent-line))
-    (mmm-indent-line)))
+  (funcall
+   (save-excursion
+     (back-to-indentation)
+     (mmm-update-submode-region)
+     (let ((indent-function (get
+                             (if (and mmm-current-overlay
+                                      (> (overlay-end mmm-current-overlay) (point)))
+                                 mmm-current-submode
+                               mmm-primary-mode)
+                             'mmm-indent-line-function)))
+       (if mmm-current-overlay
+           (save-restriction
+             (narrow-to-region (overlay-start mmm-current-overlay)
+                               (overlay-end mmm-current-overlay))
+             indent-function)
+         indent-function)))))
 
 (defun mmm-indent-line ()
   (interactive)
