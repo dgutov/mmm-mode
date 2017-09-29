@@ -872,8 +872,8 @@ buffer. It's supposed to delegate to the appropriate submode's
 indentation function. See `mmm-indent-line' as the starting point.")
 
 (defun mmm-indent-line-narrowed ()
-  "An indent function which works on modes which don't play well with mmm-mode.
-Works like `mmm-indent-line' , but narrows the buffer before indenting to
+  "An indent function which works on some modes where `mmm-indent-line' doesn't.
+Works like `mmm-indent-line', but narrows the buffer before indenting to
 appease modes which rely on constructs like (point-min) to indent."
   (interactive)
   (funcall
@@ -896,7 +896,7 @@ appease modes which rely on constructs like (point-min) to indent."
 (defun mmm-indent-line ()
   (interactive)
   (funcall
-    (save-excursion
+   (save-excursion
       (back-to-indentation)
       (mmm-update-submode-region)
       (get
