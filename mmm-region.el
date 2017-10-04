@@ -876,22 +876,34 @@ indentation function. See `mmm-indent-line' as the starting point.")
 Works like `mmm-indent-line', but narrows the buffer before indenting to
 appease modes which rely on constructs like (point-min) to indent."
   (interactive)
-  (funcall
-   (save-excursion
-     (back-to-indentation)
-     (mmm-update-submode-region)
-     (let ((indent-function (get
-                             (if (and mmm-current-overlay
-                                      (> (overlay-end mmm-current-overlay) (point)))
-                                 mmm-current-submode
-                               mmm-primary-mode)
-                             'mmm-indent-line-function)))
-       (if mmm-current-overlay
-           (save-restriction
-             (narrow-to-region (overlay-start mmm-current-overlay)
-                               (overlay-end mmm-current-overlay))
-             indent-function)
-         indent-function)))))
+  (if mmm-current-overlay
+    (save-excursion
+      (back-to-indentation)
+      (mmm-update-submode-region)
+      (save-restriction
+        (narrow-to-region (overlay-start mmm-current-overlay)
+                          (overlay-end mmm-current-overlay))
+        (funcall (get
+                  (if (and mmm-current-overlay
+                           (> (overlay-end mmm-current-overlay) (point)))
+                      mmm-current-submode
+                    mmm-primary-mode)
+                  'mmm-indent-line-function))))
+    (mmm-indent-line)))
+
+(defun mmm-indent-region (start end)
+  "Indent the region according to `mmm-indent-line-function', then indent all
+submodes overlapping the region according to `mmm-indent-line-function'"
+  (save-excursion
+    (while (< (point) end)
+      (indent-according-to-mode)
+      (forward-line 1))
+    ;; Indent each submode in the region seperately
+    (dolist (submode (mmm-overlays-overlapping start end))
+      (goto-char (overlay-start submode))
+      (while (< (point) (min end (overlay-end submode)))
+        (indent-according-to-mode)
+        (forward-line 1)))))
 
 (defun mmm-indent-line ()
   (interactive)
