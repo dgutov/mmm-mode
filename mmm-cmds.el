@@ -434,6 +434,7 @@ appease modes which rely on constructs like (point-min) to indent."
   "Indent the region from START to END according to `mmm-indent-line-function'.
 Then, indent all submodes overlapping the region according to
 `mmm-indent-line-function'"
+  (interactive)
   (save-excursion
     (while (< (point) end)
       (indent-according-to-mode)
