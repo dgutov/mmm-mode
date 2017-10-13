@@ -122,6 +122,8 @@ positive and off otherwise." t))
 (autoload 'mmm-end-current-region "mmm-cmds" "" t)
 (autoload 'mmm-insertion-help "mmm-cmds" "" t)
 (autoload 'mmm-insert-region "mmm-cmds" "" t)
+(autoload 'mmm-indent-region "mmm-cmds" "" t)
+(autoload 'mmm-indent-line-narrowed "mmm-cmds" "" t)
 
 ;;}}}
 ;;{{{ MMM Global Mode
