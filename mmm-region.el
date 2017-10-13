@@ -871,40 +871,6 @@ This will be the value of `indent-line-function' for the whole
 buffer. It's supposed to delegate to the appropriate submode's
 indentation function. See `mmm-indent-line' as the starting point.")
 
-(defun mmm-indent-line-narrowed ()
-  "An indent function which works on some modes where `mmm-indent-line' doesn't.
-Works like `mmm-indent-line', but narrows the buffer before indenting to
-appease modes which rely on constructs like (point-min) to indent."
-  (interactive)
-  (if mmm-current-overlay
-    (save-excursion
-      (back-to-indentation)
-      (mmm-update-submode-region)
-      (save-restriction
-        (narrow-to-region (overlay-start mmm-current-overlay)
-                          (overlay-end mmm-current-overlay))
-        (funcall (get
-                  (if (and mmm-current-overlay
-                           (> (overlay-end mmm-current-overlay) (point)))
-                      mmm-current-submode
-                    mmm-primary-mode)
-                  'mmm-indent-line-function))))
-    (mmm-indent-line)))
-
-(defun mmm-indent-region (start end)
-  "Indent the region according to `mmm-indent-line-function', then indent all
-submodes overlapping the region according to `mmm-indent-line-function'"
-  (save-excursion
-    (while (< (point) end)
-      (indent-according-to-mode)
-      (forward-line 1))
-    ;; Indent each submode in the region seperately
-    (dolist (submode (mmm-overlays-overlapping start end))
-      (goto-char (overlay-start submode))
-      (while (< (point) (min end (overlay-end submode)))
-        (indent-according-to-mode)
-        (forward-line 1)))))
-
 (defun mmm-indent-line ()
   (interactive)
   (funcall
