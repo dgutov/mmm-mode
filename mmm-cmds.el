@@ -418,8 +418,7 @@ NAME is a symbol naming the insertion."
 Works like `mmm-indent-line', but narrows the buffer before indenting to
 appease modes which rely on constructs like (point-min) to indent."
   (interactive)
-  (save-excursion
-    (mmm-update-submode-region))
+  (mmm-update-submode-region)
   (if mmm-current-overlay
       (save-restriction
         (mmm-narrow-to-submode-region)
