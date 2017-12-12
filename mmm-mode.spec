@@ -4,7 +4,7 @@ Version: 0.4.7
 Release: 1
 URL: http://unc.dl.sourceforge.net/sourceforge/mmm-mode
 Source0: ${URL}/%{name}-%{version}.tar.gz
-License: GPL; Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+License: GPL; Michael Abraham Shulman <viritrilbia@gmail.com>
 Group: Applications/Editors
 BuildRoot: %{_tmppath}/%{name}-%(id -u -n)
 BuildArch: noarch

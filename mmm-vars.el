@@ -3,7 +3,7 @@
 ;; Copyright (C) 2000, 2004 by Michael Abraham Shulman
 ;; Copyright (C) 2012, 2013 by Dmitry Gutov
 
-;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 
 ;;{{{ GPL
 

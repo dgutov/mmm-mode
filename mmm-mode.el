@@ -5,7 +5,7 @@
 
 ;; Emacs Lisp Archive Entry
 ;; Package: mmm-mode
-;; Author: Michael Abraham Shulman <viritrilbia@users.sourceforge.net>
+;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 ;; Maintainer: Dmitry Gutov <dgutov@yandex.ru>
 ;; URL: https://github.com/purcell/mmm-mode
 ;; Keywords: convenience, faces, languages, tools
