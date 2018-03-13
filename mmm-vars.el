@@ -32,7 +32,7 @@
 ;;; Code:
 
 (require 'mmm-compat)
-(require 'cl)
+(require 'cl-lib)
 
 ;; MISCELLANEOUS
 ;;{{{ Shut up the Byte Compiler
@@ -597,7 +597,7 @@ element in `mmm-major-mode-preferences'.  In the latter case, the
 first `fboundp' element of the `cdr' is returned, or nil if none."
   (if (fboundp mode)
       mode
-    (car (remove-if-not
+    (car (cl-remove-if-not
           #'fboundp
           (cdr (assq mode mmm-major-mode-preferences))))))
 
@@ -1024,7 +1024,7 @@ The CLASSES are all made private, i.e. non-user-visible."
                                        '(:private t)))
                            classes))
   (add-to-list 'mmm-classes-alist
-               (list group :classes (mapcar #'first classes))))
+               (list group :classes (mapcar #'cl-first classes))))
 
 (defun mmm-add-to-group (group classes)
   "Add CLASSES to the \"grouping class\" named GROUP.
@@ -1035,7 +1035,7 @@ The CLASSES are all made private, i.e. non-user-visible."
                            classes))
   (mmm-set-class-parameter group :classes
 			   (append  (mmm-get-class-parameter group :classes)
-				    (mapcar #'first classes))))
+				    (mapcar #'cl-first classes))))
 
 ;;}}}
 ;;{{{ Version Number
@@ -1088,8 +1088,8 @@ Set automatically from `mmm-mode-ext-classes-alist'.")
 Uses `mmm-mode-ext-classes-alist' to find submode classes."
   (or mmm-mode-ext-classes
       (setq mmm-mode-ext-classes
-            (mapcar #'third
-                    (remove-if-not #'mmm-mode-ext-applies
+            (mapcar #'cl-third
+                    (cl-remove-if-not #'mmm-mode-ext-applies
                                    mmm-mode-ext-classes-alist)))))
 
 (defun mmm-clear-mode-ext-classes ()
@@ -1097,7 +1097,7 @@ Uses `mmm-mode-ext-classes-alist' to find submode classes."
   (setq mmm-mode-ext-classes nil))
 
 (defun mmm-mode-ext-applies (element)
-  (destructuring-bind (mode ext class) element
+  (cl-destructuring-bind (mode ext class) element
     (and (if mode
              (eq mode
                  ;; If MMM is on in this buffer, use the primary mode,

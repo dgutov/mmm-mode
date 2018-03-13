@@ -35,7 +35,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-utils)
@@ -60,7 +60,7 @@ See `mmm-included-p' for the values of TYPE."
 See `mmm-included-p' for the values of TYPE."
   (or pos (setq pos (point)))
   (mmm-sort-overlays
-   (remove-if-not
+   (cl-remove-if-not
     #'(lambda (ovl)
 	(and (overlay-get ovl 'mmm)
 	     (mmm-included-p ovl pos type)))
@@ -87,18 +87,18 @@ should be one of nil, `beg', `end', `none', or `all'.
 	(end (overlay-end ovl)))
     (cond ((and (= beg pos) (= end pos))
 	   ;; Do the Right Thing for zero-width overlays
-	   (case type
+	   (cl-case type
 	     ((nil) (and (overlay-get ovl 'beg-sticky)
 			 (overlay-get ovl 'end-sticky)))
 	     ((none) nil)
 	     (t t)))
 	  ((= beg pos)
-	   (case type
+	   (cl-case type
 	     ((nil) (overlay-get ovl 'beg-sticky))
 	     ((beg all) t)
 	     (t nil)))
 	  ((= end pos)
-	   (case type
+	   (cl-case type
 	     ((nil) (overlay-get ovl 'end-sticky))
 	     ((end all) t)
 	     (t nil)))
@@ -113,7 +113,7 @@ should be one of nil, `beg', `end', `none', or `all'.
 The overlays are returned in order of decreasing priority.  No
 attention is paid to stickiness."
   (mmm-sort-overlays
-   (remove-if-not
+   (cl-remove-if-not
     #'(lambda (ovl)
 	(and (overlay-get ovl 'mmm)
 	     (<= (overlay-start ovl) start)
@@ -126,7 +126,7 @@ attention is paid to stickiness."
 The overlays are returned in order of decreasing priority.  No
 attention is paid to stickiness."
   (mmm-sort-overlays
-   (remove-if-not
+   (cl-remove-if-not
     #'(lambda (ovl)
 	(and (overlay-get ovl 'mmm)
 	     (>= (overlay-start ovl) start)
@@ -139,7 +139,7 @@ attention is paid to stickiness."
 The overlays are returned in order of decreasing priority.  No
 attention is paid to stickiness."
   (mmm-sort-overlays
-   (remove-if-not
+   (cl-remove-if-not
     #'(lambda (ovl)
 	(overlay-get ovl 'mmm))
     (overlays-in (max start (point-min))
@@ -147,7 +147,7 @@ attention is paid to stickiness."
 
 (defun mmm-sort-overlays (overlays)
   "Sort OVERLAYS in order of decreasing priority."
-  (sort (copy-list overlays)
+  (sort (cl-copy-list overlays)
         #'(lambda (x y) (> (or (overlay-get x 'priority) 0)
                            (or (overlay-get y 'priority) 0)))))
 
@@ -181,7 +181,7 @@ Return non-nil if the current region changed.
 Also deletes overlays that ought to evaporate because their delimiters
 have disappeared."
   (mapc #'delete-overlay
-	(remove-if #'(lambda (ovl)
+	(cl-remove-if #'(lambda (ovl)
 		       (or (not (eq (overlay-get ovl 'mmm-evap) 'front))
 			   (overlay-buffer (overlay-get ovl 'front))))
 		   (mmm-overlays-at pos)))
@@ -275,7 +275,7 @@ a valid child of the highest-priority of those regions, if any.
 Signals errors, returns `t' if no error."
   ;; First check if the placement is valid.  Every existing region
   ;; that overlaps this one must contain it in its entirety.
-  (let ((violators (set-difference
+  (let ((violators (cl-set-difference
 		    (mmm-overlays-overlapping beg end)
 		    (mmm-overlays-containing beg end))))
     (if violators
@@ -294,7 +294,7 @@ Signals errors, returns `t' if no error."
 		 (list parent-mode))))
   t)
 
-(defun* mmm-make-region
+(cl-defun mmm-make-region
     (submode beg end &key face
 	     front back (evaporation 'front)
 	     delimiter-mode front-face back-face
@@ -433,7 +433,7 @@ Does not handle delimiters.  Use `mmm-make-region'."
        ,@(if delim '((delim t)) nil)
        (mmm-local-variables
 	;; Have to be careful to make new list structure here
-	,(list* (list 'font-lock-cache-state nil)
+	,(cl-list* (list 'font-lock-cache-state nil)
 		(list 'font-lock-cache-position (make-marker))
 		(copy-tree
 		 (cdr (assq submode mmm-region-saved-locals-defaults)))))
@@ -689,7 +689,7 @@ region and mode for the previous position."
 
 (defun mmm-update-font-lock-buffer ()
   "Turn on font lock if any mode in the buffer enables it."
-  (if (some #'(lambda (mode)
+  (if (cl-some #'(lambda (mode)
                 (get mode 'mmm-font-lock-mode))
             (cons mmm-primary-mode
                   (mapcar #'(lambda (ovl)
@@ -717,8 +717,8 @@ region and mode for the previous position."
 (defun mmm-submode-changes-in (start stop)
   "Return a list of all submode-change positions from START to STOP.
 The list is sorted in order of increasing buffer position."
-  (let ((changes (sort (remove-duplicates
-                        (mapcan #'(lambda (ovl)
+  (let ((changes (sort (cl-remove-duplicates
+                        (mapcan (lambda (ovl)
                                     `(,(overlay-start ovl)
                                       ,(overlay-end ovl)))
                                 (mmm-overlays-overlapping start stop)))
@@ -735,7 +735,7 @@ The list is sorted in order of increasing buffer position."
 union covers the region from START to STOP, including delimiters."
   (when (> stop start)
     (let ((regions
-           (maplist #'(lambda (pos-list)
+           (cl-maplist (lambda (pos-list)
                         (when (cdr pos-list)
                           (let ((ovl (mmm-overlay-at (car pos-list) 'beg)))
                             (list (if ovl
@@ -795,7 +795,7 @@ of the REGIONS covers START to STOP."
     (let ((func (get mode 'mmm-fontify-region-function))
           font-lock-extend-region-functions)
       (mapc #'(lambda (reg)
-                (destructuring-bind (beg end ovl) reg
+                (cl-destructuring-bind (beg end ovl) reg
                   (goto-char beg)
                   ;; Here we do the same sort of thing that
                   ;; `mmm-update-submode-region' does, but we force it
@@ -835,7 +835,7 @@ calls each respective submode's `syntax-propertize-function'."
     (mmm-save-changed-local-variables
      mmm-current-submode mmm-current-overlay)
     (unwind-protect
-        (mapc #'(lambda (elt)
+        (mapc (lambda (elt)
                   (let* ((mode (car elt))
                          (func (get mode 'mmm-syntax-propertize-function))
                          (beg (cadr elt)) (end (caddr elt))

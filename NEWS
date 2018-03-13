@@ -10,6 +10,10 @@ Introduced mode transition hooks, like mmm-x-enter-hook and mmm-y-exit-hook.
 
 New function mmm-indent-line-narrowed, to use as mmm-indent-line-function.
 
+`cl-lib' is a new dependency, replacing `cl'. It comes bundled with
+recent versions of Emacs, and for older ones it can be installed from
+GNU ELPA.
+
 
 * Changes in MMM Mode 0.5.4
 

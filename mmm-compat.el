@@ -32,8 +32,6 @@
 
 ;;; Code:
 
-(require 'cl)
-
 ;;{{{ Emacsen Detection
 
 (defvar mmm-xemacs (featurep 'xemacs)

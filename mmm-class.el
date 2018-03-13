@@ -31,7 +31,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'mmm-vars)
 (require 'mmm-region)
 
@@ -71,7 +71,7 @@ Creates a new parameter if one is not present."
 ;;}}}
 ;;{{{ Apply Classes
 
-(defun* mmm-apply-class
+(cl-defun mmm-apply-class
     (class &optional (start (point-min)) (stop (point-max)) face)
   "Apply the submode class CLASS from START to STOP in FACE.
 If FACE is nil, the face for CLASS is used, or the default face if
@@ -86,7 +86,7 @@ none is specified by CLASS."
     ;; Hack in case class hook sets mmm-buffer-mode-display-name etc.
     (mmm-set-mode-line)))
 
-(defun* mmm-apply-classes
+(cl-defun mmm-apply-classes
     (classes &key (start (point-min)) (stop (point-max)) face)
   "Apply all submode classes in CLASSES, in order.
 All classes are applied regardless of any errors that may occur in
@@ -99,14 +99,14 @@ error once all classes have been applied."
         (mmm-invalid-submode-class
          ;; Save the name of the invalid class, so we can report them
          ;; all together at the end.
-         (add-to-list 'invalid-classes (second err)))))
+         (add-to-list 'invalid-classes (cl-second err)))))
     (when invalid-classes
       (signal 'mmm-invalid-submode-class invalid-classes))))
 
 ;;}}}
 ;;{{{ Apply All Classes
 
-(defun* mmm-apply-all (&key (start (point-min)) (stop (point-max)))
+(cl-defun mmm-apply-all (&key (start (point-min)) (stop (point-max)))
   "MMM-ify from START to STOP by all submode classes.
 The classes come from mode/ext, `mmm-classes', `mmm-global-classes',
 and interactive history."
@@ -122,7 +122,7 @@ and interactive history."
 ;;; BUFFER SCANNING
 ;;{{{ Scan for Regions
 
-(defun* mmm-ify
+(cl-defun mmm-ify
     (&rest all &key classes handler
 	   submode match-submode
            (start (point-min)) (stop (point-max))
@@ -171,7 +171,7 @@ the rest of the arguments are for an actual class being applied. See
    (t
     (mmm-save-all
      (goto-char start)
-     (loop for (beg end front-pos back-pos matched-front matched-back
+     (cl-loop for (beg end front-pos back-pos matched-front matched-back
                     matched-submode matched-face matched-name
                     invalid-resume ok-resume) =
                     (apply #'mmm-match-region :start (point) all)
@@ -204,7 +204,7 @@ the rest of the arguments are for an actual class being applied. See
 ;;}}}
 ;;{{{ Match Regions
 
-(defun* mmm-match-region
+(cl-defun mmm-match-region
     (&key start stop front back front-verify back-verify
           front-delim back-delim
           include-front include-back front-offset back-offset
@@ -232,9 +232,9 @@ and OK-RESUME if the region is valid."
                              (mmm-save-all
                               (funcall match-submode front-form))
                            (mmm-no-matching-submode
-                            (return-from
+                            (cl-return-from
                                 mmm-match-region
-                              (values beg nil nil nil nil nil nil nil nil
+                              (cl-values beg nil nil nil nil nil nil nil nil
                                       invalid-resume nil))))
                        nil))
 	    (name (cond ((functionp match-name)
@@ -262,7 +262,7 @@ and OK-RESUME if the region is valid."
 		 (ok-resume (if end-not-begin 
 				(match-end back-match)
 			      end)))
-            (values beg end front-pos back-pos front-form back-form
+            (cl-values beg end front-pos back-pos front-form back-form
 		    submode face name
                     invalid-resume ok-resume)))))))
 
@@ -297,8 +297,8 @@ unless POS is a regexp."
     (looking-at ""))            ; Set the match data
    ;; Strings are searched for as regexps.
    ((stringp pos)
-    (loop always (re-search-forward pos stop 'limit)
-          until (or (not verify) (mmm-save-all (funcall verify)))))
+    (cl-loop always (re-search-forward pos stop 'limit)
+             until (or (not verify) (mmm-save-all (funcall verify)))))
    ;; Otherwise it must be a function.
    ((functionp pos)
     (funcall pos stop))))

@@ -29,7 +29,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'font-lock)
 (require 'mmm-compat)
 (require 'mmm-vars)
@@ -44,12 +44,12 @@
    (list (intern
           (completing-read
            "Submode Class: "
-           (remove-duplicates
-            (mapcar #'(lambda (spec) (list (symbol-name (car spec))))
+           (cl-remove-duplicates
+            (mapcar (lambda (spec) (list (symbol-name (car spec))))
                     (append
-                     (remove-if #'(lambda (spec) (plist-get (cdr spec) :private))
+                     (cl-remove-if (lambda (spec) (plist-get (cdr spec) :private))
                                 mmm-classes-alist)
-                     (remove-if #'caddr mmm-autoloaded-classes)))
+                     (cl-remove-if #'caddr mmm-autoloaded-classes)))
             :test #'equal)
            nil t))))
   (unless (eq class (intern ""))
@@ -124,7 +124,7 @@ delimiter auto-insertion that MMM Mode provides. See, for example,
 `mmm-insert-region'."
   (interactive "p")
   (message "MMM-ifying block...")
-  (destructuring-bind (start stop) (mmm-get-block lines)
+  (cl-destructuring-bind (start stop) (mmm-get-block lines)
     (when (< start stop)
       (mmm-apply-all :start start :stop stop)))
   (message "MMM-ifying block...done"))
@@ -182,7 +182,7 @@ Use this command if a submode region's boundaries have become wrong."
 ;;}}}
 ;;{{{ End Current Region
 
-(defun* mmm-end-current-region (&optional arg)
+(cl-defun mmm-end-current-region (&optional arg)
   "End current submode region.
 If ARG is nil, end it at the most appropriate place, usually its
 current back boundary. If ARG is non-nil, end it at point. If the
@@ -202,7 +202,7 @@ entire job of this function."
             (when (mmm-match-back ovl)
               (if arg
                   (replace-match "")
-                (return-from mmm-end-current-region)))))
+                (cl-return-from mmm-end-current-region)))))
         (let ((back (overlay-get ovl 'back)))
           (cond ((stringp back)
                  (save-excursion
@@ -249,9 +249,9 @@ prefix and modifiers) will insert a <%perl>...</%perl> region."
          (event (aref seq (1- (length seq))))
          (mods (event-modifiers event))
          (key (mmm-event-key event)))
-    (if (subsetp mmm-insert-modifiers mods)
+    (if (cl-subsetp mmm-insert-modifiers mods)
         (mmm-insert-by-key
-         (append (set-difference mods mmm-insert-modifiers)
+         (append (cl-set-difference mods mmm-insert-modifiers)
                  key)
          arg))))
 
@@ -265,7 +265,7 @@ KEY must be a list \(MODIFIERS... . BASIC-KEY) where MODIFIERS are
 symbols such as shift, control, etc. and BASIC-KEY is a character code
 or a symbol such as tab, return, etc. Note that if there are no
 MODIFIERS, the dotted list becomes simply BASIC-KEY."
-  (multiple-value-bind (class skel str) (mmm-get-insertion-spec key)
+  (cl-multiple-value-bind (class skel str) (mmm-get-insertion-spec key)
     (when skel
       (let ((after-change-functions nil)
             (old-undo buffer-undo-list) undo)
@@ -273,7 +273,7 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
         ;; have to do it.
         (if mmm-xemacs (setq skeleton-positions nil))
         (skeleton-proxy-new skel str arg)
-        (destructuring-bind (back end beg front) skeleton-positions
+        (cl-destructuring-bind (back end beg front) skeleton-positions
           ;; TODO: Find a way to trap invalid-parent signals from
           ;; make-region and undo the skeleton insertion.
           (let ((match-submode (plist-get class :match-submode))
@@ -342,7 +342,7 @@ Return \(CLASS SKEL STR) where CLASS is the class spec a match was
 found in, SKEL is the skeleton to insert, and STR is the argument.
 CLASSLIST defaults to the return value of `mmm-get-all-classes',
 including global classes."
-  (loop for classname in (or classlist (mmm-get-all-classes t))
+  (cl-loop for classname in (or classlist (mmm-get-all-classes t))
         for class = (mmm-get-class-spec classname)
         for inserts = (plist-get class :insert)
         for skel = (cddr (assoc key inserts))
@@ -397,8 +397,8 @@ is a symbol naming the insertion."
   "Return an alist of all currently available insertion keys.
 Elements look like \(KEY NAME ...) where KEY is an insertion key and
 NAME is a symbol naming the insertion."
-  (remove-duplicates
-   (loop for classname in (or classlist (mmm-get-all-classes t))
+  (cl-remove-duplicates
+   (cl-loop for classname in (or classlist (mmm-get-all-classes t))
          for class = (mmm-get-class-spec classname)
          append (plist-get class :insert) into keys
          ;; If we have a group class, recurse.

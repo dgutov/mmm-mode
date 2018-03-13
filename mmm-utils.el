@@ -30,8 +30,6 @@
 
 ;;; Code:
 
-(require 'cl)
-
 ;;{{{ Valid Buffer
 
 ;; We used to wrap almost everything in this, but I realized that

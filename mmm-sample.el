@@ -34,7 +34,7 @@
 
 ;;; Code:
 
-(require 'cl)
+(require 'cl-lib)
 (require 'mmm-auto)
 (require 'mmm-vars)
 
@@ -118,7 +118,7 @@ and MODE is a major mode function symbol.")
   (setq string (match-string 0 string))
   (or (mmm-ensure-modename
        ;; First try the user override variable.
-       (some #'(lambda (pair)
+       (cl-some #'(lambda (pair)
                 (if (string-match (car pair) string) (cdr pair) nil))
              mmm-here-doc-mode-alist))
       (let ((words (split-string (downcase string) "[_-]+")))
@@ -126,20 +126,20 @@ and MODE is a major mode function symbol.")
              ;; Try the whole name, stopping at "mode" if present.
              (intern
               (mapconcat #'identity
-                         (nconc (ldiff words (member "mode" words))
+                         (nconc (cl-ldiff words (member "mode" words))
                                 (list "mode"))
                          "-")))
             ;; Try each word by itself (preference list)
-            (some #'(lambda (word)
+            (cl-some (lambda (word)
                       (mmm-ensure-modename (intern word)))
                   words)
             ;; Try each word with -mode tacked on
-            (some #'(lambda (word)
+            (cl-some (lambda (word)
                       (mmm-ensure-modename
                        (intern (concat word "-mode"))))
                   words)
             ;; Try each pair of words with -mode tacked on
-            (loop for (one two) on words
+            (cl-loop for (one two) on words
                   if (mmm-ensure-modename
                       (intern (concat one two "-mode")))
                   return it)

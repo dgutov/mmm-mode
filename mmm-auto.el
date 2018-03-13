@@ -58,7 +58,6 @@
 
 ;;; Code:
 
-(require 'cl)
 (require 'mmm-vars)
 
 ;;{{{ Autoload Submode Classes
