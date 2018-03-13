@@ -60,3 +60,7 @@ changes to its children, or a group to specify changes to its members.
 
 Port or generalize the relevant bits from ERB indentation code to similar
 packages for other languages.
+
+Make re-parsing the buffer into regions incremental: take the position
+of the most early change, see the submodes nesting there, and resume
+parsing with that data. Shouldn't be too hard, conceptually.
