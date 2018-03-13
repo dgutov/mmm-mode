@@ -1,6 +1,6 @@
 ;;; mmm-univ.el --- The "Universal" Submode Class
 
-;; Copyright (C) 2000 by Free Software Foundation, Inc.
+;; Copyright (C) 2000, 2001, 2013  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
 

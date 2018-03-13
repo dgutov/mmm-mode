@@ -1,7 +1,6 @@
 ;;; mmm-region.el --- Manipulating and behavior of MMM submode regions
 
-;; Copyright (C) 2000 by Michael Abraham Shulman
-;; Copyright (C) 2012, 2013 by Dmitry Gutov
+;; Copyright (C) 2000-2003, 2010-2015  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 

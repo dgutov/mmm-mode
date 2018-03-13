@@ -1,6 +1,6 @@
 ;;; mmm-mason.el --- MMM submode class for Mason components
 
-;; Copyright (C) 2000 by Michael Abraham Shulman
+;; Copyright (C) 2000-2003, 2013  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 

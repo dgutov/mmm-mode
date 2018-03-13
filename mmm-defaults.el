@@ -1,6 +1,6 @@
 ;;; mmm-defaults.el --- Friendly defaults for MMM Mode
 
-;; Copyright (C) 2013 by Dmitry Gutov
+;; Copyright (C) 2013  Free Software Foundation, Inc.
 
 ;; Author: Dmitry Gutov <dgutov@yandex.ru>
 

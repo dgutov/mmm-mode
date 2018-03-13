@@ -1,7 +1,6 @@
 ;;; mmm-vars.el --- Variables for MMM Mode
 
-;; Copyright (C) 2000, 2004 by Michael Abraham Shulman
-;; Copyright (C) 2012, 2013 by Dmitry Gutov
+;; Copyright (C) 2000-2004, 2011-2015  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 

@@ -1,6 +1,6 @@
 ;;; mmm-cweb.el --- MMM submode class for CWeb programs
 
-;; Copyright (C) 2001 by Alan Shutko
+;; Copyright (C) 2001, 2002, 2013  Free Software Foundation, Inc.
 
 ;; Author: Alan Shutko <ats@acm.org>
 

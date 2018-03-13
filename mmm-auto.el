@@ -1,6 +1,6 @@
 ;;; mmm-auto.el --- loading and enabling MMM Mode automatically
 
-;; Copyright (C) 2000 by Michael Abraham Shulman
+;; Copyright (C) 2000-2004,  2012, 2013  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
 

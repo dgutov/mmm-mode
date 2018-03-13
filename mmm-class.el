@@ -1,6 +1,6 @@
 ;;; mmm-class.el --- MMM submode class variables and functions
 
-;; Copyright (C) 2000, 2004 by Michael Abraham Shulman
+;; Copyright (C) 2000-2004, 2011-2015  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 
