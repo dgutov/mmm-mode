@@ -4,6 +4,13 @@ See the file COPYING for copying conditions.
 
 Please submit bug reports at https://github.com/purcell/mmm-mode/issues
 
+* Changes in MMM Mode 0.5.5
+
+Introduced mode transition hooks, like mmm-x-enter-hook and mmm-y-exit-hook.
+
+New function mmm-indent-line-narrowed, to use as mmm-indent-line-function.
+
+
 * Changes in MMM Mode 0.5.4
 
 Fixes for indentation, SMIE support, and minor bugs.
