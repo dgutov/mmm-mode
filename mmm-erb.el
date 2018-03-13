@@ -1,6 +1,6 @@
 ;;; mmm-erb.el --- ERB templates editing support
 
-;; Copyright (C) 2012, 2013  Free Software Foundation, Inc.
+;; Copyright (C) 2012, 2013, 2018  Free Software Foundation, Inc.
 
 ;; Author: Dmitry Gutov <dgutov@yandex.ru>
 

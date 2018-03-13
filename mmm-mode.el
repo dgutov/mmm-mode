@@ -1,6 +1,6 @@
 ;;; mmm-mode.el --- Allow Multiple Major Modes in a buffer
 
-;; Copyright (C) 1999-2004, 2012-2015  Free Software Foundation, Inc.
+;; Copyright (C) 1999-2004, 2012-2015, 2018  Free Software Foundation, Inc.
 
 ;; Emacs Lisp Archive Entry
 ;; Package: mmm-mode

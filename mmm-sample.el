@@ -1,6 +1,6 @@
 ;;; mmm-sample.el --- Sample MMM submode classes
 
-;; Copyright (C) 2000-2004, 2012-2015  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2004, 2012-2015, 2018  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 

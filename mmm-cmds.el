@@ -1,6 +1,6 @@
 ;;; mmm-cmds.el --- MMM Mode interactive commands and keymap
 
-;; Copyright (C) 2000-2003, 2011-2013  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2003, 2011-2013, 2018  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 
