@@ -1,6 +1,7 @@
 ;;; mmm-noweb.el --- MMM submode class for Noweb programs
 ;;
-;; Copyright 2003, 2004, 2018 Joe Kelsey <joe@zircon.seattle.wa.us>
+;; Copyright 2003, 2004  Joe Kelsey <joe@zircon.seattle.wa.us>
+;; Copyright 2018  Free Software Foundation, Inc.
 ;;
 ;; The filling, completion and chunk motion commands either taken
 ;; directly from or inspired by code in:
