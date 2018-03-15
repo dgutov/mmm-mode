@@ -13,8 +13,6 @@ Apostrophes mess up Perl parsing in XEmacs but not Emacs.  I thought
 it was because XEmacs sets `font-lock-beginning-of-syntax-function'
 after MMM does, but changing that that didn't fix it.
 
-Improve re-parsing current region to use inclusion/offsets/etc.
-
 Support for: ASP
 
 DEB and/or RPM packages would be nice.
@@ -56,3 +54,6 @@ even ignore the nesting, backtrack to a position where there are no
 overlays, and re-parse from there (see mmm-parse-apply as a starting
 point). Remember to handle delimiter inclusion and offsets as best
 possible.
+
+Thus, make re-parsing automatic (from syntax-propertize-function,
+probably), making manual control unnecessary.
