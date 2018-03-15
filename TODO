@@ -57,3 +57,5 @@ possible.
 
 Thus, make re-parsing automatic (from syntax-propertize-function,
 probably), making manual control unnecessary.
+
+Remove XEmacs stuff?
