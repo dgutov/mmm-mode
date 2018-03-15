@@ -63,4 +63,7 @@ packages for other languages.
 
 Make re-parsing the buffer into regions incremental: take the position
 of the most early change, see the submodes nesting there, and resume
-parsing with that data. Shouldn't be too hard, conceptually.
+parsing with that data. Shouldn't be too hard, conceptually. Maybe
+even ignore the nesting, backtrack to a position where there are no
+overlays, and re-parse from there (see mmm-parse-apply as a starting
+point).
