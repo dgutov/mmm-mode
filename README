@@ -17,7 +17,7 @@ INSTALLATION
   Use any of the following options:
 
   1. Users of package.el (a.k.a. ELPA) can easily install MMM Mode from
-  the Melpa package repository at http://melpa.milkbox.net/ -- this is the
+  the ELPA package repository at https://elpa.gnu.org/ -- this is the
   preferred and best-supported installation mechanism.
 
   2. Since currently MMM Mode is written in pure Emacs Lisp, you could just
