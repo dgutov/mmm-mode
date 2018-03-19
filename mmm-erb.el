@@ -86,11 +86,11 @@
 ;;;###autoload
 (define-derived-mode html-erb-mode html-mode "ERB-HTML"
   (setq sgml-unclosed-tags nil) ; Simplifies indentation logic.
-  (set (make-local-variable 'mmm-indent-line-function) 'mmm-erb-indent-line)
+  (set (make-local-variable 'mmm-indent-line-function) #'mmm-erb-indent-line)
   (add-hook 'mmm-after-syntax-propertize-functions
-            'html-erb-after-syntax-propertize nil t))
+            #'html-erb-after-syntax-propertize nil t))
 
-(defun html-erb-after-syntax-propertize (overlay mode beg end)
+(defun html-erb-after-syntax-propertize (overlay _mode beg end)
   (when overlay
     (with-silent-modifications
       (funcall
@@ -147,12 +147,11 @@
 
 (defun mmm-erb-indent-to-region-start (&optional additional-offset)
   "Indent line to match start of region, possibly adding ADDITIONAL-OFFSET."
-  (let ((indent (current-indentation)))
-    (indent-line-to
-     (save-excursion
-       (goto-char (1- (overlay-start mmm-current-overlay)))
-       (+ (current-indentation)
-          (or additional-offset 0))))))
+  (indent-line-to
+   (save-excursion
+     (goto-char (1- (overlay-start mmm-current-overlay)))
+     (+ (current-indentation)
+        (or additional-offset 0)))))
 
 (defun mmm-erb-indent-line-primary ()
   "Indent line in primary mode."
@@ -237,7 +236,7 @@
 
 ;;;###autoload
 (define-derived-mode nxml-web-mode nxml-mode "nXML-Web"
-  (set (make-local-variable 'mmm-indent-line-function) 'mmm-erb-indent-line))
+  (set (make-local-variable 'mmm-indent-line-function) #'mmm-erb-indent-line))
 
 (provide 'mmm-erb)
 

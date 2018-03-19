@@ -74,7 +74,7 @@ See `mmm-noweb-quote'.")
 ;;}}}
 ;;{{{ Support for mmm submode stuff
 
-(defun mmm-noweb-chunk (form)
+(defun mmm-noweb-chunk (_form)
   "Return the noweb code mode chosen by the user.
 If the next 100 characters of the buffer contain a string of the form
 \"-*- MODE -*-\", then return MODE as the chosen mode, otherwise
@@ -90,12 +90,12 @@ return the value of `mmm-noweb-code-mode'."
 	    mmm-noweb-code-mode))
     mmm-noweb-code-mode))
 
-(defun mmm-noweb-quote (form)
+(defun mmm-noweb-quote (_form)
   "Create a unique name for a quoted code region within a documentation chunk."
   (or mmm-noweb-quote-mode
       mmm-noweb-code-mode))
 
-(defun mmm-noweb-quote-name (form)
+(defun mmm-noweb-quote-name (_form)
   "Create a unique name for a quoted code region within a documentation chunk."
   (setq mmm-noweb-quote-number (1+ mmm-noweb-quote-number))
   (concat mmm-noweb-quote-string "-"
@@ -146,8 +146,8 @@ return the value of `mmm-noweb-code-mode'."
 ;;}}}
 ;;{{{ Noweb regions
 
-(defun mmm-noweb-regions (start stop regexp &optional delim)
-  "Return a liat of regions of the form \(NAME BEG END) that exclude
+(defun mmm-noweb-regions (start stop regexp)
+  "Return a liat of regions of the form (NAME BEG END) that exclude
 names which match REGEXP."
   (let* ((remove-next nil)
 	 (regions
@@ -228,7 +228,7 @@ chunks."
 	  (fill-paragraph justify)))
       (mmm-undo-syntax-other-regions))))
 
-(defun mmm-noweb-fill-named-chunk (&optional justify)
+(defun mmm-noweb-fill-named-chunk (&optional _justify)
   "Fill the region containing the named chunk."
   (interactive "P")
   (save-restriction
@@ -255,12 +255,14 @@ chunks."
 (defun mmm-noweb-auto-fill-doc-mode ()
   "Install the improved auto fill function, iff necessary."
   (if auto-fill-function
-      (setq auto-fill-function 'mmm-noweb-auto-fill-doc-chunk)))
+      ;; FIXME: Use add-function?
+      (setq auto-fill-function #'mmm-noweb-auto-fill-doc-chunk)))
 
 (defun mmm-noweb-auto-fill-code-mode ()
   "Install the default auto fill function, iff necessary."
   (if auto-fill-function
-      (setq auto-fill-function 'do-auto-fill)))
+      ;; FIXME: Use remove-function?
+      (setq auto-fill-function #'do-auto-fill)))
 
 ;;}}}
 ;;{{{ Functions on named chunks
@@ -365,7 +367,7 @@ chunks."
       ;; 'keymap', not 'local-map'
       (overlay-put ovl 'keymap mmm-noweb-map))))
 
-(add-hook 'mmm-noweb-class-hook 'mmm-noweb-bind-keys)
+(add-hook 'mmm-noweb-class-hook #'mmm-noweb-bind-keys)
 
 ;; TODO: make this overlay go away if mmm is turned off
 

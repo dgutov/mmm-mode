@@ -1,6 +1,6 @@
 ;;; mmm-auto.el --- loading and enabling MMM Mode automatically
 
-;; Copyright (C) 2000-2004,  2012, 2013  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2004,  2012, 2013, 2018  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
 
@@ -40,6 +40,8 @@
 ;; `post-command-hook' is even better than being run by major mode
 ;; functions, since it is run after all local variables and text are
 ;; loaded, which may not be true in certain cases for the other.)
+
+;; FIXME: There's now after-change-major-mode-hook which should DTRT.
 
 ;; In order to do this magic, we rely on the fact that there *is* a
 ;; hook that all major modes run when *beginning* their work. They
@@ -137,13 +139,13 @@ everything in `mmm-major-mode-hook' will be run."
        mmm-mode
        (mmm-mode-off))
   (add-to-list 'mmm-changed-buffers-list (current-buffer))
-  (add-hook 'post-command-hook 'mmm-check-changed-buffers))
+  (add-hook 'post-command-hook #'mmm-check-changed-buffers))
 
-(add-hook 'change-major-mode-hook 'mmm-major-mode-change)
+(add-hook 'change-major-mode-hook #'mmm-major-mode-change)
 
 (defun mmm-check-changed-buffers ()
   "Run major mode hook for the buffers in `mmm-changed-buffers-list'."
-  (remove-hook 'post-command-hook 'mmm-check-changed-buffers)
+  (remove-hook 'post-command-hook #'mmm-check-changed-buffers)
   (dolist (buffer mmm-changed-buffers-list)
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
@@ -160,11 +162,11 @@ to apply, or always if `mmm-global-mode' is t."
   (when mmm-mode
     (mmm-update-font-lock-buffer)))
 
-(add-hook 'mmm-major-mode-hook 'mmm-mode-on-maybe)
+(add-hook 'mmm-major-mode-hook #'mmm-mode-on-maybe)
 
-(defalias 'mmm-add-find-file-hooks 'mmm-add-find-file-hook)
+(defalias 'mmm-add-find-file-hooks #'mmm-add-find-file-hook)
 (defun mmm-add-find-file-hook ()
-  "Equivalent to \(setq mmm-global-mode 'maybe).
+  "Equivalent to (setq mmm-global-mode 'maybe).
 This function is deprecated and may be removed in future."
   (message "Warning: `mmm-add-find-file-hook' is deprecated.")
   (setq mmm-global-mode 'maybe))

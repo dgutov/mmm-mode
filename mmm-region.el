@@ -81,7 +81,7 @@ should be one of nil, `beg', `end', `none', or `all'.
 * If TYPE is `end', return true for any overlay ending at POS but
   false for any starting at POS.
 * If TYPE is `all', return true for any overlay starting or ending at POS.
-* If TYPE is `none' \(or any other value), return false for any
+* If TYPE is `none' (or any other value), return false for any
   overlay starting or ending at POS."
   (let ((beg (overlay-start ovl))
 	(end (overlay-end ovl)))
@@ -105,8 +105,8 @@ should be one of nil, `beg', `end', `none', or `all'.
 	  ((and (> end pos) (< beg pos))
 	   t))))
 
-;;; `mmm-overlays-in' has been retired as altogether too confusing a
-;;; name, when what is really meant is one of the following three:
+;; `mmm-overlays-in' has been retired as altogether too confusing a
+;; name, when what is really meant is one of the following three:
 
 (defun mmm-overlays-containing (start stop)
   "Return all MMM overlays containing the region START to STOP.
@@ -513,8 +513,6 @@ is non-nil, don't quit if the info is already there."
                 ;; original values elsewhere.
                 (put mode 'mmm-fontify-region-function
                      font-lock-fontify-region-function)
-                (put mode 'mmm-beginning-of-syntax-function
-                     syntax-begin-function)
                 (put mode 'mmm-syntax-propertize-function
                      (and (boundp 'syntax-propertize-function)
                           syntax-propertize-function))
@@ -561,15 +559,15 @@ different keymaps, syntax tables, local variables, etc. for submodes."
 (defun mmm-add-hooks ()
   (if (featurep 'xemacs)
       (make-local-hook 'post-command-hook))
-  (add-hook 'post-command-hook 'mmm-update-submode-region nil t)
+  (add-hook 'post-command-hook #'mmm-update-submode-region nil t)
   (when mmm-parse-when-idle
-    (add-hook 'pre-command-hook 'mmm-mode-reset-timer nil t)
-    (add-hook 'after-change-functions 'mmm-mode-edit nil t)))
+    (add-hook 'pre-command-hook #'mmm-mode-reset-timer nil t)
+    (add-hook 'after-change-functions #'mmm-mode-edit nil t)))
 
 (defun mmm-remove-hooks ()
-  (remove-hook 'post-command-hook 'mmm-update-submode-region t)
-  (remove-hook 'pre-command-hook 'mmm-mode-reset-timer t)
-  (remove-hook 'after-change-functions 'mmm-mode-edit t))
+  (remove-hook 'post-command-hook #'mmm-update-submode-region t)
+  (remove-hook 'pre-command-hook #'mmm-mode-reset-timer t)
+  (remove-hook 'after-change-functions #'mmm-mode-edit t))
 
 ;;}}}
 ;;{{{ Local Variables
@@ -701,18 +699,23 @@ region and mode for the previous position."
 
 (defun mmm-refontify-maybe (&optional start stop)
   "Re-fontify from START to STOP, or entire buffer, if enabled."
-  (and font-lock-mode
-       (if (or start stop)
-           (font-lock-fontify-region (or start (point-min))
-                                     (or stop (point-max)))
-         (font-lock-fontify-buffer))))
+  (when font-lock-mode
+    (if (fboundp 'font-lock-flush)
+        (progn
+          (font-lock-flush start stop)
+          ;; FIXME: Do we really need to do this eagerly here?
+          (font-lock-ensure start stop))
+      (if (or start stop)
+          (font-lock-fontify-region (or start (point-min))
+                                    (or stop (point-max)))
+        (with-no-warnings (font-lock-fontify-buffer))))))
 
 ;;}}}
 ;;{{{ Get Submode Regions
 
-;;; In theory, these are general functions that have nothing to do
-;;; with font-lock, but they aren't used anywhere else, so we might as
-;;; well have them close.
+;; In theory, these are general functions that have nothing to do
+;; with font-lock, but they aren't used anywhere else, so we might as
+;; well have them close.
 
 (defun mmm-submode-changes-in (start stop)
   "Return a list of all submode-change positions from START to STOP.
@@ -789,8 +792,11 @@ of the REGIONS covers START to STOP."
       (mmm-set-local-variables (or saved-mode mmm-primary-mode) saved-ovl)))
   (when loudly (message nil)))
 
+(defvar syntax-ppss-cache)
+(defvar syntax-ppss-last)
+
 (defun mmm-fontify-region-list (mode regions)
-  "Fontify REGIONS, each like \(BEG END), in mode MODE."
+  "Fontify REGIONS, each like (BEG END), in mode MODE."
   (save-excursion
     (let ((func (get mode 'mmm-fontify-region-function))
           font-lock-extend-region-functions)
@@ -807,6 +813,8 @@ of the REGIONS covers START to STOP."
                                            mmm-current-overlay)
                   (save-restriction
                     (let ((font-lock-dont-widen t)
+                          ;; FIXME: Messing with syntax-ppss-* vars should not
+                          ;; be needed any more in Emacs≥26.
                           syntax-ppss-last syntax-ppss-cache)
                       ;; TODO: Remove this conditional when cc-mode
                       ;; respects submode boundaries.
@@ -840,6 +848,8 @@ calls each respective submode's `syntax-propertize-function'."
                          (func (get mode 'mmm-syntax-propertize-function))
                          (beg (cadr elt)) (end (caddr elt))
                          (ovl (cadddr elt))
+                         ;; FIXME: Messing with syntax-ppss-* vars should not
+                         ;; be needed any more in Emacs≥26.
                          syntax-ppss-cache
                          syntax-ppss-last)
                     (goto-char beg)
@@ -864,7 +874,7 @@ calls each respective submode's `syntax-propertize-function'."
 ;;}}}
 ;;{{{ Indentation
 
-(defvar mmm-indent-line-function 'mmm-indent-line
+(defvar mmm-indent-line-function #'mmm-indent-line
   "The function to call to indent a line.
 This will be the value of `indent-line-function' for the whole
 buffer. It's supposed to delegate to the appropriate submode's

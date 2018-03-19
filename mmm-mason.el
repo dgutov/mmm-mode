@@ -1,6 +1,6 @@
 ;;; mmm-mason.el --- MMM submode class for Mason components
 
-;; Copyright (C) 2000-2003, 2013  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2003, 2013, 2018  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 
@@ -166,7 +166,7 @@ Saves the name of the tag matched.")
 
 (defun mmm-mason-set-mode-line ()
   (setq mmm-buffer-mode-display-name "Mason"))
-(add-hook 'mmm-mason-class-hook 'mmm-mason-set-mode-line)
+(add-hook 'mmm-mason-class-hook #'mmm-mason-set-mode-line)
 
 ;;}}}
 

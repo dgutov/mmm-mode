@@ -99,7 +99,7 @@ error once all classes have been applied."
         (mmm-invalid-submode-class
          ;; Save the name of the invalid class, so we can report them
          ;; all together at the end.
-         (add-to-list 'invalid-classes (cl-second err)))))
+         (cl-pushnew (cl-second err) invalid-classes :test #'equal))))
     (when invalid-classes
       (signal 'mmm-invalid-submode-class invalid-classes))))
 
@@ -124,23 +124,27 @@ and interactive history."
 
 (cl-defun mmm-ify
     (&rest all &key classes handler
-	   submode match-submode
+           ;; Many args are marked as "unused" below, but that's only
+           ;; because they're used via `all'.
+	   submode _match-submode
            (start (point-min)) (stop (point-max))
-           front back save-matches (case-fold-search t)
+           front back _save-matches (case-fold-search t)
            (beg-sticky (not (number-or-marker-p front)))
            (end-sticky (not (number-or-marker-p back)))
-           include-front include-back
+           _include-front _include-back
            (front-offset 0) (back-offset 0)
 	   (front-delim nil) (back-delim nil)
 	   (delimiter-mode mmm-delimiter-mode)
 	   front-face back-face
-           front-verify back-verify
-           front-form back-form
+           _front-verify _back-verify
+           _front-form _back-form
 	   creation-hook
-           face match-face
-	   save-name match-name
-	   (front-match 0) (back-match 0)
-	   end-not-begin
+           face _match-face
+	   _save-name _match-name
+           ;; FIXME: Since those args's arent' used directly (only passed down
+           ;; via `all'), these default values aren't obeyed!
+	   (_front-match 0) (_back-match 0)
+	   _end-not-begin
            ;insert private
            &allow-other-keys
            )

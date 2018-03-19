@@ -428,7 +428,6 @@ NAME is a symbol naming the insertion."
 ;-COM-  @ ";\n" _ "\n" @ "<%/" str ">"
 ;-COM-  '(apply #'mmm-ify-region 'cperl-mode (reverse skeleton-positions)))
 ;-COM-
-;-COM-(make-local-hook 'after-change-functions)
 ;-COM-(add-hook 'after-change-functions 'mmm-detect t)
 ;-COM-
 ;-COM-(defun mmm-detect (beg end length)

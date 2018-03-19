@@ -32,22 +32,26 @@
 ;;; Code:
 
 (require 'mmm-compat)
+(require 'mmm-utils)
 (require 'cl-lib)
 
 ;; MISCELLANEOUS
 ;;{{{ Shut up the Byte Compiler
 
 ;; Otherwise it complains about undefined variables.
-(eval-when-compile
-  (defvar mmm-current-submode)
-  (defvar mmm-save-local-variables)
-  (defvar mmm-mode-string)
-  (defvar mmm-submode-mode-line-format)
-  (defvar mmm-mode-ext-classes-alist)
-  (defvar mmm-mode-prefix-key)
-  (defvar mmm-global-mode)
-  (defvar mmm-primary-mode)
-  (defvar mmm-classes-alist))
+(defvar mmm-current-submode)
+(defvar mmm-save-local-variables)
+(defvar mmm-mode-string)
+(defvar mmm-submode-mode-line-format)
+(defvar mmm-mode-ext-classes-alist)
+(defvar mmm-mode-prefix-key)
+(defvar mmm-global-mode)
+(defvar mmm-primary-mode)
+(defvar mmm-classes-alist)
+(defvar mmm-current-overlay)
+(declare-function mmm-apply-all "mmm-class")
+(declare-function mmm-set-class-parameter "mmm-class" (class param value))
+(declare-function mmm-get-class-parameter "mmm-class" (class param))
 
 ;;}}}
 ;;{{{ Error Conditions
@@ -733,7 +737,7 @@ available so that others can take advantage of the hack as well.
 
 Note that file local variables have *not* been processed by the time
 this hook is run. If a function needs to inspect them, it should also
-be added to `find-file-hooks'. However, `find-file-hooks' is not run
+be added to `find-file-hook'. However, `find-file-hook' is not run
 when creating a non-file-based buffer, or when changing major modes in
 an existing buffer."
   :group 'mmm
@@ -746,14 +750,14 @@ an existing buffer."
 ;;}}}
 ;;{{{ MMM Global Mode
 
-;;; There's a point to be made that this variable should default to
-;;; `maybe' (i.e. not nil and not t), because that's what practically
-;;; everyone wants.  I subscribe, however, to the view that simply
-;;; *loading* a lisp extension should not change the (user-visible)
-;;; behavior of Emacs, until it is configured or turned on in some
-;;; way, which dictates that the default for this must be nil.
+;; There's a point to be made that this variable should default to
+;; `maybe' (i.e. not nil and not t), because that's what practically
+;; everyone wants.  I subscribe, however, to the view that simply
+;; *loading* a lisp extension should not change the (user-visible)
+;; behavior of Emacs, until it is configured or turned on in some
+;; way, which dictates that the default for this must be nil.
 (defcustom mmm-global-mode nil
-  "*Specify in which buffers to turn on MMM Mode automatically.
+  "Specify in which buffers to turn on MMM Mode automatically.
 
 - If nil, MMM Mode is never enabled automatically.
 - If t, MMM Mode is enabled automatically in all buffers.
@@ -812,7 +816,7 @@ than it solves, but some modes require it.")
 (defvar mmm-mode-buffer-dirty nil "Private variable.")
 (make-variable-buffer-local 'mmm-mode-buffer-dirty)
 
-(defun mmm-mode-edit (beg end len)
+(defun mmm-mode-edit (_beg _end _len)
   (setq mmm-mode-buffer-dirty t)
   (mmm-mode-reset-timer))
 
@@ -1097,7 +1101,7 @@ Uses `mmm-mode-ext-classes-alist' to find submode classes."
   (setq mmm-mode-ext-classes nil))
 
 (defun mmm-mode-ext-applies (element)
-  (cl-destructuring-bind (mode ext class) element
+  (cl-destructuring-bind (mode ext _class) element
     (and (if mode
              (eq mode
                  ;; If MMM is on in this buffer, use the primary mode,

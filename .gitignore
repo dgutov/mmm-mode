@@ -12,3 +12,5 @@ mmm.info*
 script
 stamp-vti
 version.texi
+mmm-mode-pkg.el
+mmm-mode-autoloads.el
