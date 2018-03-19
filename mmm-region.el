@@ -697,6 +697,9 @@ region and mode for the previous position."
       (font-lock-mode 1)
     (font-lock-mode 0)))
 
+;; FIXME: Most uses of this function happen when the buffer is parsed
+;; into regions manually. That should go away after
+;; syntax-propertize-function does this.
 (defun mmm-refontify-maybe (&optional start stop)
   "Re-fontify from START to STOP, or entire buffer, if enabled."
   (when font-lock-mode

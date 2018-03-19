@@ -106,6 +106,8 @@ error once all classes have been applied."
 ;;}}}
 ;;{{{ Apply All Classes
 
+;; FIXME: This should be called by syntax-propertize-function,
+;; not vice versa.
 (cl-defun mmm-apply-all (&key (start (point-min)) (stop (point-max)))
   "MMM-ify from START to STOP by all submode classes.
 The classes come from mode/ext, `mmm-classes', `mmm-global-classes',
