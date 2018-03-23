@@ -576,7 +576,7 @@ different keymaps, syntax tables, local variables, etc. for submodes."
   "Filter `mmm-save-local-variables' to match TYPE and MODE.
 Return a list \(VAR ...).  In some cases, VAR will be a cons cell
 \(GETTER . SETTER) -- see `mmm-save-local-variables'."
-  (mapcan #'(lambda (element)
+  (mmm-mapcan #'(lambda (element)
               (and (if (and (consp element)
                             (cdr element)
                             (cadr element))
@@ -584,10 +584,10 @@ Return a list \(VAR ...).  In some cases, VAR will be a cons cell
                      (eq type 'global))
                    (if (and (consp element)
                             (cddr element)
-                            (not (eq (caddr element) t)))
-                       (if (functionp (caddr element))
-                           (funcall (caddr element))
-                         (member mode (caddr element)))
+                            (not (eq (mmm-caddr element) t)))
+                       (if (functionp (mmm-caddr element))
+                           (funcall (mmm-caddr element))
+                         (member mode (mmm-caddr element)))
                      t)
                    (list (if (consp element) (car element) element))))
           mmm-save-local-variables))
@@ -596,7 +596,7 @@ Return a list \(VAR ...).  In some cases, VAR will be a cons cell
   "Get the local variables and values for TYPE from this buffer.
 Return \((VAR VALUE) ...).  In some cases, VAR will be of the form
 \(GETTER . SETTER) -- see `mmm-save-local-variables'."
-  (mapcan #'(lambda (var)
+  (mmm-mapcan #'(lambda (var)
               (if (consp var)
                   `((,var ,(funcall (car var))))
                 (and (boundp var)
@@ -724,7 +724,7 @@ region and mode for the previous position."
   "Return a list of all submode-change positions from START to STOP.
 The list is sorted in order of increasing buffer position."
   (let ((changes (sort (cl-remove-duplicates
-                        (mapcan (lambda (ovl)
+                        (mmm-mapcan (lambda (ovl)
                                     `(,(overlay-start ovl)
                                       ,(overlay-end ovl)))
                                 (mmm-overlays-overlapping start stop)))
@@ -849,8 +849,8 @@ calls each respective submode's `syntax-propertize-function'."
         (mapc (lambda (elt)
                   (let* ((mode (car elt))
                          (func (get mode 'mmm-syntax-propertize-function))
-                         (beg (cadr elt)) (end (caddr elt))
-                         (ovl (cadddr elt))
+                         (beg (cadr elt)) (end (mmm-caddr elt))
+                         (ovl (mmm-cadddr elt))
                          ;; FIXME: Messing with syntax-ppss-* vars should not
                          ;; be needed any more in Emacs≥26.
                          syntax-ppss-cache
