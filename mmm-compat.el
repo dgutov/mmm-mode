@@ -118,7 +118,8 @@ This text should not be modified."
 ;;}}}
 ;;{{{ Emacs < 26 requires namespaced CL functions
 
-(when (< emacs-major-version 26)
+(if (>= emacs-major-version 26)
+    (defalias 'mmm-mapcan 'mapcan)
   (require 'cl-lib)
   (defalias 'mmm-mapcan 'cl-mapcan))
 
