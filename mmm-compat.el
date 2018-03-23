@@ -115,6 +115,16 @@ This text should not be modified."
        (insert-buffer ,buffer)
        (current-buffer))))
 
+;;; {{{ Emacs < 26 requires namespaced CL functions
+
+(when (< emacs-major-version 26)
+  (require 'cl-lib)
+  (defalias 'mapcan 'cl-mapcan)
+  (defalias 'cadddr 'cl-cadddr)
+  (defalias 'caddr ' cl-caddr))
+
+;;; }}}
+
 (provide 'mmm-compat)
 
 ;;; mmm-compat.el ends here
