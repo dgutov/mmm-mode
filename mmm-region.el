@@ -584,10 +584,10 @@ Return a list \(VAR ...).  In some cases, VAR will be a cons cell
                      (eq type 'global))
                    (if (and (consp element)
                             (cddr element)
-                            (not (eq (mmm-caddr element) t)))
-                       (if (functionp (mmm-caddr element))
-                           (funcall (mmm-caddr element))
-                         (member mode (mmm-caddr element)))
+                            (not (eq (nth 2 element) t)))
+                       (if (functionp (nth 2 element))
+                           (funcall (nth 2 element))
+                         (member mode (nth 2 element)))
                      t)
                    (list (if (consp element) (car element) element))))
           mmm-save-local-variables))
@@ -849,8 +849,8 @@ calls each respective submode's `syntax-propertize-function'."
         (mapc (lambda (elt)
                   (let* ((mode (car elt))
                          (func (get mode 'mmm-syntax-propertize-function))
-                         (beg (cadr elt)) (end (mmm-caddr elt))
-                         (ovl (mmm-cadddr elt))
+                         (beg (cadr elt)) (end (nth 2 elt))
+                         (ovl (nth 3 elt))
                          ;; FIXME: Messing with syntax-ppss-* vars should not
                          ;; be needed any more in Emacs≥26.
                          syntax-ppss-cache

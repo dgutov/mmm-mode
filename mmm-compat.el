@@ -120,9 +120,7 @@ This text should not be modified."
 
 (when (< emacs-major-version 26)
   (require 'cl-lib)
-  (defalias 'mmm-mapcan 'cl-mapcan)
-  (defalias 'mmm-cadddr 'cl-cadddr)
-  (defalias 'mmm-caddr ' cl-caddr))
+  (defalias 'mmm-mapcan 'cl-mapcan))
 
 ;;}}}
 
