@@ -406,7 +406,7 @@ NAME is a symbol naming the insertion."
          do (setq keys (append keys (mmm-get-all-insertion-keys it)))
          finally return keys)
    :test #'equal
-   :key #'(lambda (x) (cons (car x) (cadr x)))
+   :key (lambda (x) (cons (car x) (cadr x)))
    :from-end t))
 
 ;;}}}

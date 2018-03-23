@@ -117,7 +117,7 @@ is important that nil values disappear."
 Use of this macro can make code more readable when there are a lot of
 PARAMS, but less readable when there are only a few. Also best used
 only when it is important that nil values disappear."
-  `(append ,@(mapcar #'(lambda (param)
+  `(append ,@(mapcar (lambda (param)
                          (macroexpand `(mmm-save-keyword ,param)))
                      params)))
 

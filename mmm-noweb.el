@@ -381,7 +381,7 @@ chunks."
 If SYNTAX is not nil, set the syntax-table property of each region.
 If SYNTAX is nil, remove the region syntax-table property.
 See `mmm-syntax-region'."
-  (mapcar #'(lambda (reg)
+  (mapcar (lambda (reg)
 	      (mmm-syntax-region (car reg) (cadr reg) syntax))
 	  regions))
 
@@ -392,7 +392,7 @@ optional NAME to determine the current region name."
   (if (null name)
       (setq name (or (mmm-name-at)
 		     (symbol-name mmm-primary-mode))))
-  (mapcar #'(lambda (reg)
+  (mapcar (lambda (reg)
 	      (if (not (string= (car reg) name))
 		  (mmm-syntax-region-list syntax (cdr reg))))
 	  (mmm-names-alist (point-min) (point-max))))

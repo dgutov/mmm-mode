@@ -61,7 +61,7 @@ See `mmm-included-p' for the values of TYPE."
   (or pos (setq pos (point)))
   (mmm-sort-overlays
    (cl-remove-if-not
-    #'(lambda (ovl)
+    (lambda (ovl)
 	(and (overlay-get ovl 'mmm)
 	     (mmm-included-p ovl pos type)))
     ;; XEmacs complains about positions outside the buffer
@@ -114,7 +114,7 @@ The overlays are returned in order of decreasing priority.  No
 attention is paid to stickiness."
   (mmm-sort-overlays
    (cl-remove-if-not
-    #'(lambda (ovl)
+    (lambda (ovl)
 	(and (overlay-get ovl 'mmm)
 	     (<= (overlay-start ovl) start)
 	     (>= (overlay-end ovl) stop)))
@@ -127,7 +127,7 @@ The overlays are returned in order of decreasing priority.  No
 attention is paid to stickiness."
   (mmm-sort-overlays
    (cl-remove-if-not
-    #'(lambda (ovl)
+    (lambda (ovl)
 	(and (overlay-get ovl 'mmm)
 	     (>= (overlay-start ovl) start)
 	     (<= (overlay-end ovl) stop)))
@@ -140,7 +140,7 @@ The overlays are returned in order of decreasing priority.  No
 attention is paid to stickiness."
   (mmm-sort-overlays
    (cl-remove-if-not
-    #'(lambda (ovl)
+    (lambda (ovl)
 	(overlay-get ovl 'mmm))
     (overlays-in (max start (point-min))
 		 (min stop (point-max))))))
@@ -148,7 +148,7 @@ attention is paid to stickiness."
 (defun mmm-sort-overlays (overlays)
   "Sort OVERLAYS in order of decreasing priority."
   (sort (cl-copy-list overlays)
-        #'(lambda (x y) (> (or (overlay-get x 'priority) 0)
+        (lambda (x y) (> (or (overlay-get x 'priority) 0)
                            (or (overlay-get y 'priority) 0)))))
 
 ;;}}}
@@ -181,7 +181,7 @@ Return non-nil if the current region changed.
 Also deletes overlays that ought to evaporate because their delimiters
 have disappeared."
   (mapc #'delete-overlay
-	(cl-remove-if #'(lambda (ovl)
+	(cl-remove-if (lambda (ovl)
 		       (or (not (eq (overlay-get ovl 'mmm-evap) 'front))
 			   (overlay-buffer (overlay-get ovl 'front))))
 		   (mmm-overlays-at pos)))
@@ -427,7 +427,7 @@ with point at the start of the new region."
 Does not handle delimiters.  Use `mmm-make-region'."
   (let ((ovl (make-overlay beg end nil (not beg-sticky) end-sticky)))
     (mapc
-     #'(lambda (pair) (overlay-put ovl (car pair) (cadr pair)))
+     (lambda (pair) (overlay-put ovl (car pair) (cadr pair)))
      `((mmm t)				; Mark all submode overlays
        (mmm-mode ,submode)
        ,@(if delim '((delim t)) nil)
@@ -576,7 +576,7 @@ different keymaps, syntax tables, local variables, etc. for submodes."
   "Filter `mmm-save-local-variables' to match TYPE and MODE.
 Return a list \(VAR ...).  In some cases, VAR will be a cons cell
 \(GETTER . SETTER) -- see `mmm-save-local-variables'."
-  (mmm-mapcan #'(lambda (element)
+  (mmm-mapcan (lambda (element)
               (and (if (and (consp element)
                             (cdr element)
                             (cadr element))
@@ -596,7 +596,7 @@ Return a list \(VAR ...).  In some cases, VAR will be a cons cell
   "Get the local variables and values for TYPE from this buffer.
 Return \((VAR VALUE) ...).  In some cases, VAR will be of the form
 \(GETTER . SETTER) -- see `mmm-save-local-variables'."
-  (mmm-mapcan #'(lambda (var)
+  (mmm-mapcan (lambda (var)
               (if (consp var)
                   `((,var ,(funcall (car var))))
                 (and (boundp var)
@@ -618,7 +618,7 @@ Return \((VAR VALUE) ...).  In some cases, VAR will be of the form
   "Set all the local variables saved for MODE and OVL.
 Looks up global, buffer and region saves.  When MODE is nil, just
 the region ones."
-  (mapcar #'(lambda (var)
+  (mapcar (lambda (var)
               ;; (car VAR) may be (GETTER . SETTER)
               (if (consp (car var))
                   (funcall (cdar var) (cadr var))
@@ -658,7 +658,7 @@ region and mode for the previous position."
                          (overlay-get ovl 'mmm-local-variables)
                        mmm-region-saved-locals-for-dominant))
         (set-local-value
-         #'(lambda (var)
+         (lambda (var)
              (setcar (cdr var)
                      ;; (car VAR) may be (GETTER . SETTER)
                      (if (consp (car var))
@@ -687,10 +687,10 @@ region and mode for the previous position."
 
 (defun mmm-update-font-lock-buffer ()
   "Turn on font lock if any mode in the buffer enables it."
-  (if (cl-some #'(lambda (mode)
+  (if (cl-some (lambda (mode)
                 (get mode 'mmm-font-lock-mode))
             (cons mmm-primary-mode
-                  (mapcar #'(lambda (ovl)
+                  (mapcar (lambda (ovl)
                               (overlay-get ovl 'mmm-mode))
                           (mmm-overlays-overlapping
                            (point-min) (point-max)))))
@@ -785,7 +785,7 @@ of the REGIONS covers START to STOP."
           ;; Necessary to catch changes in font-lock cache state and position.
           (mmm-save-changed-local-variables
            mmm-current-submode mmm-current-overlay)
-          (mapc #'(lambda (elt)
+          (mapc (lambda (elt)
                     (when (get (car elt) 'mmm-font-lock-mode)
                       (mmm-fontify-region-list (car elt) (cdr elt))))
                 (mmm-regions-alist start stop)))
@@ -803,7 +803,7 @@ of the REGIONS covers START to STOP."
   (save-excursion
     (let ((func (get mode 'mmm-fontify-region-function))
           font-lock-extend-region-functions)
-      (mapc #'(lambda (reg)
+      (mapc (lambda (reg)
                 (cl-destructuring-bind (beg end ovl) reg
                   (goto-char beg)
                   ;; Here we do the same sort of thing that

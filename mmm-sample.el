@@ -118,7 +118,7 @@ and MODE is a major mode function symbol.")
   (setq string (match-string 0 string))
   (or (mmm-ensure-modename
        ;; First try the user override variable.
-       (cl-some #'(lambda (pair)
+       (cl-some (lambda (pair)
                 (if (string-match (car pair) string) (cdr pair) nil))
              mmm-here-doc-mode-alist))
       (let ((words (split-string (downcase string) "[_-]+")))

@@ -149,7 +149,7 @@
     ;; Indentation style control variables.
     ;; These have to be localized in Emacs: see `mmm-mode-on'.
     ,@(mapcar
-       #'(lambda (var) (list var nil mmm-c-derived-modes))
+       (lambda (var) (list var nil mmm-c-derived-modes))
        '(c++-template-syntax-table
 	 c-<-op-cont-regexp 
 	 c->-op-cont-regexp
@@ -1023,7 +1023,7 @@ and is not for the user to see.")
 (defun mmm-add-group (group classes)
   "Add CLASSES and a \"grouping class\" named GROUP which calls them all.
 The CLASSES are all made private, i.e. non-user-visible."
-  (mmm-add-classes (mapcar #'(lambda (class)
+  (mmm-add-classes (mapcar (lambda (class)
                                (append class
                                        '(:private t)))
                            classes))
@@ -1033,7 +1033,7 @@ The CLASSES are all made private, i.e. non-user-visible."
 (defun mmm-add-to-group (group classes)
   "Add CLASSES to the \"grouping class\" named GROUP.
 The CLASSES are all made private, i.e. non-user-visible."
-  (mmm-add-classes (mapcar #'(lambda (class)
+  (mmm-add-classes (mapcar (lambda (class)
                                (append class
                                        '(:private t)))
                            classes))
