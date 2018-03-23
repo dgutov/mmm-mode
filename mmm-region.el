@@ -849,8 +849,8 @@ calls each respective submode's `syntax-propertize-function'."
         (mapc (lambda (elt)
                   (let* ((mode (car elt))
                          (func (get mode 'mmm-syntax-propertize-function))
-                         (beg (cadr elt)) (end (caddr elt))
-                         (ovl (cadddr elt))
+                         (beg (cadr elt)) (end (mmm-caddr elt))
+                         (ovl (mmm-cadddr elt))
                          ;; FIXME: Messing with syntax-ppss-* vars should not
                          ;; be needed any more in Emacs≥26.
                          syntax-ppss-cache
