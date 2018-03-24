@@ -411,6 +411,43 @@ NAME is a symbol naming the insertion."
 
 ;;}}}
 
+;;{{{ Indentation helpers
+
+(defun mmm-indent-line-narrowed ()
+  "An indent function which works on some modes where `mmm-indent-line' doesn't.
+Works like `mmm-indent-line', but narrows the buffer before indenting to
+appease modes which rely on constructs like (point-min) to indent."
+  (interactive)
+  (mmm-update-submode-region)
+  (if mmm-current-overlay
+      (save-restriction
+        (mmm-narrow-to-submode-region)
+        (funcall (get
+                  (if (and mmm-current-overlay
+                           (> (overlay-end mmm-current-overlay) (point)))
+                      mmm-current-submode
+                    mmm-primary-mode)
+                  'mmm-indent-line-function)))
+    (mmm-indent-line)))
+
+(defun mmm-indent-region (start end)
+  "Indent the region from START to END according to `mmm-indent-line-function'.
+Then, indent all submodes overlapping the region according to
+`mmm-indent-line-function'"
+  (interactive)
+  (save-excursion
+    (while (< (point) end)
+      (indent-according-to-mode)
+      (forward-line 1))
+    ;; Indent each submode in the region seperately
+    (dolist (submode (mmm-overlays-overlapping start end))
+      (goto-char (overlay-start submode))
+      (while (< (point) (min end (overlay-end submode)))
+        (indent-according-to-mode)
+        (forward-line 1)))))
+
+;;}}}
+
 ;;{{{ Auto Insertion (copied from interactive session);-COM-
 ;-COM-
 ;-COM-;; Don't use `mmm-ify-region' of course. And rather than having
