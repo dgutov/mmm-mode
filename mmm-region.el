@@ -888,22 +888,21 @@ indentation function. See `mmm-indent-line' as the starting point.")
 Works like `mmm-indent-line', but narrows the buffer before indenting to
 appease modes which rely on constructs like (point-min) to indent."
   (interactive)
-  (funcall
-   (save-excursion
-     (back-to-indentation)
-     (mmm-update-submode-region)
-     (let ((indent-function (get
-                             (if (and mmm-current-overlay
-                                      (> (overlay-end mmm-current-overlay) (point)))
-                                 mmm-current-submode
-                               mmm-primary-mode)
-                             'mmm-indent-line-function)))
-       (if mmm-current-overlay
-           (save-restriction
-             (narrow-to-region (overlay-start mmm-current-overlay)
-                               (overlay-end mmm-current-overlay))
-             indent-function)
-         indent-function)))))
+  (save-excursion
+    (back-to-indentation)
+    (mmm-update-submode-region)
+    (let ((indent-function (get
+                            (if (and mmm-current-overlay
+                                     (> (overlay-end mmm-current-overlay) (point)))
+                                mmm-current-submode
+                              mmm-primary-mode)
+                            'mmm-indent-line-function)))
+      (if mmm-current-overlay
+          (save-restriction
+            (narrow-to-region (overlay-start mmm-current-overlay)
+                              (overlay-end mmm-current-overlay))
+            (funcall indent-function))
+        (funcall indent-function)))))
 
 (defun mmm-indent-line ()
   (interactive)
