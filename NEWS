@@ -4,6 +4,9 @@ See the file COPYING for copying conditions.
 
 Please submit bug reports at https://github.com/purcell/mmm-mode/issues
 
+* Changes in MMM Mode 0.5.7
+Fixes for mmm-indent-line-narrowed.
+
 * Changes in MMM Mode 0.5.6
 Emacs 25 compatibility fix when cl is not loaded.
 

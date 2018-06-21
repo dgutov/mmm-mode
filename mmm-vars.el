@@ -311,6 +311,9 @@
     (whitespace-font-lock-mode buffer)
     (whitespace-font-lock-keywords buffer)
     (whitespace-mode buffer)
+    (whitespace-point--used buffer)
+    (whitespace-point buffer)
+    (whitespace-bob-marker buffer)
     forward-sexp-function
     smie-rules-function
     smie-grammar
@@ -1044,7 +1047,7 @@ The CLASSES are all made private, i.e. non-user-visible."
 ;;}}}
 ;;{{{ Version Number
 
-(defconst mmm-version "0.5.6"
+(defconst mmm-version "0.5.7"
   "Current version of MMM Mode.")
 
 (defun mmm-version ()

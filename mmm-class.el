@@ -115,8 +115,10 @@ and interactive history."
   (mmm-clear-overlays start stop 'strict)
   (mmm-apply-classes (mmm-get-all-classes t) :start start :stop stop)
   (mmm-update-submode-region)
-  (syntax-ppss-flush-cache start)
-  (syntax-propertize stop)
+  ;; Try to continue supporting XEmacs for a while.
+  (when (fboundp 'syntax-propertize)
+    (syntax-ppss-flush-cache start)
+    (syntax-propertize stop))
   (mmm-refontify-maybe start stop))
 
 ;;}}}
