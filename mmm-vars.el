@@ -135,6 +135,7 @@
     font-lock-mark-block-function       ; Override this?
     font-lock-syntactic-keywords
     font-lock-syntactic-face-function
+    syntax-ppss-table
     parse-sexp-ignore-comments  ; Fixes indentation in PHP-mode?
     ;; Can be different in different buffers
     (c-basic-offset
