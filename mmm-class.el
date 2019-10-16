@@ -267,7 +267,7 @@ and OK-RESUME if the region is valid."
 			       (mmm-match->point nil back-delim back-match)
 			     nil))
 		 (back-form (mmm-get-form back-form))
-		 (ok-resume (if end-not-begin 
+                 (ok-resume (if end-not-begin
 				(match-end back-match)
 			      end)))
             (cl-values beg end front-pos back-pos front-form back-form

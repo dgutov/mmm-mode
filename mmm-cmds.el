@@ -316,7 +316,7 @@ MODIFIERS, the dotted list becomes simply BASIC-KEY."
 			 ;; No, just use it as-is
 			 match-name)))
             (mmm-make-region
-             submode beg end 
+             submode beg end
 	     :face face
 	     :name name
 	     :front front :back back
