@@ -108,7 +108,8 @@
 ;;{{{ Save Local Variables
 
 (defvar mmm-c-derived-modes
-  '(c-mode c++-mode objc-mode pike-mode java-mode jde-mode javascript-mode
+  '(c-mode c++-mode objc-mode pike-mode java-mode jde-mode
+    js-mode typescript-mode
     php-mode))
 
 (defvar mmm-save-local-variables
