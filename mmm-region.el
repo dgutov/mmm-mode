@@ -146,10 +146,16 @@ attention is paid to stickiness."
 		 (min stop (point-max))))))
 
 (defun mmm-sort-overlays (overlays)
-  "Sort OVERLAYS in order of decreasing priority."
+  "Sort OVERLAYS in order of decreasing priority or nesting."
   (sort (copy-sequence overlays)
-        (lambda (x y) (> (or (overlay-get x 'priority) 0)
-                    (or (overlay-get y 'priority) 0)))))
+        (lambda (x y)
+          (let ((prio-x (overlay-get x 'priority))
+                (prio-y (overlay-get y 'priority)))
+            (if (or prio-x prio-y)
+                (> (or prio-x 0)
+                   (or prio-y 0))
+              (> (overlay-start x)
+                 (overlay-start y)))))))
 
 ;;}}}
 ;;{{{ Current Submode
