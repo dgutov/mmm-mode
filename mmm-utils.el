@@ -55,6 +55,7 @@ means not hidden, not a minibuffer, not in batch mode, and not in of
 (defmacro mmm-save-all (&rest body)
   "Execute BODY forms, then restoring point, mark, current buffer,
 restrictions, and match data."
+  (declare (indent 1) (debug t))
   `(save-excursion
      (save-restriction
        (save-match-data
