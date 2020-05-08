@@ -147,9 +147,9 @@ attention is paid to stickiness."
 
 (defun mmm-sort-overlays (overlays)
   "Sort OVERLAYS in order of decreasing priority."
-  (sort (cl-copy-list overlays)
+  (sort (copy-sequence overlays)
         (lambda (x y) (> (or (overlay-get x 'priority) 0)
-                           (or (overlay-get y 'priority) 0)))))
+                    (or (overlay-get y 'priority) 0)))))
 
 ;;}}}
 ;;{{{ Current Submode
