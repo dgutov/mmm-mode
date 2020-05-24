@@ -793,7 +793,8 @@ of the REGIONS covers START to STOP."
            mmm-current-submode mmm-current-overlay)
           (mapc (lambda (elt)
                     (when (get (car elt) 'mmm-font-lock-mode)
-                      (mmm-fontify-region-list (car elt) (cdr elt))))
+                      (mmm-fontify-region-list (car elt) (cdr elt)
+                                               start stop)))
                 (mmm-regions-alist start stop)))
       ;; `post-command-hook' contains `mmm-update-submode-region',
       ;; but jit-lock runs later, so we need to restore local vars now.
@@ -804,8 +805,9 @@ of the REGIONS covers START to STOP."
 (defvar syntax-ppss-cache)
 (defvar syntax-ppss-last)
 
-(defun mmm-fontify-region-list (mode regions)
-  "Fontify REGIONS, each like (BEG END), in mode MODE."
+(defun mmm-fontify-region-list (mode regions start stop)
+  "Fontify REGIONS, each like (BEG END), in mode MODE.
+START and STOP are the boundaries of the area to fontify."
   (save-excursion
     (let ((func (get mode 'mmm-fontify-region-function))
           font-lock-extend-region-functions)
@@ -829,7 +831,10 @@ of the REGIONS covers START to STOP."
                       ;; respects submode boundaries.
                       (when (and ovl (not (memq mode mmm-c-derived-modes)))
                         (narrow-to-region beg end))
-                      (funcall func beg end nil)))
+                      (funcall func
+                               (max beg start)
+                               (min end stop)
+                               nil)))
                   ;; Catch changes in font-lock cache.
                   (mmm-save-changed-local-variables
                    mmm-current-submode mmm-current-overlay)))
