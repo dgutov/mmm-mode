@@ -36,6 +36,7 @@
           mmm-parse-when-idle)
       (insert "foo // foo_bar")
       (fundamental-mode)
+      (setq font-lock-defaults '(nil nil))
       (mmm-mode-on)
       (mmm-ify-by-regexp 'foo1-mode "// " 0 "\\'" 0 nil)
       (font-lock-fontify-region (point-min) (point-max))
@@ -55,6 +56,7 @@
           mmm-parse-when-idle)
       (insert "foo // foo_bar")
       (fundamental-mode)
+      (setq font-lock-defaults '(nil nil))
       (mmm-mode-on)
       (mmm-ify-by-regexp 'foo2-mode "// " 0 "\\'" 0 nil)
       (font-lock-fontify-region (point-min) (point-max))
@@ -82,7 +84,8 @@
 (ert-deftest mmm-fontify-region-list-ignores-outside-for-syntactic-ff-tion ()
   (ert-with-test-buffer nil
     (let (mmm-mode-ext-classes-alist
-          mmm-parse-when-idle)
+          mmm-parse-when-idle
+          mmm-c-derived-modes)
       (insert "unpaired '!\n")
       (insert "js>>\n")
       (insert "var woo = js;\n")
@@ -98,7 +101,8 @@
 (ert-deftest mmm-fontify-region-list-carries-string-after-subregion ()
   (ert-with-test-buffer nil
     (let (mmm-mode-ext-classes-alist
-          mmm-parse-when-idle)
+          mmm-parse-when-idle
+          mmm-c-derived-modes)
       (insert "<p class=\"foo <% 1 + 2 %> bar tee\"</p>")
       (html-mode)
       (mmm-mode-on)
