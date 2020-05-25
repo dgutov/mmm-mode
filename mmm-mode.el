@@ -1,6 +1,6 @@
 ;;; mmm-mode.el --- Allow Multiple Major Modes in a buffer
 
-;; Copyright (C) 1999-2004, 2012-2015, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 1999-2004, 2012-2015, 2018, 2020  Free Software Foundation, Inc.
 
 ;; Emacs Lisp Archive Entry
 ;; Package: mmm-mode
@@ -8,7 +8,7 @@
 ;; Maintainer: Dmitry Gutov <dgutov@yandex.ru>
 ;; URL: https://github.com/purcell/mmm-mode
 ;; Keywords: convenience, faces, languages, tools
-;; Version: 0.5.7
+;; Version: 0.5.8
 ;; Package-Requires: ((cl-lib "0.2"))
 
 ;;{{{ GPL

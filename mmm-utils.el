@@ -1,6 +1,6 @@
 ;;; mmm-utils.el --- Coding Utilities for MMM Mode
 
-;; Copyright (C) 2000-2003, 2011-2013  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2003, 2011-2013, 2020  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 

@@ -1,6 +1,6 @@
 ;;; mmm-vars.el --- Variables for MMM Mode
 
-;; Copyright (C) 2000-2004, 2011-2015, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2004, 2011-2015, 2018-2020  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 
@@ -1049,7 +1049,7 @@ The CLASSES are all made private, i.e. non-user-visible."
 ;;}}}
 ;;{{{ Version Number
 
-(defconst mmm-version "0.5.7"
+(defconst mmm-version "0.5.8"
   "Current version of MMM Mode.")
 
 (defun mmm-version ()

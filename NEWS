@@ -4,6 +4,11 @@ See the file COPYING for copying conditions.
 
 Please submit bug reports at https://github.com/purcell/mmm-mode/issues
 
+* Changes in MMM Mode 0.5.8
+Support for Emacs 27.
+
+Fixes for nesting submodes.
+
 * Changes in MMM Mode 0.5.7
 Fixes for mmm-indent-line-narrowed.
 
