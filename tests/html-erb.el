@@ -1,4 +1,4 @@
-;; Copyright (C) 2013  Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020  Free Software Foundation, Inc.
 
 ;; This file is part of GNU Emacs.
 
@@ -66,38 +66,37 @@
   (should (mmm-update-current-submode))
   (should (string= " end " (mmm-erb-current-overlay-string))))
 
-(defun mmm-erb-assert-string-syntax ()
+(defun mmm-erb-assert-string-faces ()
   (goto-char (point-min))
+  (font-lock-ensure (point-min) (point-max))
   (search-forward "\"")
-  (should (nth 3 (syntax-ppss)))
-  (search-forward "\"")
-  (should (not (nth 3 (syntax-ppss)))))
+  (should (eq (get-text-property (point) 'face)
+              'font-lock-string-face)))
 
-(defun mmm-erb-assert-non-string-syntax ()
+(defun mmm-erb-assert-non-string-faces ()
   (goto-char (point-min))
+  (font-lock-ensure (point-min) (point-max))
   (search-forward "\"")
-  (should (not (nth 3 (syntax-ppss))))
-  (search-forward "\"")
-  (should (not (nth 3 (syntax-ppss)))))
+  (should (not (eq (get-text-property (point) 'face)
+                   'font-lock-string-face))))
 
 (mmm-erb-deftest attribute-values-are-strings
   (insert mmm-erb-text)
   (mmm-apply-all)
-  (mmm-erb-assert-string-syntax))
+  (mmm-erb-assert-string-faces))
 
 (mmm-erb-deftest quotes-outside-tags-dont-make-strings
-  :expected-result (if mmm-erb-edge-emacs :passed :failed)
   (insert "<% foo do %><p>\"foo bar\"</p><% end %>")
   (mmm-apply-all)
-  (mmm-erb-assert-non-string-syntax))
+  (mmm-erb-assert-non-string-faces))
 
 (mmm-erb-deftest gt-inside-subregion-doesnt-change-nesting
   (insert "<% if 2 > 1 %><div class=\"foo\"/><% end %>")
   (mmm-apply-all)
-  (mmm-erb-assert-string-syntax))
+  (mmm-erb-assert-string-faces))
 
 (mmm-erb-deftest lt-inside-subregion-doesnt-change-nesting
-  :expected-result (if mmm-erb-edge-emacs :passed :failed)
   (insert "<% if 2 < 1 %><p>\"foo bar\"</p><% end %>")
+  ;; FIXME: Perhaps check sgml-lexical-context as well?
   (mmm-apply-all)
-  (mmm-erb-assert-non-string-syntax))
+  (mmm-erb-assert-non-string-faces))
