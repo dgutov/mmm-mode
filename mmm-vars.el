@@ -295,6 +295,10 @@
        (lambda (var) (list var nil '(js-mode)))
        '(js--quick-match-re
          js--quick-match-re-func))
+    ,@(mapcar
+       (lambda (var) (list var nil '(typescript-mode)))
+       '(typescript--quick-match-re
+         typescript--quick-match-re-func))
     ;; Skeleton insertion
     skeleton-transformation
     ;; Abbrev mode
