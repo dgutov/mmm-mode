@@ -118,6 +118,14 @@ Saves the name of the tag matched.")
              (?a mason-<%args> ?. . "args")
              (?f mason-<%flags> ?. . "flags")
              (?r mason-<%attr> ?. . "attr")))
+   (mason-one-line-comment
+    :submode text-mode
+    :face mmm-comment-submode-face
+    :front "^%#"
+    :back "\n"
+    :insert ((?# mason-%-comment nil (mmm-mason-start-line)
+                 @ "%" @ "# " _ @ '(mmm-mason-end-line) "\n" @)
+             (?3 mason-%-comment ?# . nil)))
    (mason-inline
     :submode perl
     :face mmm-output-submode-face
@@ -133,14 +141,6 @@ Saves the name of the tag matched.")
     :back "&>"
     :insert ((?& mason-<&-&> nil @ "<&" @ " " _ " " @ "&>" @)
              (?7 mason-<&-&> ?% . nil)))
-   (mason-one-line-comment
-    :submode text-mode
-    :face mmm-comment-submode-face
-    :front "^%#"
-    :back "\n"
-    :insert ((?# mason-%-comment nil (mmm-mason-start-line)
-                @ "%" @ "# " _ @ '(mmm-mason-end-line) "\n" @)
-             (?3 mason-%-comment ?# . nil)))
    (mason-one-line
     :submode perl
     :face mmm-code-submode-face
