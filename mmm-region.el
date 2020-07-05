@@ -514,6 +514,7 @@ is non-nil, don't quit if the info is already there."
               (funcall mode)
               (when (featurep 'font-lock)
                 (put mode 'mmm-font-lock-mode font-lock-mode)
+                (font-lock-set-defaults)
                 ;; These can't be in the local variables list, because we
                 ;; replace their actual values, but we want to use their
                 ;; original values elsewhere.
