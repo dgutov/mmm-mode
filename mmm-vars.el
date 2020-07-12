@@ -145,6 +145,7 @@
     (c-extra-toplevel-key nil ,mmm-c-derived-modes)
     (c-inexpr-class-key nil ,mmm-c-derived-modes)
     (c-conditional-key nil ,mmm-c-derived-modes)
+    (nxml-prolog-end region (nxml-mode))
     semantic-bovinate-toplevel-override
     semantic-toplevel-bovine-table
     ;; Indentation style control variables.
@@ -222,6 +223,8 @@
 	 c-lambda-kwds
          c-literal-start-regexp
 	 c-macro-with-semi-re
+         ;; c-make-top-level-key
+         ;; c-make-top-level-kwds
          c-nonlabel-token-key
          c-nonlabel-token-2-key
          c-nonsymbol-chars
