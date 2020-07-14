@@ -711,10 +711,7 @@ region and mode for the previous position."
   "Re-fontify from START to STOP, or entire buffer, if enabled."
   (when font-lock-mode
     (if (fboundp 'font-lock-flush)
-        (progn
-          (font-lock-flush start stop)
-          ;; FIXME: Do we really need to do this eagerly here?
-          (font-lock-ensure start stop))
+        (font-lock-flush start stop)
       (if (or start stop)
           (font-lock-fontify-region (or start (point-min))
                                     (or stop (point-max)))
