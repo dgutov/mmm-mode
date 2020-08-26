@@ -79,12 +79,14 @@ none is specified by CLASS."
   ;; The "special" class t means do nothing. It is used to turn on
   ;; MMM Mode without applying any classes.
   (unless (eq class t)
-    (apply #'mmm-ify :start start :stop stop
-           (append (mmm-get-class-spec class)
-                  (list :face face)))
-    (mmm-run-class-hook class)
-    ;; Hack in case class hook sets mmm-buffer-mode-display-name etc.
-    (mmm-set-mode-line)))
+    (let ((result
+           (apply #'mmm-ify :start start :stop stop
+                  (append (mmm-get-class-spec class)
+                          (list :face face)))))
+      (mmm-run-class-hook class)
+      ;; Hack in case class hook sets mmm-buffer-mode-display-name etc.
+      (mmm-set-mode-line)
+      result)))
 
 (cl-defun mmm-apply-classes
     (classes &key (start (point-min)) (stop (point-max)) face)
@@ -93,13 +95,18 @@ All classes are applied regardless of any errors that may occur in
 other classes. If any errors occur, `mmm-apply-classes' exits with an
 error once all classes have been applied."
   (let (invalid-classes)
-    (dolist (class classes)
-      (condition-case err
-          (mmm-apply-class class start stop face)
-        (mmm-invalid-submode-class
-         ;; Save the name of the invalid class, so we can report them
-         ;; all together at the end.
-         (cl-pushnew (cl-second err) invalid-classes :test #'equal))))
+    (cl-block nil
+      (dotimes (time 10)
+        (let ((success nil))
+          (dolist (class classes)
+            (condition-case err
+                (let ((result (mmm-apply-class class start stop face)))
+                  (when result (setq success result)))
+                  (mmm-invalid-submode-class
+                   ;; Save the name of the invalid class, so we can report them
+                   ;; all together at the end.
+                   (cl-pushnew (cl-second err) invalid-classes :test #'equal))))
+          (when (not success) (cl-return)))))
     (when invalid-classes
       (signal 'mmm-invalid-submode-class invalid-classes))))
 
@@ -155,7 +162,8 @@ and interactive history."
   "Create submode regions from START to STOP according to arguments.
 If CLASSES is supplied, it must be a list of valid CLASSes. Otherwise,
 the rest of the arguments are for an actual class being applied. See
-`mmm-classes-alist' for information on what they all mean."
+`mmm-classes-alist' for information on what they all mean.
+Return t if a region was applied."
   ;; Make sure we get the default values in the `all' list.
   (setq all (append
              all
@@ -165,49 +173,51 @@ the rest of the arguments are for an actual class being applied. See
 		   :front-delim front-delim :back-delim back-delim
 		   :front-match 0 :back-match 0
 		   )))
-  (cond
-   ;; If we have a class list, apply them all.
-   (classes
-    (mmm-apply-classes classes :start start :stop stop :face face))
-   ;; Otherwise, apply this class.
-   ;; If we have a handler, call it.
-   (handler
-    (apply handler all))
-   ;; Otherwise, we search from START to STOP for submode regions,
-   ;; continuining over errors, until we don't find any more. If FRONT
-   ;; and BACK are number-or-markers, this should only execute once.
-   (t
-    (mmm-save-all
-     (goto-char start)
-     (cl-loop for (beg end front-pos back-pos matched-front matched-back
-                    matched-submode matched-face matched-name
-                    invalid-resume ok-resume) =
-                    (apply #'mmm-match-region :start (point) all)
+  (let ((result nil))
+    (cond
+     ;; If we have a class list, apply them all.
+     (classes
+      (mmm-apply-classes classes :start start :stop stop :face face))
+     ;; Otherwise, apply this class.
+     ;; If we have a handler, call it.
+     (handler
+      (apply handler all))
+     ;; Otherwise, we search from START to STOP for submode regions,
+     ;; continuining over errors, until we don't find any more. If FRONT
+     ;; and BACK are number-or-markers, this should only execute once.
+     (t
+      (mmm-save-all (goto-char start)
+        (cl-loop for (beg end front-pos back-pos matched-front matched-back
+                      matched-submode matched-face matched-name
+                      invalid-resume ok-resume) =
+                     (apply #'mmm-match-region :start (point) all)
            while beg
            if end	       ; match-submode, if present, succeeded.
            do
            (condition-case nil
                (progn
                  (mmm-make-region
-		  (or matched-submode submode) beg end
-		  :face (or matched-face face)
-		  :front front-pos :back back-pos
-		  :evaporation 'front
-		  :match-front matched-front :match-back matched-back
-		  :beg-sticky beg-sticky :end-sticky end-sticky
-		  :name matched-name
-		  :delimiter-mode delimiter-mode
-		  :front-face front-face :back-face back-face
-		  :creation-hook creation-hook
-		  )
-		 (goto-char ok-resume))
+		          (or matched-submode submode) beg end
+		          :face (or matched-face face)
+		          :front front-pos :back back-pos
+		          :evaporation 'front
+		          :match-front matched-front :match-back matched-back
+		          :beg-sticky beg-sticky :end-sticky end-sticky
+		          :name matched-name
+		          :delimiter-mode delimiter-mode
+		          :front-face front-face :back-face back-face
+		          :creation-hook creation-hook
+		          )
+                 (setq result t)
+		         (goto-char ok-resume))
              ;; If our region is invalid, go back to the end of the
              ;; front match and continue on.
              (mmm-error (goto-char invalid-resume)))
            ;; If match-submode was unable to find a match, go back to
            ;; the end of the front match and continue on.
            else do (goto-char invalid-resume)
-           )))))
+           ))))
+    result))
 
 ;;}}}
 ;;{{{ Match Regions
