@@ -94,7 +94,7 @@ other classes. If any errors occur, `mmm-apply-classes' exits with an
 error once all classes have been applied."
   (let (invalid-classes)
     (cl-block nil
-      (dotimes (time 10)
+      (dotimes (time mmm-maximum-nesting-depth) (declare (ignore time))
         (let ((success nil))
           (dolist (class classes)
             (condition-case err
