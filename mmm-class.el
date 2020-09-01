@@ -79,14 +79,12 @@ none is specified by CLASS."
   ;; The "special" class t means do nothing. It is used to turn on
   ;; MMM Mode without applying any classes.
   (unless (eq class t)
-    (let ((result
-           (apply #'mmm-ify :start start :stop stop
+    (prog1 (apply #'mmm-ify :start start :stop stop
                   (append (mmm-get-class-spec class)
-                          (list :face face)))))
+                          (list :face face)))
       (mmm-run-class-hook class)
       ;; Hack in case class hook sets mmm-buffer-mode-display-name etc.
-      (mmm-set-mode-line)
-      result)))
+      (mmm-set-mode-line))))
 
 (cl-defun mmm-apply-classes
     (classes &key (start (point-min)) (stop (point-max)) face)
