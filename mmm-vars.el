@@ -184,6 +184,7 @@
 	 c-comment-prefix-regexp
 	 c-comment-start-regexp
 	 c-cpp-defined-fns
+         c-cpp-expr-functions-key
 	 c-current-comment-prefix
 	 c-decl-block-key
          c-decl-hangon-key
@@ -193,9 +194,11 @@
          c-decl-start-kwds
          c-decl-start-re
 	 c-doc-comment-start-regexp
+         ;; c-enum-clause-introduction-re
 	 c-expr-kwds
 	 c-file-offsets
 	 c-file-style
+         c-found-types
          c-not-primitive-type-keywords-regexp
 	 c-hanging-braces-alist
 	 c-hanging-colons-alist
@@ -223,8 +226,9 @@
 	 c-lambda-kwds
          c-literal-start-regexp
 	 c-macro-with-semi-re
-         ;; c-make-top-level-key
+         c-make-top-level-key
          ;; c-make-top-level-kwds
+         c-noise-macro-with-parens-name-re
          c-nonlabel-token-key
          c-nonlabel-token-2-key
          c-nonsymbol-chars
@@ -258,6 +262,7 @@
 	 c-other-decl-block-kwds
 	 c-other-decl-kwds
 	 c-overloadable-operators-regexp
+         c-pack-key
          c-paragraph-separate
          c-paragraph-start
          c-paren-stmt-key
@@ -291,6 +296,7 @@
          c-prefix-spec-kwds-re
          c-typedef-key
 	 c-typedef-decl-key
+         c-type-decl-suffix-ws-ids-key
          comment-end
          comment-start
 	 comment-start-skip))
