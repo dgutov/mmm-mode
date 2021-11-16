@@ -523,7 +523,8 @@ is non-nil, don't quit if the info is already there."
                 (put mode 'mmm-syntax-propertize-function
                      (and (boundp 'syntax-propertize-function)
                           syntax-propertize-function))
-                (put mode 'mmm-indent-line-function indent-line-function))
+                (put mode 'mmm-indent-line-function indent-line-function)
+                (put mode 'mmm-indent-region-function indent-region-function))
               ;; Get variables
               (setq global-vars (mmm-get-locals 'global)
                     buffer-vars (mmm-get-locals 'buffer)
@@ -724,15 +725,23 @@ region and mode for the previous position."
 ;; with font-lock, but they aren't used anywhere else, so we might as
 ;; well have them close.
 
-(defun mmm-submode-changes-in (start stop)
+(defun mmm-submode-changes-in (start stop &optional use-markers)
   "Return a list of all submode-change positions from START to STOP.
-The list is sorted in order of increasing buffer position."
-  (let ((changes (sort (cl-remove-duplicates
-                        (mmm-mapcan (lambda (ovl)
-                                    `(,(overlay-start ovl)
-                                      ,(overlay-end ovl)))
-                                (mmm-overlays-overlapping start stop)))
-                       #'<)))
+The list is sorted in order of increasing buffer position.  If
+USE-MARKERS is non-nil, result contains markers instead of
+integers; required when indenting."
+  (let ((changes
+	 (sort
+	  (cl-remove-duplicates
+           (mmm-mapcan (lambda (ovl)
+                         `(,(if use-markers
+				(copy-marker (overlay-start ovl))
+			      (overlay-start ovl))
+                           ,(if use-markers
+				(copy-marker (overlay-end ovl))
+			      (overlay-end ovl))))
+                       (mmm-overlays-overlapping start stop)))
+          #'<)))
     (when (or (not changes) (< start (car changes)))
       (push start changes))
     (let ((last (last changes)))
@@ -740,9 +749,11 @@ The list is sorted in order of increasing buffer position."
         (setcdr last (list stop))))
     changes))
 
-(defun mmm-regions-in (start stop)
+(defun mmm-regions-in (start stop &optional use-markers)
   "Return a list of regions of the form (MODE BEG END OVL) whose disjoint
-union covers the region from START to STOP, including delimiters."
+union covers the region from START to STOP, including delimiters.  If
+USE-MARKERS is non-nil, result contains markers instead of
+integers; required when indenting."
   (when (> stop start)
     (let ((regions
            (cl-maplist (lambda (pos-list)
@@ -753,15 +764,17 @@ union covers the region from START to STOP, including delimiters."
                                     mmm-primary-mode)
                                   (car pos-list) (cadr pos-list)
                                   ovl))))
-                    (mmm-submode-changes-in start stop))))
+                    (mmm-submode-changes-in start stop use-markers))))
       (setcdr (last regions 2) nil)
       regions)))
 
-(defun mmm-regions-alist (start stop)
-  "Return a list of lists of the form \(MODE . REGIONS) where REGIONS
-is a list of elements of the form \(BEG END OVL). The disjoint union all
-of the REGIONS covers START to STOP."
-  (let ((regions (mmm-regions-in start stop))
+(defun mmm-regions-alist (start stop &optional use-markers)
+  "Return a list of lists of the form \(MODE . REGIONS) where
+REGIONS is a list of elements of the form \(BEG END OVL). The
+disjoint union all of the REGIONS covers START to STOP.  If
+USE-MARKERS is non-nil, result contains markers instead of
+integers; required when indenting."
+  (let ((regions (mmm-regions-in start stop use-markers))
         alist)
     (mapc (lambda (region)
             (let* ((mode (car region))
@@ -912,19 +925,124 @@ appease modes which rely on constructs like (point-min) to indent."
                               (overlay-end mmm-current-overlay))
             (funcall indent-function))
         (funcall indent-function)))))
+(make-obsolete 'mmm-indent-line-narrowed 'mmm-indent-line 0.6)
 
 (defun mmm-indent-line ()
+  "Indent the current line according to the mode for the current line.
+Calls the indent function given by the 'mmm-indent-line-function
+property of the mode for the current line.  If that mode's
+'mmm-indent-narrow propery is non-nil, narrow to the submode
+region first."
   (interactive)
-  (funcall
-   (save-excursion
-      (back-to-indentation)
-      (mmm-update-submode-region)
-      (get
-       (if (and mmm-current-overlay
-                (> (overlay-end mmm-current-overlay) (point)))
-           mmm-current-submode
-         mmm-primary-mode)
-       'mmm-indent-line-function))))
+  (save-excursion
+    (back-to-indentation)
+    (mmm-update-submode-region)
+    (let ((indent-function (get
+                            (if (and mmm-current-overlay
+                                     (> (overlay-end mmm-current-overlay) (point)))
+                                mmm-current-submode
+                              mmm-primary-mode)
+                            'mmm-indent-line-function)))
+      (if (and mmm-current-overlay
+	       (get mmm-current-submode 'mmm-indent-narrow))
+          (save-restriction
+            (narrow-to-region (overlay-start mmm-current-overlay)
+                              (overlay-end mmm-current-overlay))
+            (funcall indent-function))
+        (funcall indent-function)))))
+
+(defun mmm-indent-region-list (mode regions start stop)
+  "Indent REGIONS (a list of (BEG END OVL)), using MODE indent-region-function.
+START and STOP are the boundaries of the area to indent.  If
+NARROW, narrow to BEG END before calling the
+ident-region-function."
+  (save-excursion
+    (let ((func (get mode 'mmm-indent-region-function))
+	  (narrow (get mode 'mmm-indent-narrow)))
+      (dolist (reg regions)
+        (cl-destructuring-bind (beg end ovl) reg
+          (goto-char beg)
+          ;; Here we do a subset of what `mmm-update-submode-region'
+          ;; does, but we force it to use a specific mode.
+          (mmm-set-current-pair mode ovl)
+          (mmm-set-local-variables (unless (eq mmm-previous-submode mode)
+                                     mode)
+                                   mmm-current-overlay)
+
+	  ;; Adjust BEG END for partial lines
+	  ;;
+	  ;; We want each line indented by the mode that covers the
+	  ;; beginning of the line, not the end.
+	  ;;
+	  ;; For example, in wisitoken-grammar-mode, %()% delimits elisp code:
+	  ;;
+	  ;; extension_aggregate
+	  ;;   : '(' expression 'with' record_component_association_list ')'
+	  ;;     %((wisi-indent-action [nil
+	  ;;                            (wisi-anchored 1 1)
+	  ;;                            (wisi-anchored 1 1)
+	  ;;                            [(wisi-anchored 1 1) (wisi-anchored 1 1)]
+	  ;;                            (wisi-anchored 1 0)]))%
+	  ;;   | PERCENT END IF
+	  ;;   | PERCENT END IF
+	  ;;   ;
+	  ;;
+	  ;; '%((wisi-' should be indented by wisitoken-grammar-mode,
+	  ;; '(wisi-anchored 1 0)]))%' by elisp-mode.
+	  ;;
+	  ;; Suppose `start' and `stop' contain the entire outer-mode
+	  ;; statement. Then there are three indent regions:
+	  ;;
+	  ;; 1. 'extension ... %(' ; wisitoken-grammar-mode
+	  ;; 2. '%( ... )%         ; elisp-mode
+	  ;; 3. ')% ... ;'         ; wisitoken-grammar-mode
+
+	  ;; Narrowing is required by modes that look before `beg',
+	  ;; expecting to find source code for `mode' language. We
+	  ;; narrow before adjusting `beg', `end', since the extra
+	  ;; code may affect the indent computation.
+	  (save-restriction
+	    (when narrow (narrow-to-region beg end))
+
+	    (if ovl
+		;; We are indenting an inner mode (region 2), and should not indent
+		;; the line containing `beg'.
+		(setq beg (line-beginning-position 2))
+
+	      ;; We are indenting the containing mode (region 1 or 3).
+	      ;; In region 1, we should indent all lines. In region 3, we
+	      ;; should not indent the line containing `beg'.
+	      (if (= start beg)
+		  ;; Assume `beg' is not a submode boundary; indent it.
+		  nil
+		(setq beg (line-beginning-position 2))))
+
+	    (funcall func (max beg start) (min end stop)))
+
+          (mmm-save-changed-local-variables
+           mmm-current-submode mmm-current-overlay))
+      ))))
+
+(defun mmm-indent-region (start stop)
+  "Indent from START to STOP keeping track of submodes correctly.
+For `indent-region-function'."
+  (let ((saved-mode mmm-current-submode)
+        (saved-ovl  mmm-current-overlay))
+    (unwind-protect
+        (progn
+          (mmm-save-changed-local-variables
+           mmm-current-submode mmm-current-overlay)
+          (dolist (elt (mmm-regions-alist start stop t))
+            (mmm-indent-region-list (car elt) (cdr elt) start stop)))
+      (mmm-set-current-pair saved-mode saved-ovl)
+      (mmm-set-local-variables (or saved-mode mmm-primary-mode) saved-ovl))
+    ))
+
+(defvar mmm-indent-region-function #'mmm-indent-region
+  "The function to call to indent a region.
+This will be the value of `indent-region-function' for the whole
+buffer. It's supposed to delegate to the appropriate submode's
+indentation function. See `mmm-indent-region' as the starting point.")
 
 ;;}}}
 (provide 'mmm-region)
