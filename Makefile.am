@@ -7,7 +7,7 @@ lisp_LISP = mmm-compat.el mmm-vars.el mmm-utils.el mmm-auto.el \
   mmm-sample.el mmm-mason.el mmm-univ.el mmm-rpm.el mmm-cweb.el \
   mmm-noweb.el mmm-myghty.el mmm-erb.el mmm-defaults.el
 
-info_TEXINFOS = mmm.texinfo
+info_TEXINFOS = mmm.texi
 
 # This is a hack IMO.  Automake should recognize lisp files as
 # "sources" and include them in the distribution, but it doesn't.
