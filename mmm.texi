@@ -2104,6 +2104,5 @@ variable @code{case-fold-search}.
 
 @c Local Variables:
 @c mode: texinfo
-@c mode: font-lock
-@c mode: outline-minor
+@c eval: (outline-minor-mode)
 @c End:
