@@ -1,7 +1,7 @@
 dnl
 dnl Execute arbitrary emacs lisp
 dnl
-AC_DEFUN(AC_EMACS_LISP, [
+AC_DEFUN([AC_EMACS_LISP], [
 elisp="$2"
 if test -z "$3"; then
 	AC_MSG_CHECKING(for $1)
@@ -21,7 +21,7 @@ if test -z "$3"; then
 fi
 ])
 
-AC_DEFUN(AC_XEMACS_P, [
+AC_DEFUN([AC_XEMACS_P], [
   AC_MSG_CHECKING([if $EMACS is really XEmacs])
   AC_EMACS_LISP(xemacsp,(if (string-match \"XEmacs\" emacs-version) \"yes\" \"no\") ,"noecho")
   XEMACS=${EMACS_cv_SYS_xemacsp}
@@ -34,7 +34,7 @@ AC_DEFUN(AC_XEMACS_P, [
   AC_SUBST(EMACS_FLAVOR)
 ])
 
-AC_DEFUN(AC_PATH_LISPDIR, [
+AC_DEFUN([AC_PATH_LISPDIR], [
   AC_XEMACS_P
   if test "$prefix" = "NONE"; then
 	AC_MSG_CHECKING([prefix for your Emacs])
@@ -67,7 +67,7 @@ dnl
 dnl Determine the emacs version we are running.
 dnl Automatically substitutes @EMACS_VERSION@ with this number.
 dnl
-AC_DEFUN(AC_EMACS_VERSION, [
+AC_DEFUN([AC_EMACS_VERSION], [
 AC_MSG_CHECKING(for emacs version)
 AC_EMACS_LISP(version,(and (boundp 'emacs-major-version) (format \"%d.%d\" emacs-major-version emacs-minor-version)),"noecho")
 
@@ -81,7 +81,7 @@ dnl Determine whether the specified version of Emacs supports packages
 dnl or not.  Currently, only XEmacs 20.3 does, but this is a general
 dnl check.
 dnl
-AC_DEFUN(AC_EMACS_PACKAGES, [
+AC_DEFUN([AC_EMACS_PACKAGES], [
 AC_ARG_WITH(package-dir,      --with-package-dir        Configure as a XEmacs package in directory, [ EMACS_PACKAGE_DIR="${withval}"])
 if test -n "$EMACS_PACKAGE_DIR"; then
   if test "$prefix" != "NONE"; then
@@ -100,7 +100,7 @@ dnl
 dnl Check whether a function exists in a library
 dnl All '_' characters in the first argument are converted to '-'
 dnl
-AC_DEFUN(AC_EMACS_CHECK_LIB, [
+AC_DEFUN([AC_EMACS_CHECK_LIB], [
 if test -z "$3"; then
 	AC_MSG_CHECKING(for $2 in $1)
 fi
@@ -123,7 +123,7 @@ dnl
 dnl Check whether a variable exists in a library
 dnl All '_' characters in the first argument are converted to '-'
 dnl
-AC_DEFUN(AC_EMACS_CHECK_VAR, [
+AC_DEFUN([AC_EMACS_CHECK_VAR], [
 AC_MSG_CHECKING(for $2 in $1)
 library=`echo $1 | tr _ -`
 AC_EMACS_LISP($1,(progn (makunbound '$2) (condition-case nil (progn (require '$library) (boundp '$2)) (error nil))),"noecho")
@@ -138,7 +138,7 @@ AC_MSG_RESULT($HAVE_$1)
 dnl
 dnl Perform sanity checking and try to locate the custom and widget packages
 dnl
-AC_DEFUN(AC_CHECK_CUSTOM, [
+AC_DEFUN([AC_CHECK_CUSTOM], [
 AC_MSG_CHECKING(for acceptable custom library)
 AC_CACHE_VAL(EMACS_cv_ACCEPTABLE_CUSTOM,[
 AC_EMACS_CHECK_LIB(widget,widget-convert-text,"noecho")
