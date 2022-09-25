@@ -164,10 +164,12 @@ to apply, or always if `mmm-global-mode' is t."
 
 (add-hook 'mmm-major-mode-hook #'mmm-mode-on-maybe)
 
-(defalias 'mmm-add-find-file-hooks #'mmm-add-find-file-hook)
+(define-obsolete-function-alias 'mmm-add-find-file-hooks 'mmm-add-find-file-hook "0.3.8"
+  "Both `mmm-add-find-file-hooks' and `mmm-add-find-file-hook' are deprecated.")
 (defun mmm-add-find-file-hook ()
-  "Equivalent to (setq mmm-global-mode 'maybe).
+  "Equivalent to \(setq mmm-global-mode \\='maybe).
 This function is deprecated and may be removed in future."
+  (declare (obsolete nil "0.3.8"))
   (message "Warning: `mmm-add-find-file-hook' is deprecated.")
   (setq mmm-global-mode 'maybe))
 
