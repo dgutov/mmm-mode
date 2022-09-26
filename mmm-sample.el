@@ -1,6 +1,6 @@
 ;;; mmm-sample.el --- Sample MMM submode classes
 
-;; Copyright (C) 2000-2004, 2012-2015, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2004, 2012-2015, 2018, 2022  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 
@@ -113,9 +113,21 @@ add elements to this alist.  Each element is \(REGEXP . MODE) where
 REGEXP is a regular expression matched against the here-document name
 and MODE is a major mode function symbol.")
 
-(defun mmm-here-doc-get-mode (string)
-  (string-match "[a-zA-Z_-]+" string)
-  (setq string (match-string 0 string))
+(defun mmm-get-lang-mode (string regex group)
+  "Find a suitable submode for STRING.
+If REGEX matches STRING, The matching is based on the match
+GROUP.
+
+The following ways to find a matching submode are tried in order:
+
+* Search `mmm-here-doc-mode-alist' for a mode.
+* Try the whole name, stopping at `mode' if present.
+* Try each word by itself (preference list)
+* Try each word with -mode tacked on
+* Try each pair of words with -mode tacked on
+  (w1 w2 w3) -> (w1w2-mode w2w3-mode w3-mode)"
+  (string-match regex string)
+  (setq string (match-string group string))
   (or (mmm-ensure-modename
        ;; First try the user override variable.
        (cl-some (lambda (pair)
@@ -148,6 +160,11 @@ and MODE is a major mode function symbol.")
             ;; name (perhaps minus `-mode') doesn't occur in the
             ;; here-document name, we can give up.
             (signal 'mmm-no-matching-submode nil)))))
+
+(defun mmm-here-doc-get-mode (string)
+  "Find a submode for STRING.
+First match of [a-zA-Z_-]+ is used as the submode marker."
+  (mmm-get-lang-mode string "\\([a-zA-Z_-]+\\)" 1))
 
 (mmm-add-classes
  '((here-doc
