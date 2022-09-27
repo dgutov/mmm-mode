@@ -12,5 +12,3 @@ dist_lisp_LISP = mmm-compat.el mmm-vars.el mmm-utils.el mmm-auto.el \
 info_TEXINFOS = mmm.texi
 
 EXTRA_DIST = README.Mason FAQ
-
-# See also `elisp-comp' for another hack.
