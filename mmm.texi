@@ -1344,10 +1344,18 @@ print <<END_HTML;
 END_HTML
 @end example
 
-The @code{here-doc} submode class recognizes this syntax, and can even
-guess the correct submode to use in many cases.  For instance, it would
+The @code{here-doc} submode class supports the general case of
+here-documents while the @code{sh-here-doc} class has more specialized
+support for shell scripts.  They can both guess the correct submode to
+use based on the @dfn{delimiter} (@code{END_HTML} in the example)
+used.  For instance, it would
 put the above example in @code{html-mode}, noticing the string
-@samp{HTML} in the name of the here-document.  If you use less than
+@samp{HTML} in the delimiter of the here-document.  Generally speaking
+any language mode can be found if the language name is one of the
+words in delimiter, but be aware that the first word that matches will
+be used. The @code{mmm-major-mode-preferences} list is checked for any
+language mode preferences, as described in @ref{Preferred Modes}.  If
+you use less than
 evocative here-document names, or if the submode is recognized
 incorrectly for any other reason, you can tell it explicitly what
 submode to use.

@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; This file contains several sample submode classes for use with MMM
-;; Mode. For a more detailed, advanced example, see `mmm-mason.el'.
+;; Mode.  For a more detailed, advanced example, see `mmm-mason.el'.
 
 ;; In order to use any of classes defined here, just require `mmm-auto' and
 ;; add the respective (major mode -> class <- file extension) associations
@@ -177,6 +177,48 @@ First match of [a-zA-Z_-]+ is used as the submode marker."
     :insert ((?d here-doc "Here-document Name: " @ "<<" str _ "\n"
                  @ "\n" @ str "\n" @))
     )))
+
+(defun mmm-sh-here-doc-get-mode (front-string)
+  "Find the mode for a shell here-doc starting with FRONT-STRING.
+The matching is based on the word used as the here-document
+delimiter, the word following <<.
+Use `mmm-get-lang-mode' to find the submode."
+  (mmm-get-lang-mode front-string "<<-?\\(['\"]?\\)\\([-a-zA-Z0-9_]+\\)\\1" 2))
+
+;; HEREDOC for shell scripts following the POSIX definition.  It is
+;; defined in two classes that are then grouped into the class
+;; sh-here-doc
+;; Define some regex-parts that are reused a lot.
+;; START is the '<<' sequence
+(rx-let ((start (sequence (or line-start (not "<")) "<<"))
+		 ;; DELIM is supposed to be a WORD, which is a complicated definition.
+		 ;; It may be quoted with ', ", or `
+         (delim (sequence (group-n 2 (optional (any ?' ?\" ?`)))
+                          (group-n 1
+                            (char "_a-zA-Z0-9")
+                            (one-or-more (char "-" "_a-zA-Z0-9")))
+                          (backref 2))))
+  ;; some repeated class properties
+  (let ((common-props '(:front-offset (end-of-line 1)
+                        :save-matches t
+                        :delimiter-mode nil
+                        :match-submode mmm-sh-here-doc-get-mode)))
+    (mmm-add-classes
+     `((sh-here-doc-unindented
+        :front ,(rx start delim)
+        :back ,(rx line-start "~1" line-end)
+        ,@common-props
+        :insert ((?d here-doc "Here-document Name: " @ "<<" str _ "\n"
+                     @ "\n" @ str "\n" @)))
+       (sh-here-doc-indented
+        :front ,(rx start "-" delim)
+        :back ,(rx line-start (zero-or-more "\t") "~1" line-end)
+        ,@common-props
+        :insert ((?D here-doc "Here-document Name: " @ "<<-" str _ "\n"
+                     @ "\n" @ str "\n" @)))
+       (sh-here-doc ; define a grouping class
+        :classes (sh-here-doc-unindented sh-here-doc-indented))))))
+
 
 ;;}}}
 ;;{{{ Embperl
