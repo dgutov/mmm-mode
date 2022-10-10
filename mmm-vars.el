@@ -884,7 +884,7 @@ regions, and sometimes for inserting new ones while editing.
 
 Each element of this alist looks like \(CLASS . ARGS) where CLASS is a
 symbol naming the submode class and ARGS is a list of keyword
-arguments, called a \"class specifier\". There are a large number of
+arguments, called a \"class specifier\".  There are a large number of
 accepted keyword arguments in the class specifier.
 
 The argument CLASSES, if supplied, must be a list of other submode
@@ -896,8 +896,8 @@ classes can do nothing but group other classes.
 
 The argument HANDLER, if supplied, also overrides any other processing.
 It must be a function, and all the arguments are passed to it as
-keywords, and it must do everything. See `mmm-ify' for what sorts of
-things it must do. This back-door interface should be cleaned up.
+keywords, and it must do everything.  See `mmm-ify' for what sorts of
+things it must do.  This back-door interface should be cleaned up.
 
 The optional argument FACE gives the display face of the submode
 regions under high decoration (see `mmm-submode-decoration-level').
@@ -918,13 +918,13 @@ a match is found for FRONT, which is passed one argument, the form of
 the front delimiter \(found from FRONT-FORM, below), and return a
 symbol such as SUBMODE would be set to.  If MATCH-SUBMODE detects an
 invalid match--for example a specified mode which is not `fboundp'--it
-should \(signal 'mmm-no-matching-submode nil).
+should \(signal \\='mmm-no-matching-submode nil).
 
 FRONT and BACK are the means to find the submode regions, and can be
 either buffer positions \(number-or-markers), regular expressions, or
-functions. If they are absolute buffer positions, only one submode
-region is created, from FRONT to BACK. This is generally not used in
-named classes. \(Unnamed classes are created by interactive commands
+functions.  If they are absolute buffer positions, only one submode
+region is created, from FRONT to BACK.  This is generally not used in
+named classes.  \(Unnamed classes are created by interactive commands
 in `mmm-interactive-history').
 
 If FRONT is a regexp, then that regexp is searched for, and the end of
@@ -967,7 +967,7 @@ delimiter.  If nil, it means not to make a region for the respective
 delimiter at all.
 
 DELIMITER-MODE, if supplied, specifies what submode to use for the
-delimiter regions, if any.  If `nil', the primary mode is used.  If
+delimiter regions, if any.  If nil, the primary mode is used.  If
 not supplied, `mmm-delimiter-mode' is used.
 
 FRONT-FACE and BACK-FACE specify faces to use for displaying the
@@ -987,7 +987,7 @@ delimiter.  See `mmm-match-front', `mmm-match-back', and
 `mmm-end-current-region'.
 
 CASE-FOLD-SEARCH, if specified, controls whether the search is
-case-insensitive. See `case-fold-search'. It defaults to `t'.
+case-insensitive.  See `case-fold-search'.  It defaults to t.
 
 CREATION-HOOK, if specified, should be a function which is run
 whenever a submode region is created, with point at the beginning of
@@ -996,16 +996,16 @@ the new region.  One use for it is to set region-saved local variables
 
 INSERT specifies the keypress insertion spec for such submode regions.
 INSERT's value should be list of elements of the form \(KEY NAME .
-SPEC). Each KEY should be either a character, a function key symbol,
+SPEC).  Each KEY should be either a character, a function key symbol,
 or a dotted list \(MOD . KEY) where MOD is a symbol for a modifier
-key. The use of any other modifier than meta is discouraged, as
+key.  The use of any other modifier than meta is discouraged, as
 `mmm-insert-modifiers' is sometimes set to \(control), and other
-modifiers are not very portable. Each NAME should be a symbol
-representing the insertion for that key. Each SPEC can be either a
+modifiers are not very portable.  Each NAME should be a symbol
+representing the insertion for that key.  Each SPEC can be either a
 skeleton, suitable for passing to `skeleton-insert' to create a
 submode region, or a dotted pair \(OTHER-KEY . ARG) meaning to use the
 skeleton defined for OTHER-KEY but pass it the argument ARG as the
-`str' variable, possible replacing a prompt string. Skeletons for
+`str' variable, possible replacing a prompt string.  Skeletons for
 insertion should have the symbol `_' where point \(or wrapped text)
 should go, and the symbol `@' in four different places: at the
 beginning of the front delimiter, the beginning of the submode region,
