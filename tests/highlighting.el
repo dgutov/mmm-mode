@@ -1,4 +1,4 @@
-;; Copyright (C) 2013-2014, 2020  Free Software Foundation, Inc.
+;; Copyright (C) 2013-2014, 2020, 2022  Free Software Foundation, Inc.
 
 ;; This file is part of GNU Emacs.
 
@@ -20,6 +20,8 @@
 ;;; Code:
 
 (require 'ert-x)
+(require 'mmm-test-util)
+(require 'mmm-mode)
 
 (defvar foo-mode-keywords
   `((,(concat "\\b"
@@ -31,6 +33,7 @@
   (setq font-lock-defaults '(foo-mode-keywords t t)))
 
 (ert-deftest mmm-font-lock-without-font-lock-syntax-table ()
+  (mmm-with-global-font-lock
   (ert-with-test-buffer nil
     (let (mmm-mode-ext-classes-alist
           mmm-parse-when-idle)
@@ -45,12 +48,13 @@
       (search-forward "fo" nil nil 2)
       (should (eq (get-text-property (point) 'face) font-lock-keyword-face))
       (search-forward "ba")
-      (should (eq (get-text-property (point) 'face) font-lock-keyword-face)))))
+      (should (eq (get-text-property (point) 'face) font-lock-keyword-face))))))
 
 (define-derived-mode foo2-mode fundamental-mode ""
   (setq font-lock-defaults '(foo-mode-keywords t t ((?_ . "w")))))
 
 (ert-deftest mmm-font-lock-with-font-lock-syntax-table ()
+  (mmm-with-global-font-lock
   (ert-with-test-buffer nil
     (let (mmm-mode-ext-classes-alist
           mmm-parse-when-idle)
@@ -60,12 +64,13 @@
       (mmm-mode-on)
       (mmm-ify-by-regexp 'foo2-mode "// " 0 "\\'" 0 nil)
       (font-lock-fontify-region (point-min) (point-max))
-      (should-not (next-single-property-change (point-min) 'face)))))
+      (should-not (next-single-property-change (point-min) 'face))))))
 
 (define-derived-mode foo3-mode fundamental-mode ""
   (setq font-lock-defaults '(foo-mode-keywords nil t ((?_ . "w")))))
 
 (ert-deftest mmm-syntax-propertize-function-preserves-current-syntax-table ()
+  (mmm-with-global-font-lock
   (ert-with-test-buffer nil
     (let (mmm-mode-ext-classes-alist
           mmm-parse-when-idle)
@@ -79,9 +84,10 @@
       (let ((pt (next-single-property-change (point-min) 'face)))
         (should pt)
         (goto-char pt)
-        (should (looking-at "foo\\'"))))))
+        (should (looking-at "foo\\'")))))))
 
 (ert-deftest mmm-fontify-region-list-ignores-outside-for-syntactic-ff-tion ()
+  (mmm-with-global-font-lock
   (ert-with-test-buffer nil
     (let (mmm-mode-ext-classes-alist
           mmm-parse-when-idle
@@ -96,9 +102,10 @@
       (font-lock-fontify-region (point-min) (point-max))
       (search-backward "var")
       (should (eq 'font-lock-keyword-face
-                  (get-text-property (point) 'face))))))
+                  (get-text-property (point) 'face)))))))
 
 (ert-deftest mmm-fontify-region-list-carries-string-after-subregion ()
+  (mmm-with-global-font-lock
   (ert-with-test-buffer nil
     (let (mmm-mode-ext-classes-alist
           mmm-parse-when-idle
@@ -113,4 +120,4 @@
       (should (null (get-text-property (point) 'face)))
       (search-forward "bar")
       (should (eq 'font-lock-string-face
-                  (get-text-property (point) 'face))))))
+                  (get-text-property (point) 'face)))))))
