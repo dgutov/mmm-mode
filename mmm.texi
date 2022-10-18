@@ -68,7 +68,7 @@ approved by the Free Software Foundation.
 @end titlepage
 
 @ifinfo
-@node Top, Overview, (dir), (dir)
+@node Top
 @top MMM Mode
 
 MMM Mode is a minor mode for Emacs which allows Multiple Major Modes to
@@ -164,8 +164,7 @@ Indices
 @end detailmenu
 @end menu
 
-@node Overview, Basics, Top, Top
-@comment  node-name,  next,  previous,  up
+@node Overview
 @chapter Overview of MMM Mode
 @cindex overview of mmm-mode
 @cindex mmm-mode, overview of
@@ -225,8 +224,7 @@ contain sample code.  And so on.  We encourage you to experiment.
 * Quick Start::                 Getting started using MMM Mode quickly.
 @end menu
 
-@node Basic Concepts, Installation, Overview, Overview
-@comment  node-name,  next,  previous,  up
+@node Basic Concepts
 @section Basic Concepts
 @cindex dominant major mode
 @cindex major mode, dominant
@@ -289,8 +287,7 @@ MMM Mode will find and create submode regions automatically based on a
 buffer's file extension, dominant mode, or local variables.
 
 
-@node Installation, Quick Start, Basic Concepts, Overview
-@comment  node-name,  next,  previous,  up
+@node Installation
 @section Installing MMM Mode
 
 MMM Mode has a standard installation process.  See the file INSTALL for
@@ -349,8 +346,7 @@ in your initialization file.  @xref{Global Mode}, for more detailed
 information.
 
 
-@node Quick Start,  , Installation, Overview
-@comment  node-name,  next,  previous,  up
+@node Quick Start
 @section Getting Started Quickly
 
 Perhaps the simplest way to create submode regions is to do it
@@ -403,8 +399,7 @@ Mode works and how to configure it to your preferences.  If none of the
 supplied submode classes fit your needs, then you can try to write your
 own.  @xref{Writing Classes}, for more information.
 
-@node Basics, Customizing, Overview, Top
-@comment  node-name,  next,  previous,  up
+@node Basics
 @chapter MMM Mode Basics
 
 This chapter explains the most important parts of how to use MMM Mode.
@@ -419,8 +414,7 @@ This chapter explains the most important parts of how to use MMM Mode.
 * Global Mode::                 Turning MMM Mode on automatically.
 @end menu
 
-@node MMM Minor Mode, Submode Classes, Basics, Basics
-@comment  node-name,  next,  previous,  up
+@node MMM Minor Mode
 @section The MMM Minor Mode
 @cindex mode, mmm minor
 @cindex minor mode, mmm
@@ -440,8 +434,7 @@ Line}).
 @end menu
 
 
-@node Enabling MMM Mode, MMM Mode Keys, MMM Minor Mode, MMM Minor Mode
-@comment  node-name,  next,  previous,  up
+@node Enabling MMM Mode
 @subsection Enabling MMM Mode
 @cindex mmm mode, turning on
 @cindex mmm mode, turning off
@@ -481,8 +474,7 @@ Do not set this variable directly; use one of the above functions.
 @end defvar
 
 
-@node MMM Mode Keys,  , Enabling MMM Mode, MMM Minor Mode
-@comment  node-name,  next,  previous,  up
+@node MMM Mode Keys
 @subsection Key Bindings in MMM Mode
 @cindex mmm mode key bindings
 @cindex key bindings in mmm mode
@@ -528,8 +520,7 @@ the mode prefix (@kbd{C-c %}) and the command and insertion modifiers.
 You can customize them, however; @ref{Key Bindings}.
 
 
-@node Submode Classes, Selecting Classes, MMM Minor Mode, Basics
-@comment  node-name,  next,  previous,  up
+@node Submode Classes
 @section Understanding Submode Classes
 @cindex submode classes
 @cindex classes, submode
@@ -559,8 +550,7 @@ to that class, and also remembers the class for later, so that new
 submode regions can be inserted and scanned for later.
 
 
-@node Selecting Classes, Insertion, Submode Classes, Basics
-@comment  node-name,  next,  previous,  up
+@node Selecting Classes
 @section How MMM Mode selects submode classes
 
 Submode classes that apply to a buffer come from three sources:
@@ -578,8 +568,7 @@ in a later chapter.
 @end menu
 
 
-@node File Classes, Mode-Ext Classes, Selecting Classes, Selecting Classes
-@comment  node-name,  next,  previous,  up
+@node File Classes
 @subsection File-Local Submode Classes
 
 @defvar mmm-classes
@@ -596,8 +585,7 @@ desired value of @code{mmm-classes} for the file in question. It can
 also be done with a local variables list at the end of the file.
 
 
-@node Mode-Ext Classes, Global Classes, File Classes, Selecting Classes
-@comment  node-name,  next,  previous,  up
+@node Mode-Ext Classes
 @subsection Submode Classes Associated with Modes and Extensions
 
 @defopt mmm-mode-ext-classes-alist
@@ -634,8 +622,7 @@ backward compatibility.
 @end defun
 
 
-@node Global Classes,  , Mode-Ext Classes, Selecting Classes
-@comment  node-name,  next,  previous,  up
+@node Global Classes
 @subsection Globally Applied Classes and the Universal Class
 
 In addition to file-local and mode-ext-associated submode classes, MMM
@@ -666,8 +653,7 @@ is most useful when @code{mmm-global-mode} is set to @code{t};
 @ref{Global Mode}.
 
 
-@node Insertion, Re-parsing, Selecting Classes, Basics
-@comment  node-name,  next,  previous,  up
+@node Insertion
 @section Inserting new submode regions
 
 So much for noticing submode regions already present when you open a
@@ -716,8 +702,7 @@ command @kbd{C-c % h} (@code{mmm-insertion-help} to view the available
 insertion keys.
 
 
-@node Re-parsing, Interactive, Insertion, Basics
-@comment  node-name,  next,  previous,  up
+@node Re-parsing
 @section Re-Parsing Submode Regions
 @cindex re-parsing submode regions
 @cindex parsing submode regions
@@ -735,8 +720,7 @@ insertion keys.
 Describe @code{mmm-parse-buffer}, @code{mmm-parse-region},
 @code{mmm-parse-block}, and @code{mmm-clear-current-region}.
 
-@node Interactive, Global Mode, Re-parsing, Basics
-@comment  node-name,  next,  previous,  up
+@node Interactive
 @section Interactive MMM-ification Functions
 @cindex interactive mmm-ification
 @cindex mmm-ification, interactive
@@ -809,8 +793,7 @@ you may want to re-parse the buffer with @kbd{C-c % C-b}
 @end deffn
 
 
-@node Global Mode,  , Interactive, Basics
-@comment  node-name,  next,  previous,  up
+@node Global Mode
 @section MMM Global Mode
 @cindex mode, mmm global
 @cindex global mmm mode
@@ -856,8 +839,7 @@ matching buffers, but supply no submode classes to be applied.
 @end menu
 
 
-@node Major Mode Hook,  , Global Mode, Global Mode
-@comment  node-name,  next,  previous,  up
+@node Major Mode Hook
 @subsection The Major Mode Hook
 @cindex hook, major mode
 @cindex major mode hook
@@ -895,8 +877,7 @@ buffers:
 (add-hook 'mmm-major-mode-hook 'turn-on-auto-fill)
 @end lisp
 
-@node Customizing, Supplied Classes, Basics, Top
-@comment  node-name,  next,  previous,  up
+@node Customizing
 @chapter Customizing MMM Mode
 
 This chapter explains how to customize the appearance and functioning of
@@ -912,8 +893,7 @@ MMM Mode however you want.
 * Hooks::                       How to make MMM Mode run your code.
 @end menu
 
-@node Region Coloring, Preferred Modes, Customizing, Customizing
-@comment  node-name,  next,  previous,  up
+@node Region Coloring
 @section Customizing Region Coloring
 @cindex faces, submode
 @cindex submode faces
@@ -986,8 +966,7 @@ The different background colors are provided by the faces
 same way as @code{mmm-default-submode-face}.
 
 
-@node Preferred Modes, Mode Line, Region Coloring, Customizing
-@comment  node-name,  next,  previous,  up
+@node Preferred Modes
 @section Preferred Major Modes
 
 Certain of the supplied submode classes know only the language that
@@ -1032,8 +1011,7 @@ use the following line:
 @end lisp
 
 
-@node Mode Line, Key Bindings, Preferred Modes, Customizing
-@comment  node-name,  next,  previous,  up
+@node Mode Line
 @section Customizing the Mode Line Display
 
 By default, when in a submode region, MMM Mode changes the section of
@@ -1065,8 +1043,7 @@ eliminate the indicator entirely, set this variable to the empty string.
 @end defopt
 
 
-@node Key Bindings, Local Variables, Mode Line, Customizing
-@comment  node-name,  next,  previous,  up
+@node Key Bindings
 @section Customizing the MMM Mode Key Bindings
 
 The default MMM Mode key bindings are explained in @ref{MMM Mode Keys},
@@ -1101,8 +1078,7 @@ you, feel free to use it.  Other modifiers, such as Hyper and Super, are
 not universally available, but are valid when present.
 
 
-@node Local Variables, Changing Classes, Key Bindings, Customizing
-@comment  node-name,  next,  previous,  up
+@node Local Variables
 @section Changing Saved Local Variables
 
 A lot of the functionality of MMM Mode---that which makes the major mode
@@ -1136,8 +1112,7 @@ table (@pxref{Syntax, , , emacs, The Emacs Manual}) and mode keymaps
 (@pxref{Keymaps, , , emacs, The Emacs Manual}).
 
 
-@node Changing Classes, Hooks, Local Variables, Customizing
-@comment  node-name,  next,  previous,  up
+@node Changing Classes
 @section Changing the Supplied Submode Classes
 
 If you need to use MMM with a syntax for which a submode class is not
@@ -1160,8 +1135,7 @@ Get the value of the keyword parameter @var{param} for the submode class
 
 
 
-@node Hooks,  , Changing Classes, Customizing
-@comment  node-name,  next,  previous,  up
+@node Hooks
 @section Hooks Provided by MMM Mode
 
 MMM Mode defines several hook variables (@pxref{Hooks, , , emacs, The
@@ -1198,8 +1172,7 @@ set for supplied submode classes with @code{mmm-set-class-parameter};
 @ref{Changing Classes}.
 
 
-@node Supplied Classes, Writing Classes, Customizing, Top
-@comment  node-name,  next,  previous,  up
+@node Supplied Classes
 @chapter Supplied Submode Classes
 
 This chapter describes the submode classes that are supplied with MMM
@@ -1218,8 +1191,7 @@ Mode.
 * Noweb::                       Noweb literate programs.
 @end menu
 
-@node Mason, File Variables, Supplied Classes, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node Mason
 @section Mason: Perl in HTML
 
 Mason is a syntax to embed Perl code in HTML and other documents.  See
@@ -1311,8 +1283,7 @@ This tells PSGML that the current file is a sub-document of the file
 alleviating its confusion.
 
 
-@node File Variables, Here-documents, Mason, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node File Variables
 @section Elisp in a Local Variables List
 
 Emacs allows the author of a file to specify major and minor modes to be
@@ -1326,8 +1297,7 @@ this, and is suitable for turning on in a given file with
 @code{mmm-classes}, or in all files with @code{mmm-global-classes}.
 
 
-@node Here-documents, Javascript, File Variables, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node Here-documents
 @section Here-documents
 
 One of the long-time standard syntaxes for outputting large amounts of
@@ -1372,8 +1342,7 @@ would do otherwise.
 @end defopt
 
 
-@node Javascript, Embedded CSS, Here-documents, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node Javascript
 @section Javascript in HTML
 
 The submode class @code{html-js} allows for embedding Javascript code in
@@ -1397,8 +1366,7 @@ The mode used for Javascript regions is controlled by the user;
 @xref{Preferred Modes}.
 
 
-@node Embedded CSS, Embperl, Javascript, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node Embedded CSS
 @section CSS embedded in HTML
 
 CSS (Cascading Style Sheets) can also be embedded in HTML.  The
@@ -1416,8 +1384,7 @@ It uses @code{css-mode} if present, @code{c++-mode} otherwise.  This can
 be customized: @xref{Preferred Modes}.
 
 
-@node Embperl, ePerl, Embedded CSS, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node Embperl
 @section Embperl: More Perl in HTML
 
 Embperl is another syntax for embedding Perl in HTML.  See
@@ -1427,8 +1394,7 @@ embedding syntax.  Its Perl mode is also controllable by the user;
 @xref{Preferred Modes}.
 
 
-@node ePerl, JSP, Embperl, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node ePerl
 @section ePerl: General Perl Embedding
 
 Yet another syntax for embedding Perl is called ePerl.  See
@@ -1437,8 +1403,7 @@ Yet another syntax for embedding Perl is called ePerl.  See
 specified by the user; @xref{Preferred Modes}.
 
 
-@node JSP, RPM, ePerl, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node JSP
 @section JSP: Java Embedded in HTML
 
 JSP (Java Server Pages) is a syntax for embedding Java code in HTML.
@@ -1447,14 +1412,13 @@ specified by the user; @xref{Preferred Modes}.  The default is
 @code{jde-mode} if present, otherwise @code{java-mode}.
 
 
-@node RPM, Noweb, JSP, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node RPM
 @section RPM Spec Files
 
 @file{mmm-rpm.el} contains the definition of an MMM Mode submode class
 for editing shell script sections within RPM (Redhat Package Manager)
 spec files.  It is recommended for use in combination with
-@file{rpm-spec-mode.el} by Stig Bjørlykke <stigb@@tihlde.hist.no> and
+@file{rpm-spec-mode.el} by Stig BjÃ¸rlykke <stigb@@tihlde.hist.no> and
 Steve Sanbeg <sanbeg@@dset.com>
 (@uref{http://www.xemacs.org/~stigb/rpm-spec-mode.el}).
 
@@ -1468,8 +1432,7 @@ Suggested setup code:
 Thanks to Marcus Harnisch <Marcus.Harnisch@@gmx.net> for contributing
 this submode class.
 
-@node Noweb,  , RPM, Supplied Classes
-@comment  node-name,  next,  previous,  up
+@node Noweb
 @section Noweb literate programming
 
 @file{mmm-noweb.el} contains the definition of an MMM Mode submode
@@ -1557,8 +1520,7 @@ Thanks to Joe Kelsey <joe@@zircon.seattle.wa.us> for contributing this
 class.
 
 
-@node Writing Classes, Indices, Supplied Classes, Top
-@comment  node-name,  next,  previous,  up
+@node Writing Classes
 @chapter Writing Submode Classes
 
 Sometimes (perhaps often) you may want to use MMM with a syntax for
@@ -1581,8 +1543,7 @@ with examples.
 * Misc Keywords::               Other miscellaneous options.
 @end menu
 
-@node Basic Classes, Paired Delimiters, Writing Classes, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Basic Classes
 @section Writing Basic Submode Classes
 @cindex simple submode classes
 @cindex submode classes, simple
@@ -1642,8 +1603,7 @@ sections, we will examine each of them and their uses in writing submode
 classes.
 
 
-@node Paired Delimiters, Region Placement, Basic Classes, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Paired Delimiters
 @section Matching Paired Delimiters
 
 A simple pair of regular expressions does not always suffice to exactly
@@ -1679,8 +1639,7 @@ present and non-nil, the string @samp{~1} is replaced in the value of
 expression to match the correct ending delimiter.
 
 
-@node Region Placement, Submode Groups, Paired Delimiters, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Region Placement
 @section Placing Submode Regions Precisely
 
 Normally, a submode region begins immediately after the end of the
@@ -1739,8 +1698,7 @@ following line and go until the ending flag.
 If the @code{:back} should not be able to start a new submode region,
 set the @code{:end-not-begin} keyword to non-nil.
 
-@node Submode Groups, Calculated Submodes, Region Placement, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Submode Groups
 @section Defining Groups of Submodes
 
 Sometimes more than one submode class is required to accurately reflect
@@ -1780,8 +1738,7 @@ using this example to add the quote characters ``%=%'':
 @end defun
 
 
-@node Calculated Submodes, Calculated Faces, Submode Groups, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Calculated Submodes
 @section Calculating the Correct Submode
 
 In most cases, the author of a submode class will know in advance what
@@ -1827,8 +1784,7 @@ prefixed with @samp{mmm-} followed by the name of the submode class, to
 avoid namespace conflicts.
 
 
-@node Calculated Faces, Insertion Commands, Calculated Submodes, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Calculated Faces
 @section Calculating the Correct Highlight Face
 
 As explained in @ref{Basic Classes}, the keyword @code{:face} should be
@@ -1864,8 +1820,7 @@ highlighted as simple executed code, and so on.  Note that
 for different faces to be displayed.
 
 
-@node Insertion Commands, Region Names, Calculated Faces, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Insertion Commands
 @section Specifying Insertion Commands
 
 As described in @ref{Insertion}, submode classes can specify key
@@ -1926,8 +1881,7 @@ fourth (dotted) element (@code{"+"}) as the `str' variable; the user is
 not prompted.
 
 
-@node Region Names, Other Hooks, Insertion Commands, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Region Names
 @section Giving Names to Submode Regions for Grouping
 
 Submode regions can be given ``names'' which are used for grouping.
@@ -1953,8 +1907,7 @@ string value as the region name, instead of going through the normal
 matching procedure.
 
 
-@node Other Hooks, Delimiters, Region Names, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Other Hooks
 @section Other Hooks into the Scanning Process
 
 Sometimes, even the flexibility allowed by all the keyword arguments
@@ -1992,8 +1945,7 @@ write a handler function, I suggest looking at the source for
 @code{mmm-ify} to get an idea of what must be done.
 
 
-@node Delimiters, Misc Keywords, Other Hooks, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Delimiters
 @section Controlling the Delimiter Regions and Forms
 
 MMM also makes overlays for the delimiter regions, to keep track of
@@ -2068,8 +2020,7 @@ adjust the overlay; if nil it means to match the delimiter and return
 the result in the match data.
 
 
-@node Misc Keywords,  , Delimiters, Writing Classes
-@comment  node-name,  next,  previous,  up
+@node Misc Keywords
 @section Miscellaneous Other Keyword Arguments
 
 You can specify whether delimiter searches should be case-sensitive with
@@ -2077,8 +2028,7 @@ the keyword argument @code{:case-fold-search}.  It defaults to @code{t},
 meaning that case should be ignored.  See the documentation for the
 variable @code{case-fold-search}.
 
-@node Indices,  , Writing Classes, Top
-@comment  node-name,  next,  previous,  up
+@node Indices
 @chapter Indices
 
 @menu
@@ -2087,22 +2037,19 @@ variable @code{case-fold-search}.
 * Keystroke Index::             Index of key bindings in MMM Mode.
 @end menu
 
-@node Concept Index, Function Index, Indices, Indices
-@comment  node-name,  next,  previous,  up
+@node Concept Index
 @section Concept Index
 
 @printindex cp
 
 
-@node Function Index, Keystroke Index, Concept Index, Indices
-@comment  node-name,  next,  previous,  up
+@node Function Index
 @section Function and Variable Index
 
 @printindex fn
 
 
-@node Keystroke Index,  , Function Index, Indices
-@comment  node-name,  next,  previous,  up
+@node Keystroke Index
 @section Keystroke Index
 
 @printindex ky
