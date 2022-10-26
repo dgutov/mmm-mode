@@ -1,6 +1,6 @@
 \input texinfo
 @c %**start of header
-@documentencoding utf-8
+@documentencoding UTF-8
 @setfilename mmm.info
 @settitle MMM Mode Manual
 @c %**end of header
