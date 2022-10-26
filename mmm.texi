@@ -67,14 +67,14 @@ approved by the Free Software Foundation.
 
 @end titlepage
 
-@ifinfo
+@ifnottex
 @node Top
 @top MMM Mode
 
 MMM Mode is a minor mode for Emacs which allows Multiple Major Modes to
 coexist in a single buffer.
 
-@end ifinfo
+@end ifnottex
 
 @menu
 * Overview::                    An overview and introduction to MMM Mode.
