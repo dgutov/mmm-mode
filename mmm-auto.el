@@ -98,6 +98,12 @@ invoked by a public class in the same file."
     (add-to-list 'mmm-autoloaded-classes
                  (list class file private))))
 
+(defun mmm-autoload-class-private-p (autoload-class-entry)
+  "Return t if AUTOLOAD-CLASS-ENTRY is marked as private.
+AUTOLOAD-CLASS-ENTRY shall be an entry of the variable
+`mmm-autoloaded-classes'."
+  (nth 2 autoload-class-entry))
+
 ;;}}}
 ;;{{{ Autoload Functions
 

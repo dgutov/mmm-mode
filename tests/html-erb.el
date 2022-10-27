@@ -1,4 +1,4 @@
-;; Copyright (C) 2013, 2020  Free Software Foundation, Inc.
+;; Copyright (C) 2013, 2020, 2022  Free Software Foundation, Inc.
 
 ;; This file is part of GNU Emacs.
 
@@ -22,6 +22,7 @@
 (require 'ert)
 (require 'ert-x)
 (require 'mmm-erb)
+(require 'mmm-test-util)
 
 (defvar mmm-erb-text
   "<%= foo do %>
@@ -42,6 +43,7 @@
       (setq body (nthcdr 2 body)))
     `(ert-deftest ,(intern (format "mmm-erb-%s" name)) ()
        :expected-result ,(or expected-result :passed)
+       (mmm-with-global-font-lock
        (ert-with-test-buffer nil
          (let ((buffer-file-name "foo.html.erb")
                (mmm-global-mode 'maybe)
@@ -51,7 +53,7 @@
            (html-erb-mode)
            (mmm-mode-on-maybe)
            (should mmm-mode)
-           ,@body)))))
+           ,@body))))))
 
 (put 'mmm-erb-deftest 'lisp-indent-function 'defun)
 
