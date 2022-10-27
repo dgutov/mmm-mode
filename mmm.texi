@@ -1,6 +1,6 @@
 \input texinfo
 @c %**start of header
-@documentencoding utf-8
+@documentencoding UTF-8
 @setfilename mmm.info
 @settitle MMM Mode Manual
 @c %**end of header
@@ -67,14 +67,14 @@ approved by the Free Software Foundation.
 
 @end titlepage
 
-@ifinfo
+@ifnottex
 @node Top
 @top MMM Mode
 
 MMM Mode is a minor mode for Emacs which allows Multiple Major Modes to
 coexist in a single buffer.
 
-@end ifinfo
+@end ifnottex
 
 @menu
 * Overview::                    An overview and introduction to MMM Mode.
