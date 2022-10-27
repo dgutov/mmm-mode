@@ -49,7 +49,8 @@
                     (append
                      (cl-remove-if (lambda (spec) (plist-get (cdr spec) :private))
                                 mmm-classes-alist)
-                     (cl-remove-if #'caddr mmm-autoloaded-classes)))
+                     (cl-remove-if #'mmm-autoload-class-private-p
+                                   mmm-autoloaded-classes)))
             :test #'equal)
            nil t))))
   (unless (eq class (intern ""))
