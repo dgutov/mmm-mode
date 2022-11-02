@@ -23,33 +23,10 @@ INSTALLATION
   2. Since currently MMM Mode is written in pure Emacs Lisp, you could just
   copy all the *.el files in the distribution to a directory in your
   `load-path', and optionally byte-compile them manually (see the Emacs
-  Manual). The configure installation also installs the MMM Mode info manual
-  in your site info directory, so if you're installing manually, you might
-  want to do that too.
-
-  3. MMM Mode has a standard GNU configure-driven installation.
-  (See the file INSTALL for generic instructions, most of which don't apply.)
-  To install in the standard locations, unpack the archive, `cd' to
-  the mmm-mode-X.X.X directory created, and run these commands:
-
-    make maintainer-clean # optional step
-    ./autogen.sh
-    ./configure
-    make
-    make install
-
-  If you have more than one version of emacs installed and want to
-  use MMM in a version other than /usr/bin/emacs, you must set the
-  environment variable EMACS before running `configure', e.g.
-
-    EMACS=/usr/bin/xemacs ./configure
-    make
-    make install
-
-  If you want to use MMM in more than one version of emacs, you must
-  either have separate site-lisp directories (such as Debian does), or
-  load it from source every time; byte-compiled files are not portable
-  between emacsen.
+  Manual). The Makefile has a target to build the MMM Mode info manual, so if
+  you're installing manually you might want to do that too.  Put the mmm.info
+  file somewhere on your Info-path and use install-info to generate or update
+  the dir file.
 
 CONFIGURATION
 
