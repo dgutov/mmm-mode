@@ -53,7 +53,7 @@ This is set to FUNDAMENTAL-MODE by default, but you might want to change
 this in the Local Variables section of your file to something more
 appropriate, like C-MODE, FORTRAN-MODE, or even INDENTED-TEXT-MODE."
   ;; FIXME: Any of CC Mode modes aren't really appropriate:
-  ;; https://github.com/purcell/mmm-mode/issues/57
+  ;; https://github.com/dgutov/mmm-mode/issues/57
   )
 
 (defvar mmm-noweb-quote-mode nil
