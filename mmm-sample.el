@@ -1,6 +1,6 @@
 ;;; mmm-sample.el --- Sample MMM submode classes
 
-;; Copyright (C) 2000-2004, 2012-2015, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2004, 2012-2015, 2018, 2022  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 
@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; This file contains several sample submode classes for use with MMM
-;; Mode. For a more detailed, advanced example, see `mmm-mason.el'.
+;; Mode.  For a more detailed, advanced example, see `mmm-mason.el'.
 
 ;; In order to use any of classes defined here, just require `mmm-auto' and
 ;; add the respective (major mode -> class <- file extension) associations
@@ -113,9 +113,21 @@ add elements to this alist.  Each element is \(REGEXP . MODE) where
 REGEXP is a regular expression matched against the here-document name
 and MODE is a major mode function symbol.")
 
-(defun mmm-here-doc-get-mode (string)
-  (string-match "[a-zA-Z_-]+" string)
-  (setq string (match-string 0 string))
+(defun mmm-get-lang-mode (string regex group)
+  "Find a suitable submode for STRING.
+If REGEX matches STRING, The matching is based on the match
+GROUP.
+
+The following ways to find a matching submode are tried in order:
+
+* Search `mmm-here-doc-mode-alist' for a mode.
+* Try the whole name, stopping at `mode' if present.
+* Try each word by itself (preference list)
+* Try each word with -mode tacked on
+* Try each pair of words with -mode tacked on
+  (w1 w2 w3) -> (w1w2-mode w2w3-mode w3-mode)"
+  (string-match regex string)
+  (setq string (match-string group string))
   (or (mmm-ensure-modename
        ;; First try the user override variable.
        (cl-some (lambda (pair)
@@ -149,6 +161,11 @@ and MODE is a major mode function symbol.")
             ;; here-document name, we can give up.
             (signal 'mmm-no-matching-submode nil)))))
 
+(defun mmm-here-doc-get-mode (string)
+  "Find a submode for STRING.
+First match of [a-zA-Z_-]+ is used as the submode marker."
+  (mmm-get-lang-mode string "\\([a-zA-Z_-]+\\)" 1))
+
 (mmm-add-classes
  '((here-doc
     :front "<<[\"\'\`]?\\([a-zA-Z0-9_-]+\\)"
@@ -160,6 +177,45 @@ and MODE is a major mode function symbol.")
     :insert ((?d here-doc "Here-document Name: " @ "<<" str _ "\n"
                  @ "\n" @ str "\n" @))
     )))
+
+(defun mmm-sh-here-doc-get-mode (front-string)
+  "Find the mode for a shell here-doc starting with FRONT-STRING.
+The matching is based on the word used as the here-document
+delimiter, the word following <<.
+Use `mmm-get-lang-mode' to find the submode."
+  (mmm-get-lang-mode front-string "<<-?\\(['\"]?\\)\\([-a-zA-Z0-9_]+\\)\\1" 2))
+
+;; HEREDOC for shell scripts following the POSIX definition.  It is
+;; defined in two private classes that are then grouped into the class
+;; sh-here-doc
+;; Define some regex-parts that are reused a lot.
+;; START is the '<<' sequence
+(let ((start '(sequence (or line-start (not "<")) "<<"))
+      ;; DELIM is supposed to be a WORD, which is a complicated definition.
+      ;; It may be quoted with ', ", or `
+      (delim '(sequence (group-n 2 (optional (any ?' ?\" ?`)))
+                        (group-n 1
+                          (char "_a-zA-Z0-9")
+                          (one-or-more (char "-" "_a-zA-Z0-9")))
+                        (backref 2)))
+      (common-props '(:front-offset (end-of-line 1)
+                      :save-matches t
+                      :delimiter-mode nil
+                      :match-submode mmm-sh-here-doc-get-mode)))
+  (mmm-add-group
+   'sh-here-doc
+   `((sh-here-doc-unindented
+      :front ,(rx-to-string `(sequence ,start ,delim))
+      :back ,(rx line-start "~1" line-end)
+      ,@common-props
+      :insert ((?d here-doc "Here-document Name: " @ "<<" str _ "\n"
+                   @ "\n" @ str "\n" @)))
+     (sh-here-doc-indented
+      :front ,(rx-to-string `(sequence ,start "-" ,delim))
+      :back ,(rx line-start (zero-or-more "\t") "~1" line-end)
+      ,@common-props
+      :insert ((?D here-doc "Here-document Name: " @ "<<-" str _ "\n"
+                   @ "\n" @ str "\n" @))))))
 
 ;;}}}
 ;;{{{ Embperl

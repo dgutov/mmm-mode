@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    paths-ignore:
+    - 'AUTHORS'
+    - 'ChangeLog'
+    - 'Checklist'
+    - 'COPYING'
+    - '.elpaignore'
+    - 'FAQ'
+    - 'NEWS'
+    - 'README'
+    - 'README.Mason'
+    - 'TODO'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      matrix:
+        emacs_version:
+          - 25.1
+          - 25.2
+          - 25.3
+          - 26.1
+          - 26.2
+          - 26.3
+          - 27.1
+          - 27.2
+          - 28.1
+          - 28.2
+        experimental: [false]
+        include:
+          - emacs_version: snapshot
+            experimental: true
+    steps:
+    - uses: purcell/setup-emacs@master
+      with:
+        version: ${{ matrix.emacs_version }}
+
+    - uses: actions/checkout@v3
+    - name: Compile and Build Docs
+      run: make all docs -j2
+      shell: bash -ev {0}
+    - name: Run tests
+      run: make check
+      shell: bash -ev {0}
+

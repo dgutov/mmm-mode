@@ -1,6 +1,6 @@
 ;;; mmm-auto.el --- loading and enabling MMM Mode automatically
 
-;; Copyright (C) 2000-2004,  2012, 2013, 2018  Free Software Foundation, Inc.
+;; Copyright (C) 2000-2004,  2012, 2013, 2018, 2022  Free Software Foundation, Inc.
 
 ;; Author: Michael Abraham Shulman <mas@kurukshetra.cjb.net>
 
@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; This file contains functions and hooks to load and enable MMM Mode
-;; automatically. It sets up autoloads for the main MMM Mode functions
+;; automatically.  It sets up autoloads for the main MMM Mode functions
 ;; and interactive commands, and also sets up MMM Global Mode.
 
 ;;{{{ Comments on MMM Global Mode
@@ -44,15 +44,15 @@
 ;; FIXME: There's now after-change-major-mode-hook which should DTRT.
 
 ;; In order to do this magic, we rely on the fact that there *is* a
-;; hook that all major modes run when *beginning* their work. They
+;; hook that all major modes run when *beginning* their work.  They
 ;; call `kill-all-local-variables' (unless they are broken), which in
 ;; turn runs `change-major-mode-hook'.  So we add a function to *that*
 ;; hook which saves the current buffer and temporarily adds a function
 ;; to `post-command-hook' which processes that buffer.
 
 ;; Actually, in the interests of generality, what that function does
-;; is run the hook `mmm-major-mode-hook'. Our desired function
-;; `mmm-mode-on-maybe' is then added to that hook. This way, if the
+;; is run the hook `mmm-major-mode-hook'.  Our desired function
+;; `mmm-mode-on-maybe' is then added to that hook.  This way, if the
 ;; user wants to run something else on every major mode, they can just
 ;; add it to `mmm-major-mode-hook' and take advantage of this hack.
 
@@ -70,6 +70,7 @@
     (html-css "mmm-sample" nil)
     (html-js "mmm-sample" nil)
     (here-doc "mmm-sample" nil)
+    (sh-here-doc "mmm-sample" nil)
     (embperl "mmm-sample" nil)
     (eperl "mmm-sample" nil)
     (jsp "mmm-sample" nil)
@@ -96,6 +97,12 @@ invoked by a public class in the same file."
   (unless (assq class mmm-classes-alist)
     (add-to-list 'mmm-autoloaded-classes
                  (list class file private))))
+
+(defun mmm-autoload-class-private-p (autoload-class-entry)
+  "Return t if AUTOLOAD-CLASS-ENTRY is marked as private.
+AUTOLOAD-CLASS-ENTRY shall be an entry of the variable
+`mmm-autoloaded-classes'."
+  (nth 2 autoload-class-entry))
 
 ;;}}}
 ;;{{{ Autoload Functions
@@ -164,10 +171,12 @@ to apply, or always if `mmm-global-mode' is t."
 
 (add-hook 'mmm-major-mode-hook #'mmm-mode-on-maybe)
 
-(defalias 'mmm-add-find-file-hooks #'mmm-add-find-file-hook)
+(define-obsolete-function-alias 'mmm-add-find-file-hooks 'mmm-add-find-file-hook "0.3.8"
+  "Both `mmm-add-find-file-hooks' and `mmm-add-find-file-hook' are deprecated.")
 (defun mmm-add-find-file-hook ()
-  "Equivalent to (setq mmm-global-mode 'maybe).
+  "Equivalent to \(setq mmm-global-mode \\='maybe).
 This function is deprecated and may be removed in future."
+  (declare (obsolete nil "0.3.8"))
   (message "Warning: `mmm-add-find-file-hook' is deprecated.")
   (setq mmm-global-mode 'maybe))
 

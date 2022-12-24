@@ -49,7 +49,8 @@
                     (append
                      (cl-remove-if (lambda (spec) (plist-get (cdr spec) :private))
                                 mmm-classes-alist)
-                     (cl-remove-if #'caddr mmm-autoloaded-classes)))
+                     (cl-remove-if #'mmm-autoload-class-private-p
+                                   mmm-autoloaded-classes)))
             :test #'equal)
            nil t))))
   (unless (eq class (intern ""))
@@ -185,13 +186,13 @@ Use this command if a submode region's boundaries have become wrong."
 (cl-defun mmm-end-current-region (&optional arg)
   "End current submode region.
 If ARG is nil, end it at the most appropriate place, usually its
-current back boundary. If ARG is non-nil, end it at point. If the
+current back boundary.  If ARG is non-nil, end it at point.  If the
 current region is correctly bounded, the first does nothing, but the
 second deletes that delimiter as well.
 
 If the region's BACK property is a string, it is inserted as above and
-the overlay moved if necessary. If it is a function, it is called with
-two arguments--the overlay, and \(if ARG 'middle t)--and must do the
+the overlay moved if necessary.  If it is a function, it is called with
+two arguments -- the overlay, and \(if ARG \\='middle t) -- and must do the
 entire job of this function."
   (interactive "P")
   (let ((ovl (mmm-overlay-at)))

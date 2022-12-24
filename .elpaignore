@@ -1,0 +1,12 @@
+.elpaignore
+.github
+.gitignore
+AUTHORS
+ChangeLog
+Checklist
+INSTALL
+Makefile
+NEWS
+TODO
+mmm.texi
+tests
