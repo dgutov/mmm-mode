@@ -874,7 +874,7 @@ calls each respective submode's `syntax-propertize-function'."
                       (cond
                        (func
                         (funcall func beg end))
-                       (font-lock-syntactic-keywords
+                       ((bound-and-true-p font-lock-syntactic-keywords)
                         (let ((syntax-propertize-function nil))
                           (font-lock-fontify-syntactic-keywords-region beg end))))
                       (run-hook-with-args 'mmm-after-syntax-propertize-functions
