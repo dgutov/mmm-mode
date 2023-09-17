@@ -4,6 +4,11 @@ See the file COPYING for copying conditions.
 
 Please submit bug reports at https://github.com/dgutov/mmm-mode/issues
 
+* Changes in MMM Mode 0.5.10
+
+Functions mmm-add-find-file-hooks and mmm-add-find-file-hook have been
+removed (GH#137).
+
 * Changes in MMM Mode 0.5.9
 
 Made the tests work in batch mode.
