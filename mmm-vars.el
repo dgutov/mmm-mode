@@ -1062,7 +1062,7 @@ The CLASSES are all made private, i.e. non-user-visible."
 ;;}}}
 ;;{{{ Version Number
 
-(defconst mmm-version "0.5.8"
+(defconst mmm-version "0.5.10"
   "Current version of MMM Mode.")
 
 (defun mmm-version ()
