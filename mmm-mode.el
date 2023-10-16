@@ -178,6 +178,7 @@ available through M-x customize-group RET mmm."
      (set (make-local-variable 'syntax-propertize-function)
           #'mmm-syntax-propertize-function)
      (set (make-local-variable 'indent-line-function) mmm-indent-line-function)
+     (set (make-local-variable 'indent-region-function) mmm-indent-region-function)
      (setq mmm-mode t)
      (condition-case err
          (mmm-apply-all)
