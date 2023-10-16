@@ -79,12 +79,12 @@ none is specified by CLASS."
   ;; The "special" class t means do nothing. It is used to turn on
   ;; MMM Mode without applying any classes.
   (unless (eq class t)
-    (apply #'mmm-ify :start start :stop stop
-           (append (mmm-get-class-spec class)
-                  (list :face face)))
-    (mmm-run-class-hook class)
-    ;; Hack in case class hook sets mmm-buffer-mode-display-name etc.
-    (mmm-set-mode-line)))
+    (prog1 (apply #'mmm-ify :start start :stop stop
+                  (append (mmm-get-class-spec class)
+                          (list :face face)))
+      (mmm-run-class-hook class)
+      ;; Hack in case class hook sets mmm-buffer-mode-display-name etc.
+      (mmm-set-mode-line))))
 
 (cl-defun mmm-apply-classes
     (classes &key (start (point-min)) (stop (point-max)) face)
@@ -93,13 +93,18 @@ All classes are applied regardless of any errors that may occur in
 other classes. If any errors occur, `mmm-apply-classes' exits with an
 error once all classes have been applied."
   (let (invalid-classes)
-    (dolist (class classes)
-      (condition-case err
-          (mmm-apply-class class start stop face)
-        (mmm-invalid-submode-class
-         ;; Save the name of the invalid class, so we can report them
-         ;; all together at the end.
-         (cl-pushnew (cl-second err) invalid-classes :test #'equal))))
+    (cl-block nil
+      (dotimes (time mmm-maximum-nesting-depth) (declare (ignore time))
+        (let ((success nil))
+          (dolist (class classes)
+            (condition-case err
+                (let ((result (mmm-apply-class class start stop face)))
+                  (when result (setq success result)))
+                  (mmm-invalid-submode-class
+                   ;; Save the name of the invalid class, so we can report them
+                   ;; all together at the end.
+                   (cl-pushnew (cl-second err) invalid-classes :test #'equal))))
+          (when (not success) (cl-return)))))
     (when invalid-classes
       (signal 'mmm-invalid-submode-class invalid-classes))))
 
@@ -151,11 +156,12 @@ and interactive history."
 	   _end-not-begin
            ;insert private
            &allow-other-keys
-           )
+           &aux result)
   "Create submode regions from START to STOP according to arguments.
 If CLASSES is supplied, it must be a list of valid CLASSes. Otherwise,
 the rest of the arguments are for an actual class being applied. See
-`mmm-classes-alist' for information on what they all mean."
+`mmm-classes-alist' for information on what they all mean.
+Return t if a region was applied."
   ;; Make sure we get the default values in the `all' list.
   (setq all (append
              all
@@ -200,6 +206,7 @@ the rest of the arguments are for an actual class being applied. See
 		  :front-face front-face :back-face back-face
 		  :creation-hook creation-hook
 		  )
+         (setq result t)
 		 (goto-char ok-resume))
              ;; If our region is invalid, go back to the end of the
              ;; front match and continue on.
@@ -207,7 +214,8 @@ the rest of the arguments are for an actual class being applied. See
            ;; If match-submode was unable to find a match, go back to
            ;; the end of the front match and continue on.
            else do (goto-char invalid-resume)
-           )))))
+           ))))
+  result)
 
 ;;}}}
 ;;{{{ Match Regions

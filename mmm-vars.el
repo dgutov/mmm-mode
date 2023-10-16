@@ -823,6 +823,11 @@ than it solves, but some modes require it.")
   :type 'boolean
   :group 'mmm)
 
+(defcustom mmm-maximum-nesting-depth 1
+  "The maximum number of times a mmm-mode will apply classes."
+  :type 'number
+  :group 'mmm)
+
 (defcustom mmm-idle-timer-delay 0.2
   "Delay in secs before re-parsing after user makes changes."
   :type 'number
