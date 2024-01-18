@@ -42,7 +42,7 @@ jobs:
       with:
         version: ${{ matrix.emacs_version }}
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Compile and Build Docs
       run: make all docs -j2
       shell: bash -ev {0}
