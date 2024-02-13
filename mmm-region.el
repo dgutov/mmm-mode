@@ -1,4 +1,4 @@
-;;; mmm-region.el --- Manipulating and behavior of MMM submode regions
+;;; mmm-region.el --- Manipulating and behavior of MMM submode regions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2010-2015, 2018, 2020  Free Software Foundation, Inc.
 

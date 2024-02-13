@@ -1,4 +1,4 @@
-;;; mmm-defaults.el --- Friendly defaults for MMM Mode
+;;; mmm-defaults.el --- Friendly defaults for MMM Mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 

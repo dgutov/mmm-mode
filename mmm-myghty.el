@@ -1,4 +1,4 @@
-;;; mmm-myghty.el --- MMM submode class for Myghty components
+;;; mmm-myghty.el --- MMM submode class for Myghty components -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000, 2004, 2013, 2018  Free Software Foundation, Inc.
 

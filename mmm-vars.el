@@ -1,4 +1,4 @@
-;;; mmm-vars.el --- Variables for MMM Mode
+;;; mmm-vars.el --- Variables for MMM Mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2004, 2011-2015, 2018-2020  Free Software Foundation, Inc.
 

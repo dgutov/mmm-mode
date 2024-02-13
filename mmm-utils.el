@@ -1,4 +1,4 @@
-;;; mmm-utils.el --- Coding Utilities for MMM Mode
+;;; mmm-utils.el --- Coding Utilities for MMM Mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2011-2013, 2020  Free Software Foundation, Inc.
 

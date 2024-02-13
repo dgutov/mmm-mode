@@ -1,4 +1,4 @@
-;;; mmm-noweb.el --- MMM submode class for Noweb programs
+;;; mmm-noweb.el --- MMM submode class for Noweb programs -*- lexical-binding: t; -*-
 ;;
 ;; Copyright 2003, 2004  Joe Kelsey <joe@zircon.seattle.wa.us>
 ;; Copyright 2018  Free Software Foundation, Inc.

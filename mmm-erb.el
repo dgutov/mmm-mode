@@ -1,4 +1,4 @@
-;;; mmm-erb.el --- ERB templates editing support
+;;; mmm-erb.el --- ERB templates editing support -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012, 2013, 2018  Free Software Foundation, Inc.
 

@@ -1,4 +1,4 @@
-;;; mmm-test-util.el --- Test helpers for mmm-mode tests
+;;; mmm-test-util.el --- Test helpers for mmm-mode tests -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  Free Software Foundation, Inc.
 

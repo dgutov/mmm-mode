@@ -1,4 +1,4 @@
-;;; mmm-sample.el --- Sample MMM submode classes
+;;; mmm-sample.el --- Sample MMM submode classes -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2004, 2012-2015, 2018, 2022  Free Software Foundation, Inc.
 

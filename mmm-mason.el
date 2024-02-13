@@ -1,4 +1,4 @@
-;;; mmm-mason.el --- MMM submode class for Mason components
+;;; mmm-mason.el --- MMM submode class for Mason components -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2013, 2018  Free Software Foundation, Inc.
 

@@ -1,4 +1,4 @@
-;;; mmm-class.el --- MMM submode class variables and functions
+;;; mmm-class.el --- MMM submode class variables and functions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2004, 2011-2015, 2018  Free Software Foundation, Inc.
 

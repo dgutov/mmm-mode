@@ -1,4 +1,4 @@
-;;; mmm-cmds.el --- MMM Mode interactive commands and keymap
+;;; mmm-cmds.el --- MMM Mode interactive commands and keymap -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2011-2013, 2018  Free Software Foundation, Inc.
 
@@ -251,6 +251,8 @@ prefix and modifiers) will insert a <%perl>...</%perl> region."
          (append (cl-set-difference mods mmm-insert-modifiers)
                  key)
          arg))))
+
+(defvar skeleton-positions) ; Mark as special
 
 (defun mmm-insert-by-key (key &optional arg)
   "Insert a submode region based on event KEY.

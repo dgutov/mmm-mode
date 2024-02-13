@@ -1,4 +1,4 @@
-;;; mmm-compat.el --- MMM Hacks for compatibility with other Emacsen
+;;; mmm-compat.el --- MMM Hacks for compatibility with other Emacsen -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000, 2003, 2011, 2013  Free Software Foundation, Inc.
 

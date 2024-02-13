@@ -1,4 +1,4 @@
-;;; mmm-mode.el --- Allow Multiple Major Modes in a buffer
+;;; mmm-mode.el --- Allow Multiple Major Modes in a buffer -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1999-2004, 2012-2015, 2018, 2020  Free Software Foundation, Inc.
 

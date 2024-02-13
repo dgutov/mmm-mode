@@ -1,4 +1,4 @@
-;;; mmm-rpm.el --- MMM submode class for RPM spec files
+;;; mmm-rpm.el --- MMM submode class for RPM spec files -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000 by Marcus Harnisch <Marcus.Harnisch@gmx.net>
 

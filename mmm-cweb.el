@@ -1,4 +1,4 @@
-;;; mmm-cweb.el --- MMM submode class for CWeb programs
+;;; mmm-cweb.el --- MMM submode class for CWeb programs -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2001, 2002, 2013  Free Software Foundation, Inc.
 
