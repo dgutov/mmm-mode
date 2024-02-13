@@ -132,15 +132,9 @@ delimiter auto-insertion that MMM Mode provides.  See, for example,
   (message "MMM-ifying block...done"))
 
 (defun mmm-get-block (lines)
-  (let ((inhibit-point-motion-hooks t))
-    (list (save-excursion
-            (forward-line (- lines))
-            (beginning-of-line)
-            (point))
-          (save-excursion
-            (forward-line lines)
-            (end-of-line)
-            (point)))))
+  "Return a region spanning LINES before and after point."
+  (list (pos-bol (- 1 lines))
+	(pos-eol (1+ lines))))
 
 ;;}}}
 ;;{{{ Reparse Current Region
