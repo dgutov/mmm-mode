@@ -133,7 +133,8 @@ and interactive history."
            ;; because they're used via `all'.
 	   submode _match-submode
            (start (point-min)) (stop (point-max))
-           front back _save-matches (case-fold-search t)
+           front back _save-matches
+	   ((case-fold-search case-fold-search-arg) t)
            (beg-sticky (not (number-or-marker-p front)))
            (end-sticky (not (number-or-marker-p back)))
            _include-front _include-back
@@ -150,65 +151,66 @@ and interactive history."
            ;; via `all'), these default values aren't obeyed!
 	   (_front-match 0) (_back-match 0)
 	   _end-not-begin
-           ;insert private
+           ;;insert private
            &allow-other-keys
            )
   "Create submode regions from START to STOP according to arguments.
 If CLASSES is supplied, it must be a list of valid CLASSes.  Otherwise,
 the rest of the arguments are for an actual class being applied.  See
 `mmm-classes-alist' for information on what they all mean."
-  ;; Make sure we get the default values in the `all' list.
-  (setq all (append
-             all
-             (list :start start :stop stop
-		   :beg-sticky beg-sticky :end-sticky end-sticky
-		   :front-offset front-offset :back-offset back-offset
-		   :front-delim front-delim :back-delim back-delim
-		   :front-match 0 :back-match 0
-		   )))
-  (cond
-   ;; If we have a class list, apply them all.
-   (classes
-    (mmm-apply-classes classes :start start :stop stop :face face))
-   ;; Otherwise, apply this class.
-   ;; If we have a handler, call it.
-   (handler
-    (apply handler all))
-   ;; Otherwise, we search from START to STOP for submode regions,
-   ;; continuining over errors, until we don't find any more. If FRONT
-   ;; and BACK are number-or-markers, this should only execute once.
-   (t
-    (mmm-save-all
-     (goto-char start)
-     (cl-loop for (beg end front-pos back-pos matched-front matched-back
-                    matched-submode matched-face matched-name
-                    invalid-resume ok-resume) =
-                    (apply #'mmm-match-region :start (point) all)
-           while beg
-           if end	       ; match-submode, if present, succeeded.
-           do
-           (condition-case nil
-               (progn
-                 (mmm-make-region
-		  (or matched-submode submode) beg end
-		  :face (or matched-face face)
-		  :front front-pos :back back-pos
-		  :evaporation 'front
-		  :match-front matched-front :match-back matched-back
-		  :beg-sticky beg-sticky :end-sticky end-sticky
-		  :name matched-name
-		  :delimiter-mode delimiter-mode
-		  :front-face front-face :back-face back-face
-		  :creation-hook creation-hook
-		  )
-		 (goto-char ok-resume))
-             ;; If our region is invalid, go back to the end of the
-             ;; front match and continue on.
-             (mmm-error (goto-char invalid-resume)))
-           ;; If match-submode was unable to find a match, go back to
-           ;; the end of the front match and continue on.
-           else do (goto-char invalid-resume)
-           )))))
+  (let ((case-fold-search case-fold-search-arg))
+    ;; Make sure we get the default values in the `all' list.
+    (setq all (append
+               all
+               (list :start start :stop stop
+		     :beg-sticky beg-sticky :end-sticky end-sticky
+		     :front-offset front-offset :back-offset back-offset
+		     :front-delim front-delim :back-delim back-delim
+		     :front-match 0 :back-match 0
+		     )))
+    (cond
+     ;; If we have a class list, apply them all.
+     (classes
+      (mmm-apply-classes classes :start start :stop stop :face face))
+     ;; Otherwise, apply this class.
+     ;; If we have a handler, call it.
+     (handler
+      (apply handler all))
+     ;; Otherwise, we search from START to STOP for submode regions,
+     ;; continuining over errors, until we don't find any more. If FRONT
+     ;; and BACK are number-or-markers, this should only execute once.
+     (t
+      (mmm-save-all
+	  (goto-char start)
+	(cl-loop for (beg end front-pos back-pos matched-front matched-back
+			  matched-submode matched-face matched-name
+			  invalid-resume ok-resume) =
+			  (apply #'mmm-match-region :start (point) all)
+			  while beg
+			  if end	       ; match-submode, if present, succeeded.
+			  do
+			  (condition-case nil
+			      (progn
+				(mmm-make-region
+				 (or matched-submode submode) beg end
+				 :face (or matched-face face)
+				 :front front-pos :back back-pos
+				 :evaporation 'front
+				 :match-front matched-front :match-back matched-back
+				 :beg-sticky beg-sticky :end-sticky end-sticky
+				 :name matched-name
+				 :delimiter-mode delimiter-mode
+				 :front-face front-face :back-face back-face
+				 :creation-hook creation-hook
+				 )
+				(goto-char ok-resume))
+			    ;; If our region is invalid, go back to the end of the
+			    ;; front match and continue on.
+			    (mmm-error (goto-char invalid-resume)))
+			  ;; If match-submode was unable to find a match, go back to
+			  ;; the end of the front match and continue on.
+			  else do (goto-char invalid-resume)
+			  ))))))
 
 ;;}}}
 ;;{{{ Match Regions
