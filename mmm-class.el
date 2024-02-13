@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; This file contains variable and function definitions for
-;; manipulating and applying MMM submode classes. See `mmm-vars.el'
+;; manipulating and applying MMM submode classes.  See `mmm-vars.el'
 ;; for variables that list classes.
 
 ;;; Code:
@@ -90,8 +90,9 @@ none is specified by CLASS."
     (classes &key (start (point-min)) (stop (point-max)) face)
   "Apply all submode classes in CLASSES, in order.
 All classes are applied regardless of any errors that may occur in
-other classes. If any errors occur, `mmm-apply-classes' exits with an
-error once all classes have been applied."
+other classes.  If any errors occur, `mmm-apply-classes' exits with an
+error once all classes have been applied.
+START, STOP, and FACE is passed to `mmm-apply-class' for each class."
   (let (invalid-classes)
     (dolist (class classes)
       (condition-case err
@@ -153,8 +154,8 @@ and interactive history."
            &allow-other-keys
            )
   "Create submode regions from START to STOP according to arguments.
-If CLASSES is supplied, it must be a list of valid CLASSes. Otherwise,
-the rest of the arguments are for an actual class being applied. See
+If CLASSES is supplied, it must be a list of valid CLASSes.  Otherwise,
+the rest of the arguments are for an actual class being applied.  See
 `mmm-classes-alist' for information on what they all mean."
   ;; Make sure we get the default values in the `all' list.
   (setq all (append
@@ -275,8 +276,8 @@ and OK-RESUME if the region is valid."
                     invalid-resume ok-resume)))))))
 
 (defun mmm-match->point (beginp offset match)
-  "Find a point of starting or stopping from the match data.  If
-BEGINP, start at \(match-beginning MATCH), else \(match-end MATCH),
+  "Find a point of starting or stopping from the match data.
+If BEGINP, start at \(match-beginning MATCH), else \(match-end MATCH),
 and move OFFSET.  Handles all values of OFFSET--see `mmm-classes-alist'."
   (save-excursion
     (goto-char (if beginp
@@ -290,14 +291,14 @@ and move OFFSET.  Handles all values of OFFSET--see `mmm-classes-alist'."
 
 (defun mmm-match-and-verify (pos start stop &optional verify)
   "Find first match for POS between point and STOP satisfying VERIFY.
-Return non-nil if a match was found, and set match data. POS can be a
+Return non-nil if a match was found, and set match data.  POS can be a
 number-or-marker, a regexp, or a function.
 
-If POS is a number-or-marker, it is used as-is. If it is a string, it
-is searched for as a regexp until VERIFY returns non-nil. If it is a
-function, it is called with argument STOP and must return non-nil iff
-a match is found, and set the match data. Note that VERIFY is ignored
-unless POS is a regexp."
+If POS is a number-or-marker between START and STOP, it is used as-is.
+If it is a string, it is searched for as a regexp until VERIFY returns
+non-nil.  If it is a function, it is called with argument STOP and must
+return non-nil if a match is found, and set the match data.  Note that
+VERIFY is ignored unless POS is a regexp."
   (cond
    ;; A marker can be used as-is, but only if it's in bounds.
    ((and (number-or-marker-p pos) (>= pos start) (<= pos stop))
@@ -316,8 +317,8 @@ unless POS is a regexp."
 
 (defun mmm-get-form (form)
   "Return the delimiter form specified by FORM.
-If FORM is nil, call `mmm-default-get-form'. If FORM is a string,
-return it. If FORM is a function, call it. If FORM is a list, return
+If FORM is nil, call `mmm-default-get-form'.  If FORM is a string,
+return it.  If FORM is a function, call it.  If FORM is a list, return
 its `car' \(usually in this case, FORM is a one-element list
 containing a function to be used as the delimiter form."
   (cond ((stringp form) form)
@@ -326,6 +327,7 @@ containing a function to be used as the delimiter form."
         ((listp form) (car form))))
 
 (defun mmm-default-get-form ()
+  "Get the default delimiter form."
   (regexp-quote (match-string 0)))
 
 ;;}}}
