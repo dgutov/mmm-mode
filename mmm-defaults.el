@@ -30,7 +30,7 @@
 ;;
 ;; Note that for PHP you still need to have php-mode (installed separately).
 ;;
-;; TODO: Add more file types and classes here. Mention this file in README.
+;; TODO: Add more file types and classes here.  Mention this file in README.
 
 ;;; Code:
 
