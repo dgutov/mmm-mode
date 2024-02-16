@@ -639,7 +639,7 @@ parameter-- see `mmm-classes-alist'."
 (defcustom mmm-mode-prefix-key [(control ?c) ?%]
   "Prefix key for the MMM Minor Mode Keymap."
   :group 'mmm
-  :type 'vector)
+  :type '(vector character))
 
 (defcustom mmm-command-modifiers '(control)
   "List of key modifiers for MMM command keys.
