@@ -13,7 +13,7 @@ ELFILES = mmm-auto.el mmm-class.el mmm-cmds.el mmm-compat.el mmm-cweb.el \
           mmm-noweb.el mmm-region.el mmm-rpm.el mmm-sample.el mmm-univ.el \
           mmm-utils.el mmm-vars.el
 ELCFILES = $(ELFILES:.el=.elc)
-TESTS = highlighting.el html-erb.el
+TESTS = highlighting.el html-erb.el variables.el
 
 all: mmm.info $(ELCFILES)
 
