@@ -1,4 +1,4 @@
-;;; mmm-class.el --- MMM submode class variables and functions
+;;; mmm-class.el --- MMM submode class variables and functions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2004, 2011-2015, 2018  Free Software Foundation, Inc.
 
@@ -26,7 +26,7 @@
 ;;; Commentary:
 
 ;; This file contains variable and function definitions for
-;; manipulating and applying MMM submode classes. See `mmm-vars.el'
+;; manipulating and applying MMM submode classes.  See `mmm-vars.el'
 ;; for variables that list classes.
 
 ;;; Code:
@@ -90,8 +90,9 @@ none is specified by CLASS."
     (classes &key (start (point-min)) (stop (point-max)) face)
   "Apply all submode classes in CLASSES, in order.
 All classes are applied regardless of any errors that may occur in
-other classes. If any errors occur, `mmm-apply-classes' exits with an
-error once all classes have been applied."
+other classes.  If any errors occur, `mmm-apply-classes' exits with an
+error once all classes have been applied.
+START, STOP, and FACE is passed to `mmm-apply-class' for each class."
   (let (invalid-classes)
     (dolist (class classes)
       (condition-case err
@@ -132,7 +133,8 @@ and interactive history."
            ;; because they're used via `all'.
 	   submode _match-submode
            (start (point-min)) (stop (point-max))
-           front back _save-matches (case-fold-search t)
+           front back _save-matches
+	   ((case-fold-search case-fold-search-arg) t)
            (beg-sticky (not (number-or-marker-p front)))
            (end-sticky (not (number-or-marker-p back)))
            _include-front _include-back
@@ -149,65 +151,66 @@ and interactive history."
            ;; via `all'), these default values aren't obeyed!
 	   (_front-match 0) (_back-match 0)
 	   _end-not-begin
-           ;insert private
+           ;;insert private
            &allow-other-keys
            )
   "Create submode regions from START to STOP according to arguments.
-If CLASSES is supplied, it must be a list of valid CLASSes. Otherwise,
-the rest of the arguments are for an actual class being applied. See
+If CLASSES is supplied, it must be a list of valid CLASSes.  Otherwise,
+the rest of the arguments are for an actual class being applied.  See
 `mmm-classes-alist' for information on what they all mean."
-  ;; Make sure we get the default values in the `all' list.
-  (setq all (append
-             all
-             (list :start start :stop stop
-		   :beg-sticky beg-sticky :end-sticky end-sticky
-		   :front-offset front-offset :back-offset back-offset
-		   :front-delim front-delim :back-delim back-delim
-		   :front-match 0 :back-match 0
-		   )))
-  (cond
-   ;; If we have a class list, apply them all.
-   (classes
-    (mmm-apply-classes classes :start start :stop stop :face face))
-   ;; Otherwise, apply this class.
-   ;; If we have a handler, call it.
-   (handler
-    (apply handler all))
-   ;; Otherwise, we search from START to STOP for submode regions,
-   ;; continuining over errors, until we don't find any more. If FRONT
-   ;; and BACK are number-or-markers, this should only execute once.
-   (t
-    (mmm-save-all
-     (goto-char start)
-     (cl-loop for (beg end front-pos back-pos matched-front matched-back
-                    matched-submode matched-face matched-name
-                    invalid-resume ok-resume) =
-                    (apply #'mmm-match-region :start (point) all)
-           while beg
-           if end	       ; match-submode, if present, succeeded.
-           do
-           (condition-case nil
-               (progn
-                 (mmm-make-region
-		  (or matched-submode submode) beg end
-		  :face (or matched-face face)
-		  :front front-pos :back back-pos
-		  :evaporation 'front
-		  :match-front matched-front :match-back matched-back
-		  :beg-sticky beg-sticky :end-sticky end-sticky
-		  :name matched-name
-		  :delimiter-mode delimiter-mode
-		  :front-face front-face :back-face back-face
-		  :creation-hook creation-hook
-		  )
-		 (goto-char ok-resume))
-             ;; If our region is invalid, go back to the end of the
-             ;; front match and continue on.
-             (mmm-error (goto-char invalid-resume)))
-           ;; If match-submode was unable to find a match, go back to
-           ;; the end of the front match and continue on.
-           else do (goto-char invalid-resume)
-           )))))
+  (let ((case-fold-search case-fold-search-arg))
+    ;; Make sure we get the default values in the `all' list.
+    (setq all (append
+               all
+               (list :start start :stop stop
+		     :beg-sticky beg-sticky :end-sticky end-sticky
+		     :front-offset front-offset :back-offset back-offset
+		     :front-delim front-delim :back-delim back-delim
+		     :front-match 0 :back-match 0
+		     )))
+    (cond
+     ;; If we have a class list, apply them all.
+     (classes
+      (mmm-apply-classes classes :start start :stop stop :face face))
+     ;; Otherwise, apply this class.
+     ;; If we have a handler, call it.
+     (handler
+      (apply handler all))
+     ;; Otherwise, we search from START to STOP for submode regions,
+     ;; continuining over errors, until we don't find any more. If FRONT
+     ;; and BACK are number-or-markers, this should only execute once.
+     (t
+      (mmm-save-all
+	  (goto-char start)
+	(cl-loop for (beg end front-pos back-pos matched-front matched-back
+			  matched-submode matched-face matched-name
+			  invalid-resume ok-resume) =
+			  (apply #'mmm-match-region :start (point) all)
+			  while beg
+			  if end	       ; match-submode, if present, succeeded.
+			  do
+			  (condition-case nil
+			      (progn
+				(mmm-make-region
+				 (or matched-submode submode) beg end
+				 :face (or matched-face face)
+				 :front front-pos :back back-pos
+				 :evaporation 'front
+				 :match-front matched-front :match-back matched-back
+				 :beg-sticky beg-sticky :end-sticky end-sticky
+				 :name matched-name
+				 :delimiter-mode delimiter-mode
+				 :front-face front-face :back-face back-face
+				 :creation-hook creation-hook
+				 )
+				(goto-char ok-resume))
+			    ;; If our region is invalid, go back to the end of the
+			    ;; front match and continue on.
+			    (mmm-error (goto-char invalid-resume)))
+			  ;; If match-submode was unable to find a match, go back to
+			  ;; the end of the front match and continue on.
+			  else do (goto-char invalid-resume)
+			  ))))))
 
 ;;}}}
 ;;{{{ Match Regions
@@ -275,8 +278,8 @@ and OK-RESUME if the region is valid."
                     invalid-resume ok-resume)))))))
 
 (defun mmm-match->point (beginp offset match)
-  "Find a point of starting or stopping from the match data.  If
-BEGINP, start at \(match-beginning MATCH), else \(match-end MATCH),
+  "Find a point of starting or stopping from the match data.
+If BEGINP, start at \(match-beginning MATCH), else \(match-end MATCH),
 and move OFFSET.  Handles all values of OFFSET--see `mmm-classes-alist'."
   (save-excursion
     (goto-char (if beginp
@@ -290,14 +293,14 @@ and move OFFSET.  Handles all values of OFFSET--see `mmm-classes-alist'."
 
 (defun mmm-match-and-verify (pos start stop &optional verify)
   "Find first match for POS between point and STOP satisfying VERIFY.
-Return non-nil if a match was found, and set match data. POS can be a
+Return non-nil if a match was found, and set match data.  POS can be a
 number-or-marker, a regexp, or a function.
 
-If POS is a number-or-marker, it is used as-is. If it is a string, it
-is searched for as a regexp until VERIFY returns non-nil. If it is a
-function, it is called with argument STOP and must return non-nil iff
-a match is found, and set the match data. Note that VERIFY is ignored
-unless POS is a regexp."
+If POS is a number-or-marker between START and STOP, it is used as-is.
+If it is a string, it is searched for as a regexp until VERIFY returns
+non-nil.  If it is a function, it is called with argument STOP and must
+return non-nil if a match is found, and set the match data.  Note that
+VERIFY is ignored unless POS is a regexp."
   (cond
    ;; A marker can be used as-is, but only if it's in bounds.
    ((and (number-or-marker-p pos) (>= pos start) (<= pos stop))
@@ -316,8 +319,8 @@ unless POS is a regexp."
 
 (defun mmm-get-form (form)
   "Return the delimiter form specified by FORM.
-If FORM is nil, call `mmm-default-get-form'. If FORM is a string,
-return it. If FORM is a function, call it. If FORM is a list, return
+If FORM is nil, call `mmm-default-get-form'.  If FORM is a string,
+return it.  If FORM is a function, call it.  If FORM is a list, return
 its `car' \(usually in this case, FORM is a one-element list
 containing a function to be used as the delimiter form."
   (cond ((stringp form) form)
@@ -326,6 +329,7 @@ containing a function to be used as the delimiter form."
         ((listp form) (car form))))
 
 (defun mmm-default-get-form ()
+  "Get the default delimiter form."
   (regexp-quote (match-string 0)))
 
 ;;}}}

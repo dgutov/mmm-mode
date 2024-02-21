@@ -1,4 +1,4 @@
-;;; mmm-cmds.el --- MMM Mode interactive commands and keymap
+;;; mmm-cmds.el --- MMM Mode interactive commands and keymap -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2011-2013, 2018  Free Software Foundation, Inc.
 
@@ -39,7 +39,7 @@
 ;;{{{ Applying Predefined Classes
 
 (defun mmm-ify-by-class (class)
-  "Add submode regions according to an existing submode class."
+  "Add submode regions according to an existing submode CLASS."
   (interactive
    (list (intern
           (completing-read
@@ -62,7 +62,8 @@
 ;;{{{ Applying by the Region
 
 (defun mmm-ify-region (submode front back)
-  "Add a submode region for SUBMODE coinciding with current region."
+  "Add a submode region for SUBMODE coinciding with current region.
+FRONT and BACK should be MMM delimiters."
   (interactive "aSubmode: \nr")
   (mmm-ify :submode submode :front front :back back)
   (setq front (mmm-make-marker front t nil)
@@ -120,8 +121,8 @@ mmm-ification, and applies `mmm-classes' and mode-extension classes.
 
 This command is intended for use when you have just typed what should
 be the delimiters of a submode region and you want to create the
-region. However, you may want to look into the various types of
-delimiter auto-insertion that MMM Mode provides. See, for example,
+region.  However, you may want to look into the various types of
+delimiter auto-insertion that MMM Mode provides.  See, for example,
 `mmm-insert-region'."
   (interactive "p")
   (message "MMM-ifying block...")
@@ -131,15 +132,9 @@ delimiter auto-insertion that MMM Mode provides. See, for example,
   (message "MMM-ifying block...done"))
 
 (defun mmm-get-block (lines)
-  (let ((inhibit-point-motion-hooks t))
-    (list (save-excursion
-            (forward-line (- lines))
-            (beginning-of-line)
-            (point))
-          (save-excursion
-            (forward-line lines)
-            (end-of-line)
-            (point)))))
+  "Return a region spanning LINES before and after point."
+  (list (pos-bol (- 1 lines))
+	(pos-eol (1+ lines))))
 
 ;;}}}
 ;;{{{ Reparse Current Region
@@ -219,7 +214,8 @@ entire job of this function."
 ;;{{{ Narrow to Region
 
 (defun mmm-narrow-to-submode-region (&optional pos)
-  "Narrow to the submode region at point."
+  "Narrow to the submode region at POS.
+When called interactive, use the submode at point."
   (interactive)
   ;; Probably don't use mmm-current-overlay here, because this is
   ;; sometimes called from inside messy functions.
@@ -241,9 +237,9 @@ entire job of this function."
   "Insert a submode region based on last character in invoking keys.
 Keystrokes after `mmm-mode-prefix-key' which are not bound to an MMM
 Mode command \(see `mmm-command-modifiers') are passed on to this
-function. If they have the modifiers `mmm-insert-modifiers', then they
+function.  If they have the modifiers `mmm-insert-modifiers', then they
 are looked up, sans those modifiers, in all current submode classes to
-find an insert skeleton. For example, in Mason, `p' \(with appropriate
+find an insert skeleton.  For example, in Mason, `p' \(with appropriate
 prefix and modifiers) will insert a <%perl>...</%perl> region."
   (interactive "P")
   (let* ((seq (this-command-keys))
@@ -256,15 +252,17 @@ prefix and modifiers) will insert a <%perl>...</%perl> region."
                  key)
          arg))))
 
+(defvar skeleton-positions) ; Mark as special
+
 (defun mmm-insert-by-key (key &optional arg)
   "Insert a submode region based on event KEY.
 Inspects all the classes of the current buffer to find a matching
-:insert key sequence. See `mmm-classes-alist'. ARG, if present, is
+:insert key sequence.  See `mmm-classes-alist'.  ARG, if present, is
 passed on to `skeleton-proxy-new' to control wrapping.
 
 KEY must be a list \(MODIFIERS... . BASIC-KEY) where MODIFIERS are
 symbols such as shift, control, etc. and BASIC-KEY is a character code
-or a symbol such as tab, return, etc. Note that if there are no
+or a symbol such as tab, return, etc.  Note that if there are no
 MODIFIERS, the dotted list becomes simply BASIC-KEY."
   (cl-multiple-value-bind (class skel str) (mmm-get-insertion-spec key)
     (when skel

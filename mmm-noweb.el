@@ -1,4 +1,4 @@
-;;; mmm-noweb.el --- MMM submode class for Noweb programs
+;;; mmm-noweb.el --- MMM submode class for Noweb programs -*- lexical-binding: t; -*-
 ;;
 ;; Copyright 2003, 2004  Joe Kelsey <joe@zircon.seattle.wa.us>
 ;; Copyright 2018  Free Software Foundation, Inc.
@@ -35,7 +35,7 @@
 ;; editing Noweb programs.
 ;;
 ;; FIXME: The more advanced features don't work: `mmm-name-at' and
-;; `mmm-syntax-region' are undefined. Need to dig around in the bug reports
+;; `mmm-syntax-region' are undefined.  Need to dig around in the bug reports
 ;; and/or discussions, wherever the code using them was submitted.
 
 ;;; Code:
@@ -102,7 +102,7 @@ return the value of `mmm-noweb-code-mode'."
 	  (number-to-string mmm-noweb-quote-number)))
 
 (defun mmm-noweb-chunk-name (form)
-  "Get the chunk name from FRONT-FORM."
+  "Get the chunk name from FORM."
   (string-match "<<\\(.*\\)>>=" form)
   (match-string-no-properties 1 form))
 
@@ -147,7 +147,7 @@ return the value of `mmm-noweb-code-mode'."
 ;;{{{ Noweb regions
 
 (defun mmm-noweb-regions (start stop regexp)
-  "Return a liat of regions of the form (NAME BEG END) that exclude
+  "Return a list of regions of the form (NAME BEG END) that exclude
 names which match REGEXP."
   (let* ((remove-next nil)
 	 (regions
@@ -197,8 +197,8 @@ quoted code chunk."
 
 (defun mmm-noweb-fill-chunk (&optional justify)
   "Fill the current chunk according to mode.
-Run `fill-region' on documentation chunks and `indent-region' on code
-chunks."
+Run `fill-paragraph' with JUSTIFY on documentation chunks and
+`indent-region' on code chunks."
   (interactive "P")
   (save-restriction
     (let ((name (mmm-name-at (point))))
@@ -215,7 +215,7 @@ chunks."
       (mmm-undo-syntax-other-regions))))
 
 (defun mmm-noweb-fill-paragraph-chunk (&optional justify)
-  "Fill a paragraph in the current chunk."
+  "Fill a paragraph according to JUSTIFY in the current chunk."
   (interactive "P")
   (save-restriction
     (let ((name (mmm-name-at (point))))

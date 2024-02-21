@@ -1,3 +1,5 @@
+;;; html-erb.el --- mmm-erb tests -*- lexical-binding: t -*-
+
 ;; Copyright (C) 2013, 2020, 2022  Free Software Foundation, Inc.
 
 ;; This file is part of GNU Emacs.

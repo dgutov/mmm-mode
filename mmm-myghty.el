@@ -1,4 +1,4 @@
-;;; mmm-myghty.el --- MMM submode class for Myghty components
+;;; mmm-myghty.el --- MMM submode class for Myghty components -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000, 2004, 2013, 2018  Free Software Foundation, Inc.
 
@@ -30,7 +30,7 @@
 
 ;; I went to the hard (sarcasm) effort of applying two global
 ;; search/replaces, and adding a few keywords for additional
-;; blocks that Myghty introduced. Many thanks to Michael for writing
+;; blocks that Myghty introduced.  Many thanks to Michael for writing
 ;; the mmm-mason without which I would never have found the time
 ;; to patch up for Myghty.
 

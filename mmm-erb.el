@@ -1,4 +1,4 @@
-;;; mmm-erb.el --- ERB templates editing support
+;;; mmm-erb.el --- ERB templates editing support -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2012, 2013, 2018  Free Software Foundation, Inc.
 
@@ -104,7 +104,7 @@
     (back-to-indentation)
     (mmm-update-submode-region)
     (if (and mmm-current-overlay mmm-current-submode
-             (< (overlay-start mmm-current-overlay) (point-at-bol)))
+             (< (overlay-start mmm-current-overlay) (line-beginning-position)))
         ;; Region starts before the current line (and contains indentation).
         ;; If it starts on the current line, then either first part of the line
         ;; is in primary mode, or we're on the first line of a script or style

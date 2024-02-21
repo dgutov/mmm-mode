@@ -1,4 +1,4 @@
-;;; mmm-mason.el --- MMM submode class for Mason components
+;;; mmm-mason.el --- MMM submode class for Mason components -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2013, 2018  Free Software Foundation, Inc.
 
@@ -59,8 +59,8 @@ Saves the name of the tag matched.")
 
 (defvar mmm-mason-tag-names-regexp
   (regexp-opt (append mmm-mason-perl-tags mmm-mason-non-perl-tags) t)
-  "Matches any Mason tag name after the \"<%\". Used to verify that a
-\"<%\" sequence starts an inline section.")
+  "Matches any Mason tag name after the \"<%\".
+Used to verify that a \"<%\" sequence starts an inline section.")
 
 (defun mmm-mason-verify-inline ()
   (not (looking-at mmm-mason-tag-names-regexp)))

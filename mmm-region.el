@@ -1,4 +1,4 @@
-;;; mmm-region.el --- Manipulating and behavior of MMM submode regions
+;;; mmm-region.el --- Manipulating and behavior of MMM submode regions -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2010-2015, 2018, 2020  Free Software Foundation, Inc.
 
@@ -69,7 +69,7 @@ See `mmm-included-p' for the values of TYPE."
 		 (min (1+ pos) (point-max))))))
 
 (defun mmm-included-p (ovl pos &optional type)
-  "Return true if the overlay OVL contains POS.
+  "Return true if the overlay OVL contain POS.
 
 If OVL strictly contains POS, always return true.  If OVL starts or
 ends at POS, return true or false based on the value of TYPE, which
@@ -238,7 +238,7 @@ match data appropriately."
 Sets the match data to the back delimiter, if it is a regexp.
 Otherwise, calls it as a function with point at the beginning of the
 back delimiter overlay \(i.e. where the back delimiter ought to start)
-and one argument being the region overlay. The function should return
+and one argument being the region overlay.  The function should return
 non-nil if the back delimiter matches correctly, and set the match
 data appropriately."
   (let* ((back-ovl (overlay-get ovl 'back))
@@ -253,7 +253,7 @@ data appropriately."
 	  (funcall back ovl))))))
 
 (defun mmm-front-start (ovl)
-  "Return the position at which the front delimiter of OVL starts."
+  "Return the position at which the front delimiter of OVL start."
   (let ((front (overlay-get ovl 'front)))
     ;; Overlays which have evaporated become "overlays in no buffer"
     (if (and front (overlay-buffer front))
@@ -278,7 +278,7 @@ data appropriately."
 This region must be entirely contained within zero or more existing
 submode regions, none of which start or end inside it, and it must be
 a valid child of the highest-priority of those regions, if any.
-Signals errors, returns `t' if no error."
+Signals errors, returns t if no error."
   ;; First check if the placement is valid.  Every existing region
   ;; that overlaps this one must contain it in its entirety.
   (let ((violators (cl-set-difference
@@ -328,7 +328,7 @@ we must have END <= BACK-BEG < BACK-END.
 
 EVAPORATION specifies under what conditions this submode region should
 disappear.
-* If `nil', the region never disappears.  This can cause serious
+* If nil, the region never disappears.  This can cause serious
   problems when using cut-and-paste and is not recommended.
 * If the value is t, the region disappears whenever it has zero
   length.  This is recommended for manually created regions used for
@@ -337,8 +337,8 @@ disappear.
   in its front delimiter disappears, that is, whenever the overlay
   which marks its front delimiter has zero width.
 The default value is `front'.  However, if the parameter FRONT is nil,
-then this makes no sense, so the default becomes `t'.  Note that if
-EVAPORATION is `t', then an error is signalled if BEG = END.
+then this makes no sense, so the default becomes t.  Note that if
+EVAPORATION is t, then an error is signalled if BEG = END.
 
 MATCH-FRONT \(resp. MATCH-BACK) is a regexp or function to match the
 correct delimiters, see `mmm-match-front' \(resp. `mmm-match-back').
@@ -346,7 +346,7 @@ It is ignored if FRONT \(resp. BACK) is nil.  At present these are not
 used much.
 
 DELIMITER-MODE specifies the major mode to use for delimiter regions.
-A `nil' value means they remain in the primary mode.
+A nil value means they remain in the primary mode.
 
 FACE, FRONT-FACE, and BACK-FACE, are faces to use for the region, the
 front delimiter, and the back delimiter, respectively, under high

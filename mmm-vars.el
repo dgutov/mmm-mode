@@ -1,4 +1,4 @@
-;;; mmm-vars.el --- Variables for MMM Mode
+;;; mmm-vars.el --- Variables for MMM Mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2004, 2011-2015, 2018-2020  Free Software Foundation, Inc.
 
@@ -504,8 +504,8 @@ primary mode region, i.e. outside all submode regions.")
 (make-variable-buffer-local 'mmm-buffer-mode-display-name)
 
 (defun mmm-set-mode-line ()
-  "Set the mode line display correctly for the current submode,
-according to `mmm-submode-mode-line-format'."
+  "Set the mode line display correctly for the current submode.
+Format according to `mmm-submode-mode-line-format'."
   (let ((primary (or mmm-primary-mode-display-name
 		     (get mmm-primary-mode 'mmm-mode-name)))
 	(submode (and mmm-current-overlay
@@ -546,9 +546,9 @@ This variable can now be directly modified.
 
 Elements look like \(MODE EXT CLASS), where MODE is a major mode, EXT
 is a regexp to match a filename such as in `auto-mode-alist', and
-CLASS is a submode class. CLASS is activated in all buffers in mode
-MODE \(if non-nil) and whose filenames match EXT \(if non-nil). If
-both MODE and EXT are nil, CLASS is activated in all buffers. If CLASS
+CLASS is a submode class.  CLASS is activated in all buffers in mode
+MODE \(if non-nil) and whose filenames match EXT \(if non-nil).  If
+both MODE and EXT are nil, CLASS is activated in all buffers.  If CLASS
 is the symbol t, MMM Mode is turned on in all buffers matching MODE
 and EXT, but no classes are activated.
 
@@ -562,7 +562,7 @@ See `mmm-global-mode'."
 (defun mmm-add-mode-ext-class (mode ext class)
   "Add an element to `mmm-mode-ext-classes-alist', which see.
 That variable can now be directly modified, so this function is
-unnecessary. It probably won't go away, though."
+unnecessary.  It probably won't go away, though."
   (add-to-list 'mmm-mode-ext-classes-alist (list mode ext class)))
 
 ;;}}}
@@ -589,9 +589,9 @@ which will always be available."
 
 (defun mmm-add-to-major-mode-preferences (language mode &optional default)
   "Add major mode MODE as acceptable for LANGUAGE.
-This sets the value of `mmm-major-mode-preferences'. If DEFAULT
+This sets the value of `mmm-major-mode-preferences'.  If DEFAULT
 is non-nil, MODE is added at the front of the list of modes for
-LANGUAGE. Otherwise, it is added at the end. This may be used by
+LANGUAGE.  Otherwise, it is added at the end.  This may be used by
 packages to ensure that some mode is present, but not override
 any user-specified mode."
   (let ((pair (assq language mmm-major-mode-preferences)))
@@ -639,18 +639,18 @@ parameter-- see `mmm-classes-alist'."
 (defcustom mmm-mode-prefix-key [(control ?c) ?%]
   "Prefix key for the MMM Minor Mode Keymap."
   :group 'mmm
-  :type 'vector)
+  :type '(vector character))
 
 (defcustom mmm-command-modifiers '(control)
   "List of key modifiers for MMM command keys.
 The MMM commands in the MMM Mode map, after `mmm-mode-prefix-key',
-are bound to default keys with these modifiers added. This variable
+are bound to default keys with these modifiers added.  This variable
 must be set before MMM Mode is loaded to have an effect.
 
 It is suggested that the value of this variable be either nil or
 \(control), as the default keys are either plain keys or have only a
-meta modifier. The shift modifier is not particularly portable between
-Emacsen. The values of this variable and `mmm-insert-modifiers' should
+meta modifier.  The shift modifier is not particularly portable between
+Emacsen.  The values of this variable and `mmm-insert-modifiers' should
 be disjoint."
   :group 'mmm
   :type '(repeat (symbol :tag "Modifier")))
@@ -664,8 +664,8 @@ specifications.
 
 It is suggested that the value of this variable be either nil or
 \(control), allowing submode classes to specify the presence or
-absence of the meta modifier. The shift modifier is not particularly
-portable between Emacsen. The values of `mmm-command-modifiers' and
+absence of the meta modifier.  The shift modifier is not particularly
+portable between Emacsen.  The values of `mmm-command-modifiers' and
 this variable should be disjoint."
   :group 'mmm
   :type '(repeat (symbol :tag "Modifier")))
@@ -674,9 +674,9 @@ this variable should be disjoint."
   "Non-nil means to Use the old command keys for MMM Mode.
 MMM Mode commands then have no modifier while insertion commands have
 a control modifier, i.e. `mmm-command-modifiers' is set to nil and
-`mmm-insert-modifiers' is set to \(control). If nil, the values of
+`mmm-insert-modifiers' is set to \(control).  If nil, the values of
 these variables are as the default, or whatever the user has set them
-to. This variable must be set before MMM Mode is loaded."
+to.  This variable must be set before MMM Mode is loaded."
   :group 'mmm
   :type 'boolean)
 
@@ -691,18 +691,18 @@ to. This variable must be set before MMM Mode is loaded."
 (defcustom mmm-mode-hook ()
   "Hook run when MMM Mode is enabled in a buffer.
 
-A hook named mmm-<major-mode>-hook is also run, if it exists. For
+A hook named mmm-<major-mode>-hook is also run, if it exists.  For
 example, `mmm-html-mode-hook' is run whenever MMM Mode is entered with
 HTML mode the dominant mode.
 
 A hook named mmm-<submode>-submode-hook is run when a submode region
-of a given mode is created. For example, `mmm-cperl-mode-submode-hook'
+of a given mode is created.  For example, `mmm-cperl-mode-submode-hook'
 is run whenever a CPerl mode submode region is created, in any buffer.
 When this hooks are run, point is guaranteed to be at the start of
 the newly created submode region.
 
 Finally, a hook named mmm-<class>-class-hook is run whenever a buffer
-is first mmm-ified with a given submode class. For example,
+is first mmm-ified with a given submode class.  For example,
 `mmm-mason-class-hook' is run whenever the `mason' class is first
 applied in a buffer."
   :group 'mmm
@@ -754,8 +754,8 @@ that `mmm-global-mode' will function correctly, but makes this hook
 available so that others can take advantage of the hack as well.
 
 Note that file local variables have *not* been processed by the time
-this hook is run. If a function needs to inspect them, it should also
-be added to `find-file-hook'. However, `find-file-hook' is not run
+this hook is run.  If a function needs to inspect them, it should also
+be added to `find-file-hook'.  However, `find-file-hook' is not run
 when creating a non-file-based buffer, or when changing major modes in
 an existing buffer."
   :group 'mmm
@@ -780,7 +780,7 @@ an existing buffer."
 - If nil, MMM Mode is never enabled automatically.
 - If t, MMM Mode is enabled automatically in all buffers.
 - If any other symbol, MMM mode is enabled only in those buffers that
-  have submode classes associated with them. See `mmm-classes' and
+  have submode classes associated with them.  See `mmm-classes' and
   `mmm-mode-ext-classes-alist' for more information."
   :group 'mmm
   :type '(choice (const :tag "Always" t)
@@ -1074,7 +1074,7 @@ The CLASSES are all made private, i.e. non-user-visible."
 
 (defvar mmm-temp-buffer-name "mmm-temp-buffer"
   "Name for temporary buffers created by MMM Mode.
-Using non-special name, so that font-lock-mode will be enabled
+Using non-special name, so that `font-lock-mode' will be enabled
 automatically when appropriate, and will set all related vars.")
 
 (defvar mmm-in-temp-buffer nil
@@ -1085,8 +1085,8 @@ automatically when appropriate, and will set all related vars.")
 
 (defvar mmm-interactive-history nil
   "History of interactive mmm-ification in the current buffer.
-Elements are either submode class symbols or class specifications. See
-`mmm-classes-alist' for more information.")
+Elements are either submode class symbols or class specifications.
+See `mmm-classes-alist' for more information.")
 (make-variable-buffer-local 'mmm-interactive-history)
 
 (defun mmm-add-to-history (class)

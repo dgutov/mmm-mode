@@ -1,4 +1,4 @@
-;;; mmm-mode.el --- Allow Multiple Major Modes in a buffer
+;;; mmm-mode.el --- Allow Multiple Major Modes in a buffer -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 1999-2004, 2012-2015, 2018, 2020  Free Software Foundation, Inc.
 
@@ -33,15 +33,15 @@
 ;;; Commentary:
 
 ;; MMM Mode is a minor mode that allows multiple major modes to
-;; coexist in a single buffer. Refer to the documentation of the
-;; function `mmm-mode' for more detailed information. This file
+;; coexist in a single buffer.  Refer to the documentation of the
+;; function `mmm-mode' for more detailed information.  This file
 ;; contains mode on/off functions and the mode keymap, but mostly
 ;; just loads all the subsidiary files.
 
 ;{{{ Parameter Naming
 
 ;; Since version 0.3.7, I've tried to use a uniform scheme for naming
-;; parameters. Here's a brief summary.
+;; parameters.  Here's a brief summary.
 
 ;; BEG and END refer to the beginning and end of a region.
 ;; FRONT and BACK refer to the respective delimiters of a region.
@@ -53,11 +53,11 @@
 ;{{{ CL and Parameters
 
 ;; Keyword parameters can be nice because it makes it easier to see
-;; what's getting passed as what. But I try not to use them in user
+;; what's getting passed as what.  But I try not to use them in user
 ;; functions, because CL doesn't make good documentation strings.
 ;; Similarly, any hook or callback function can't take keywords,
-;; since Emacs as a whole doesn't use them. And for small parameter
-;; lists, they are overkill. So I use them only for a large number of
+;; since Emacs as a whole doesn't use them.  And for small parameter
+;; lists, they are overkill.  So I use them only for a large number of
 ;; optional parameters, such as `mmm-make-region'.
 
 ;; An exception is the various submode class application functions,
@@ -65,18 +65,18 @@
 ;; and so the classes alist looks nice.
 
 ;; When using keyword arguments, defaults should *always* be supplied
-;; in all arglists. (This pertains mostly to :start and :stop
+;; in all arglists.  (This pertains mostly to :start and :stop
 ;; arguments, usually defaulting to (point-min) and (point-max)
 ;; respectively.) `mmm-save-keywords' should only be used for lists
 ;; with more than four arguments, such as in `mmm-ify-by-regexp'.
 
 ;; In general, while I have no qualms about using things from CL like
 ;; `cl-mapl', `cl-loop' and `cl-destructuring-bind', I try not to use `cl-defun'
-;; more than I have to. For one, it sometimes makes bad documentation
-;; strings. Furthermore, to a `defun'ned function, a nil argument is
+;; more than I have to.  For one, it sometimes makes bad documentation
+;; strings.  Furthermore, to a `defun'ned function, a nil argument is
 ;; the same as no argument, so it will use its (manual) default, but
 ;; to a `cl-defun'ned function, a nil argument *is* the argument, so
-;; any default specified in the arglist will be ignored. Confusion of
+;; any default specified in the arglist will be ignored.  Confusion of
 ;; this type should be avoided when at all possible.
 
 ;;}}}
@@ -101,7 +101,7 @@
 
 (defun mmm-mode (&optional arg)
   "Minor mode to allow multiple major modes in one buffer.
-Without ARG, toggle MMM Mode. With ARG, turn MMM Mode on iff ARG is
+Without ARG, toggle MMM Mode.  With ARG, turn MMM Mode on if ARG is
 positive and off otherwise.
 
 Commands Available:
@@ -111,8 +111,8 @@ Commands Available:
 BASIC CONCEPTS
 
 The idea of MMM Mode is to allow multiple major modes to coexist in
-the same buffer.  There is one \"primary\" major mode that controls
-most of the buffer, and a number of \"submodes\" that each hold sway
+the same buffer.  There is one `primary' major mode that controls
+most of the buffer, and a number of `submodes' that each hold sway
 over certain regions.  The submode regions are usually highlighted by
 a background color for ease of recognition.  While the point is in a
 submode region, the following changes \(are supposed to) occur:
@@ -127,17 +127,17 @@ submode region, the following changes \(are supposed to) occur:
 
 The user may specify a number of hooks which may run when the point
 transitions between submodes, or between the primary mode and a
-submode. When a major mode is entered, the hook mmm-x-enter-hook is
-run, where x is the name of the major mode. When a major mode is
-left, the hook mmm-y-exit-hook is run, where y is the name of the
-major mode. Users may also specify hooks with names of the form
-mmm-x-y-hook which are run when the point leaves a mode named x,
+submode.  When a major mode is entered, the hook `mmm-x-enter-hook' is
+run, where x is the name of the major mode.  When a major mode is
+left, the hook `mmm-y-exit-hook' is run, where y is the name of the
+major mode.  Users may also specify hooks with names of the form
+`mmm-x-y-hook' which are run when the point leaves a mode named x,
 and enters a mode named y.
 
 For further information, including installation and configuration
-instructions, see the Info file mmm.info which is included with the
+instructions, see the info node `(mmm)Top' which is included with the
 distribution of MMM Mode.  Many of MMM's configuration variables are
-available through M-x customize-group RET mmm."
+available in customization group `mmm'."
   (interactive "P")
   (if (if arg (> (prefix-numeric-value arg) 0) (not mmm-mode))
       (mmm-mode-on)
@@ -149,7 +149,7 @@ available through M-x customize-group RET mmm."
 ;;{{{ Mode On
 
 (defun mmm-mode-on ()
-  "Turn on MMM Mode. See `mmm-mode'."
+  "Turn on MMM Mode.  See `mmm-mode'."
   (interactive)
   ;; This function is called from mode hooks, so we need to make sure
   ;; we're not in a temporary buffer.  We don't need to worry about

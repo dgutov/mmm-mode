@@ -1,4 +1,4 @@
-;;; mmm-univ.el --- The "Universal" Submode Class
+;;; mmm-univ.el --- The "Universal" Submode Class -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000, 2001, 2013  Free Software Foundation, Inc.
 

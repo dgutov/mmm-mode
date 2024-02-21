@@ -1,4 +1,4 @@
-;;; mmm-auto.el --- loading and enabling MMM Mode automatically
+;;; mmm-auto.el --- loading and enabling MMM Mode automatically -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2004,  2012, 2013, 2018, 2022  Free Software Foundation, Inc.
 

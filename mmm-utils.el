@@ -1,4 +1,4 @@
-;;; mmm-utils.el --- Coding Utilities for MMM Mode
+;;; mmm-utils.el --- Coding Utilities for MMM Mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2000-2003, 2011-2013, 2020  Free Software Foundation, Inc.
 
@@ -105,22 +105,26 @@ ON-STRING, if supplied, means to use the match data from a
 ;;{{{ Save Keywords
 
 (defmacro mmm-save-keyword (param)
-  "If the value of PARAM as a variable is non-nil, return the list
-\(:PARAM (symbol-value PARAM)), otherwise NIL. Best used only when it
-is important that nil values disappear."
-  `(if (and (boundp ',param) ,param)
-       (list (intern (concat ":" (symbol-name ',param))) ,param)
-     nil))
+  "Return the list (:PARAM (symbol-value PARAM)) if PARAM is non-nil.
+Return nil if PARAM is not a variable (lexical or dynamic) or has the
+value nil.  Best used only when it is important that nil values
+disappear."
+  ;; Would be nice to use `ignore-error' here, but that wasn't
+  ;; introduced until Emacs 27.1.  This condition-case does the same thing.
+  `(condition-case nil
+       (if ,param (list ,(intern (format ":%s" param)) ,param))
+     ((void-variable ,param) nil)))
+
 
 (defmacro mmm-save-keywords (&rest params)
-  "Return a list saving the non-nil elements of PARAMS. E.g.
-\(let \(\(a 1) \(c 2)) \(mmm-save-keywords a b c))  ==>  \(:a 1 :c 2)
+  "Return a list saving the non-nil elements of PARAMS.
+For instance
+ \(let \(\(a 1) \(c 2) (d 3)) \(mmm-save-keywords a b c)) => \(:a 1 :c 2).
 Use of this macro can make code more readable when there are a lot of
-PARAMS, but less readable when there are only a few. Also best used
+PARAMS, but less readable when there are only a few.  Also best used
 only when it is important that nil values disappear."
-  `(append ,@(mapcar (lambda (param)
-                         (macroexpand `(mmm-save-keyword ,param)))
-                     params)))
+  `(append ,@(mapcar (lambda (param) `(mmm-save-keyword ,param)) params)))
+
 
 ;;}}}
 ;;{{{ Looking Back At
