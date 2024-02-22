@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2013  Free Software Foundation, Inc.
 
-;; Author: Dmitry Gutov <dgutov@yandex.ru>
+;; Author: Dmitry Gutov <dmitry@gutov.dev>
 
 ;;{{{ GPL
 
