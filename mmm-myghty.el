@@ -65,8 +65,8 @@ Saves the name of the tag matched.")
 
 (defvar mmm-myghty-tag-names-regexp
   (regexp-opt (append mmm-myghty-python-tags mmm-myghty-non-python-tags) t)
-  "Matches any Myghty tag name after the \"<%\". Used to verify that a
-\"<%\" sequence starts an inline section.")
+  "Matches any Myghty tag name after the \"<%\".
+Used to verify that a \"<%\" sequence starts an inline section.")
 
 (defun mmm-myghty-verify-inline ()
   (not (looking-at mmm-myghty-tag-names-regexp)))

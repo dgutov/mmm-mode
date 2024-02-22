@@ -6,7 +6,7 @@
 ;; Package: mmm-mode
 ;; Author: Michael Abraham Shulman <viritrilbia@gmail.com>
 ;; Maintainer: Dmitry Gutov <dgutov@yandex.ru>
-;; URL: https://github.com/purcell/mmm-mode
+;; URL: https://github.com/dgutov/mmm-mode
 ;; Keywords: convenience, faces, languages, tools
 ;; Version: 0.5.10
 ;; Package-Requires: ((emacs "25.1") (cl-lib "0.2"))

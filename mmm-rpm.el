@@ -27,9 +27,9 @@
 
 ;; This file contains the definition of an MMM Mode submode class for
 ;; editing shell script sections within RPM (Redhat Package Manager)
-;; spec files. I recommend to use it in combination with
+;; spec files.  I recommend to use it in combination with
 ;; rpm-spec-mode.el by Stig Bjørlykke <stigb@tihlde.hist.no> and Steve
-;; Sanbeg <sanbeg@dset.com> (http://www.xemacs.org/~stigb/rpm-spec-mode.el)
+;; Sanbeg <sanbeg@dset.com> (https://github.com/stigbjorlykke/rpm-spec-mode)
 
 ;;; Installation:
 
@@ -47,19 +47,19 @@
 (defconst mmm-rpm-sh-start-tags
   '("prep" "build" "install" "clean" "preun" "postun" "pre"
     "post" "triggerin" "triggerun" "triggerpostun")
-  "List containing RPM tags that start a shell-script section in a spec file")
+  "List containing RPM tags that start a shell-script section in a spec file.")
 
 (defvar mmm-rpm-sh-end-tags
   (append '("files" "description" "package") mmm-rpm-sh-start-tags)
-  "List containing RPM tags that end a shell-script section in a spec file")
+  "List containing RPM tags that end a shell-script section in a spec file.")
 
 (defvar mmm-rpm-sh-start-regexp
   (concat "^%" (mmm-regexp-opt mmm-rpm-sh-start-tags t) "\\b.*$")
-  "Regexp matching RPM tags that start a shell-script section in a spec file")
+  "Regexp matching RPM tags that start a shell-script section in a spec file.")
 
 (defvar mmm-rpm-sh-end-regexp
   (concat "\\'\\|^%" (mmm-regexp-opt mmm-rpm-sh-end-tags t) "\\b.*$")
-  "Regexp matching RPM tags that end a shell-script section in a spec file")
+  "Regexp matching RPM tags that end a shell-script section in a spec file.")
 
 (mmm-add-group
  'rpm

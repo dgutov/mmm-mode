@@ -239,7 +239,7 @@ contain sample code.  And so on.  We encourage you to experiment.
 The way MMM Mode works is as follows. Each buffer has a @dfn{dominant}
 or @dfn{default} major mode, which is chosen as major modes normally
 are: the user can set it interactively, or it can be chosen
-automatically with `auto-mode-alist' (@pxref{Choosing Modes, , , emacs,
+automatically with @code{auto-mode-alist} (@pxref{Choosing Modes, , , emacs,
 The Emacs Manual}). Within the file, MMM Mode creates @dfn{submode
 regions} within which other major modes are in effect. While the point
 is in a submode region, the following changes occur:
@@ -273,7 +273,8 @@ The submode regions are highlighted by a background color; see
 The submode regions are represented internally by Emacs Lisp objects
 known as @dfn{overlays}. Some of the above are implemented by overlay
 properties, and others are updated by an MMM Mode function in
-`post-command-hook'. You don't need to know this to use MMM Mode, but it
+@code{post-command-hook}.  You don't need to know this to use MMM
+Mode, but it
 may make any error messages you come across more understandable.
 @xref{Overlays, , , elisp, The GNU Emacs Lisp Reference Manual}, for
 more information on overlays.
@@ -290,25 +291,31 @@ buffer's file extension, dominant mode, or local variables.
 @node Installation
 @section Installing MMM Mode
 
-MMM Mode has a standard installation process.  See the file INSTALL for
-generic information on this process.  To summarize, unpack the archive,
-@command{cd} to the created MMM Mode directory, type @samp{./configure},
-then @samp{make}, then @samp{make install}.  If all goes correctly, this
-will compile the MMM Mode elisp files, install them in your local
-site-lisp directory, and install the MMM Mode info file @file{mmm.info}
-in your local info directory.
-
-Now you need to configure your Emacs initialization file (usually
-@file{~/.emacs}) to use MMM Mode.  First, Emacs has to know where to
-find MMM Mode.  In other words, the MMM Mode directory has to be in
-@code{load-path}.  This can be done in the parent directory's
-@file{subdirs.el} file, or in the init file with a line such as:
+The recommended way to install MMM Mode is from GNU ELPA.
 
 @lisp
-(add-to-list 'load-path "/path/to/site-lisp/mmm/")
+(package-install 'mmm-mode)
 @end lisp
 
-Once @code{load-path} is configured, MMM Mode must be loaded.  You can
+@noindent
+You can also add the MMM Mode directory to your @code{load-path}.
+
+@lisp
+(add-to-list 'load-path "/path/to/mmm-mode/")
+@end lisp
+
+@noindent
+The Makefile distributed with MMM Mode can be used to byte compile the
+code and build the Info documentation with a simple @code{make}
+command.  Don't forget to add the MMM mode directory to your
+@code{Info-directory-list}.
+
+@lisp
+(add-to-list 'Info-directory-list pkg-dir)
+@end lisp
+
+Once the package is installed or @code{load-path} configured, MMM Mode
+must be loaded.  You can
 load all of MMM Mode with the line
 
 @lisp
@@ -361,7 +368,7 @@ manipulate the regions created.  @xref{Submode Classes}, for more
 details.  There are several sample submode classes that come with MMM
 Mode, which are documented later in this manual.  Look through these and
 determine if one of them fits your needs.  If so, I suggest reading the
-comments on that mode.  Then come back here to find out to use it.
+comments on that mode.  Then come back here to find out how to use it.
 
 To apply a submode class to a buffer interactively, turn MMM Mode on as
 above, then type @kbd{C-c % C-c} and enter the name of the class.
@@ -371,6 +378,7 @@ in the buffer appropriate to the submode class.
 If you want a given file to always use a given submode class, you can
 express this in a file variable: add a line containing the string
 @samp{-*- mmm-classes: @var{class} -*-} at the top of the file.
+@var{class} can also be a list of submode classes.
 @xref{File Variables, , , emacs, The Emacs Manual}, for more information
 and other methods. Now whenever MMM Mode is turned on in that file, it
 will be mmm-ified according to @var{class}. If @code{mmm-global-mode} is
@@ -423,10 +431,10 @@ This chapter explains the most important parts of how to use MMM Mode.
 An Emacs minor mode is an optional feature which can be turned on or off
 in a given buffer, independently of the major mode. @xref{Minor Modes, ,
 , emacs, The Emacs Manual}. MMM Mode is implemented as a minor mode
-which manages the submode regions. This minor mode must be turned on in
-a buffer for submode regions to be effective. When activated, the MMM
-Minor mode is denoted by @samp{MMM} in the mode line (@pxref{Mode
-Line}).
+@code{mmm-mode} which manages the submode regions.  @code{mmm-mode}
+must be turned on in a buffer for submode regions to be
+effective. When activated, @code{mmm-mode} is denoted by @samp{MMM} in
+the mode line (@pxref{Mode Line}).
 
 @menu
 * Enabling MMM Mode::           Turning MMM Mode on and off.
@@ -446,7 +454,7 @@ Line}).
 @cindex disabling mmm mode
 
 If @code{mmm-global-mode} is non-@code{nil} (@pxref{Global Mode}),
-then the MMM minor mode will be turned on automatically whenever a file
+@code{mmm-mode} will be enabled automatically whenever a file
 with associated submode classes is opened (@pxref{Selecting Classes}).
 It is also turned on by interactive mmm-ification (@pxref{Interactive}),
 although the interactive commands do not have key bindings when it is
